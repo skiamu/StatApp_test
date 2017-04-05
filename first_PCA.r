@@ -21,18 +21,18 @@ source("read_data.r")
 
 ########### dataframe manipulation ##############
 
-# select an index topic for the analysis
+# select an index topic of interest
 specified_topic <- "Public Sector: Government finance: Expense"
 # select the region of interest
 specified_region <- "Europe & Central Asia"
-# select the IndicatorsCodes that correspond the the Topic specified
+# select the "IndicatorsCodes" that corresponds to the Topic specified
 # from the dataframe "Series"
 index.code <-
   Series %>% 
   filter(Topic == specified_topic) %>%
   select(SeriesCode) 
 
-# get CountryCode country in the region of interest
+# get "CountryCode" for countries in the region of interest
 europe.county.code <- Country %>%
   filter(Region == specified_region) %>%
   select(CountryCode)
@@ -49,8 +49,8 @@ index.name[,"IndicatorName"] <- sapply(index.name[, "IndicatorName"], as.charact
 
 # select rows from the main dataframe "Indicators" whose indexes are in the
 # specified topics:
-# each IndicatorCode in dataframe "Indicators" has unique correspondent in
-# SeriesCode in dataframe "Series". This is the link between the two.
+# each "IndicatorCode" in dataframe "Indicators" has unique correspondent in
+# "SeriesCode" in dataframe "Series". This is the link between the two.
 temp <- filter(Indicators,IndicatorCode %in% index.code$SeriesCode,
                CountryCode %in% europe.county.code$CountryCode)
 
@@ -70,7 +70,7 @@ aggregate.country <- c("ARB","CSS","CAF","CEB","EAS","EAP","ECS","ECA",
                        "MNP","OED","OSS","PSS","SSF","SSA","TCA","ARE",
                        "UMC","WLD","EMU","SAS","SST")
 
-# remove the aggregate counties
+# remove the aggregate countries
 temp <- temp %>% filter(!CountryCode %in% aggregate.country)
 
 # summarize again the temporary dataframe
@@ -112,7 +112,7 @@ d <- select(d,-(CountryCode))
 
 # we have now the dataset in a suitable form for data analysis.
 
-# I decide to analysis just indexes that are % of public expense
+# I decide to analyse just indexes that are % of public expense
 expense.index <- c("GC.XPN.COMP.ZS","GC.XPN.GSRV.ZS","GC.XPN.INTP.ZS",
                    "GC.XPN.OTHR.ZS","GC.XPN.TRFT.ZS")
 
@@ -133,7 +133,7 @@ pc.d <- princomp(na.omit(d),scores = T)
 pc.d
 summary(pc.d)
 
-# extract the loading
+# extract the loading 
 load.d <- pc.d$loadings
 
 
