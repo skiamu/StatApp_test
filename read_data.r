@@ -1,5 +1,5 @@
 ######## lettura del dataset  #############
-
+rm(list = ls())
 Country <- read.csv("Country.csv", header= T)
 colnames(Country)
 attach(Country)
