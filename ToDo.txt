@@ -1,12 +1,16 @@
 file for weekly assignments, switch to english?
 
-settimana 21/03
+meeting 06/04/2017 : 
+1) set following meeting dates
+2) git subscriptions 
 
-MOWA:
-/modificare accordingly/
+next meetings scheduled : 11/04 h:8.30
+                          21/04 h:8.30
+                          27/04 h:8.30
 
-ANDREA:
-/modificare accordingly/
-
-LEO:
-/modificare accordingly/
+ToDo: 
+     1) find thresholds for states, same analysis for indicators
+     2) look for indicators with sum constraints
+     3) pca with % and abs values, how to behave?
+     4) which data should be gaussian?
+     

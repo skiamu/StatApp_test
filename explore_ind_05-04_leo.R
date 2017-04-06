@@ -1,15 +1,18 @@
 # Explore the dataset
 # 05-04-17
 # Leo
-
+#
 # Adapt the code to your pc (look at the first two blocks)
 # I am not very experienced with Git, yet
 
 # It takes a little
 
 #---------- Set working directory (set yours) #####
-setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/Playground')
+#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/Playground')
 
+
+
+# commento test
 #---------- Import Data###### 
 ind <- read.csv('Indicators.csv')
 country <- read.csv('Country.csv')
