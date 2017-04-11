@@ -57,11 +57,11 @@ Plot_Indicators_w_Mean <- ggplot() +
           sub  = 'Mean among countries (orange) - Threshold T1 (Dark Grey)')
 
 # YO = Year Ok
-YO <- mean_ind %>%
+YO <- MI %>%
   filter(Mean > T1) %>%
   select(Year)
 # YN = Year NOT Ok
-YN <- mean_ind %>%
+YN <- MI %>%
   filter(Mean <= T1) %>%
   select(Year)
 

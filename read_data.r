@@ -1,48 +1,35 @@
-######## lettura del dataset  #############
-rm(list = ls())
-Country <- read.csv("Country.csv", header= T)
-colnames(Country)
-attach(Country)
-# contiene dati qualitativi per ogni nazione
 
-CountryNotes <- read.csv("CountryNotes.csv", header= T)
-colnames(CountryNotes)
-# contiene le informazioni tecnico su ogni nazioni, codifica nome
-# e fonte dei dati ( non caricarlo)
-
-# Footnotes <- read.csv("Footnotes.csv", header = T)
-# boh non se ne capisce l'utilità (non caricarlo)
-
-Indicators <- read.csv("Indicators.csv", header = T)
-colnames(Indicators)
-attach(Indicators)
-
-Series <- read.csv("Series.csv", header = T)
-colnames(Series)
-attach(Series)
-# descrive nel dettaglio tutti gli indicatori
-
-
-# SeriesNotes <- read.csv("SeriesNotes.csv", header = T)
-# colnames(SeriesNotes)
-# cita la fonte degli indicatori
-
-
-######### estrazione descrizione degli indici su file txt  ########
-
-# connettersi al fine
-# fileConn<-file("output.txt")
-
-# write.table(Series[c(3,5)], fileConn, append = TRUE, quote = TRUE, sep = " ",
-#            eol = "\n", na = "NA", dec = ".", row.names = FALSE,
-#            col.names = TRUE, qmethod = c("escape", "double"))
-
-# chiudo il file
-#close(fileConn)
-
-
-########### dataset per gruppi ##############
-
+read_data <- function(path){
+  # function for reading the dataframes
+  #
+  # INPUT: 
+  #     path = directory path (where the .csv are)
+  
+  # rm(list = ls())
+  
+  Country <- read.csv(paste(path,"Country.csv",sep = "/"), 
+                      header= T)
+  
+  
+  CountryNotes <- read.csv(paste(path,"CountryNotes.csv",
+                                 sep="/"), header= T)
+  
+  
+  Indicators <- read.csv(paste(path,"Indicators.csv",sep="/"),
+                         header = T)
+  
+  Series <- read.csv(paste(path,"Series.csv",sep = "/"), 
+                     header = T)
+  
+  # in R we can return just a single object,
+  # i return a list of dataframes
+  mylist <- list(County = Country,
+                 CountryNotes = CountryNotes,
+                 Indicators = Indicators,
+                 Series = Series)
+  
+  return(mylist)
+}
 
 
 

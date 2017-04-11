@@ -52,10 +52,12 @@ get_Indicators <- function(myTopic=NULL, myYear=NULL,myRegion=NULL,
       filter(CountryCode %in% my.country.code$CountryCode)
   }
   
-  # check that all the county names in input are ok
-  stopifnot(myCountries %in% TableName)
+
   
   if(!is.null(myCountries)){ # Countryname is an activated criteria
+    # check that all the county names in input are ok
+    stopifnot(myCountries %in% TableName)
+    
     my.country.name <- Country. %>%
       filter(TableName %in% myCountries)
     Indicators. <- Indicators. %>% 

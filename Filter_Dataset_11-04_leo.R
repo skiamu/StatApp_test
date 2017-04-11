@@ -54,6 +54,7 @@ plot_pop <- ggplot() +
   geom_line(data = pop, aes(x = Year, y = Value, colour = CountryCode), show.legend = FALSE)
 # It doesn't work.... I try again tomorrow 
 
+
 prova <- ind %>%
   filter(IndicatorCode=='SP.POP.TOTL') %>%
   group_by(CountryCode) %>%
