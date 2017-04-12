@@ -156,6 +156,7 @@ setnames(ser, "SeriesCode", "IndicatorCode")
 # IT = Indicator Top 
 IT <- merge(RD[,c('CountryCode','CountryName','IndicatorCode','Year','Value')],
             ser[,c('IndicatorCode','Topic')],by='IndicatorCode') # Take some seconds
+#http://stackoverflow.com/questions/10883605/truncating-the-end-of-a-string-in-r-after-a-character-that-can-be-present-zero-o
 IT$SuperTopics<- c(sapply(IT[,6], substring, 1, 8))
 # NI = Nation Indicators
 NI <- IT %>%
