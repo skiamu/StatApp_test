@@ -72,8 +72,9 @@ get_Indicators <- function(myTopic=NULL, myYear=NULL,myRegion=NULL,
               value.var = "Value")
   
   # rename each row with its country name
-  row.names(Indicators.) <- Indicators.$CountryCode
-  
+  #row.names(Indicators.) <- Indicators.$CountryCode
+  # this line works just when myYear is a scalar.
+  # not a big problem, leave it like that for know
   
   return(Indicators.)
   
