@@ -95,4 +95,79 @@ Filter_Countries_With_Too_Low_Pop <- function(ind,T3){
   fil_ind <- ind %>% 
     filter(ind$CountryCode %in% temp$CountryCode)
 }
+# 05 Filter_Indicators_Too_Recent ####
+# this function filters out of the dataframe 'ind' the indicators 
+# that start after TY
+# -- INPUT:
+#    - ind : data.frame of the indicators
+#    - TY  : threshold for the maximum starting year accepted
+# -- OUTPUT:
+#    - fil_ind : ind filtred
+# -- USES:
+#    - %>%
+Filter_Indicators_Too_Recent <- function(ind,TY){
+  df1 <- ind %>%
+    group_by(IndicatorCode) %>%
+    summarise(min_year = min(Year)) %>%
+    filter(min_year <= TY)
+  fil_ind <- ind %>%
+    filter(ind$IndicatorCode %in% df1$IndicatorCode)
+}
+# 06 Filter_Indicators_That_Ended ####
+# this function filters out of the dataframe 'ind' the indicators 
+# that ended before TY
+# -- INPUT:
+#    - ind : data.frame of the indicators
+#    - TY  : threshold for the minimum ending year accepted
+# -- OUTPUT:
+#    - fil_ind : ind filtred
+# -- USES:
+#    - %>%
+Filter_Indicators_That_Ended <- function(ind,TY){
+  df1 <- ind %>%
+    group_by(IndicatorCode) %>%
+    summarise(max_year = max(Year)) %>%
+    filter(max_year >= TY)
+  fil_ind <- ind %>%
+    filter(ind$IndicatorCode %in% df1$IndicatorCode)
+}
 
+# 07 Filter_Countries_With_Too_Many_NA ####
+#  !!! there is a problem with 'St. Martin (French part)'
+#  !!! and maybe others 
+# this function filters out of the dataframe countries with a mean (over years)
+# percentage of NA values under T_NA
+# -- INPUT:
+#    - ind       : data.frame of the indicators
+#    - T_NA      : threshold for the minimum NA percentage accepted
+#    - Flag_Plot : TRUE if you need the plot
+# -- OUTPUT:
+#    - df3       : ind filtred
+# -- USES:
+#    - %>%
+#    - HowManyNA_cnt
+Filter_Countries_With_Too_Many_NA <- function(ind,T_NA,Flag_Plot = TRUE){
+  # suboptimal...
+  # countries
+  cnt <- ind %>% select(CountryName) %>% unique()
+  # initialize the vector that will contain the NA_perc
+  mean_NA_perc <- vector(mode="numeric", length=dim(cnt)[1])
+  for(i in 1:length(mean_NA_perc)){
+    df1 <- HowManyNA_cnt(ind,cnt[i,'CountryName'],Flag_Plot = FALSE)
+    mean_NA_perc[i] <- mean(df1$NA_perc)
+  }
+  df2 <- data.frame(CountryName = cnt,
+                    MeanNAPerc  = mean_NA_perc)
+  df3 <- df2 %>% filter(MeanNAPerc < T_NA)
+  # Plot
+  if(Flag_Plot){
+    p <- ggplot(df3, aes(x = reorder(CountryName, +MeanNAPerc), y = MeanNAPerc, label=CountryName)) +
+      geom_point() + 
+      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+      ggtitle('Mean percentage of NA value for each state') +
+      geom_hline(yintercept = T_NA) + 
+      labs(x = '', y = 'Mean percentage of NA values')
+    x11(); print(p)
+  }
+  df3
+}
