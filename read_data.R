@@ -42,9 +42,9 @@ read_data <- function(path){
      transform(TableName=revalue(TableName,correction),
                ShortName=revalue(ShortName,correction))
   
-  # let's cut the unit of measure in "indicatorName" 
-  Indicators <- Indicators %>%
-     transform(IndicatorName = gsub("\\(.*$", "", IndicatorName))
+  # # let's cut the unit of measure in "indicatorName" 
+  # Indicators <- Indicators %>%
+  #    transform(IndicatorName = gsub("\\(.*$", "", IndicatorName))
   
   Series <- read.csv(paste(path,"Series.csv",sep = "/"), 
                      header = T)

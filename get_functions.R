@@ -2,7 +2,7 @@
 # here we implement functions for getting things from the dataset
 
 # REMARK: here are some "Countryname" you can use in the argument 
-# "myCountries" if you want to do analysis at an aggregateed level
+# "myAgg" if you want to do analysis at an aggregateed level
 # 
 # 
 # [1] "Arab World"                                    
@@ -12,7 +12,7 @@
 # [5] "East Asia & Pacific (developing only)"         
 # [6] "Euro area"                                     
 # [7] "Europe & Central Asia (all income levels)"     
-# [8] "Europe & Central Asia (developing only)"       
+# [8] "Europe & Central Asia (developing only)"  GDP per capita (current US$)     
 # [9] "European Union"                                
 # [10] "Fragile and conflict affected situations"      
 # [11] "Heavily indebted poor countries (HIPC)"        
@@ -44,9 +44,11 @@ get_Indicators <- function(myTopic=NULL,
                            myRegion=NULL,
                            myCountries=NULL,
                            myAggregate = NULL,
+                           myInd.Name = NULL,
                            ind = Indicators,
                            ser = Series,
-                           count = Country){
+                           count = Country,
+                           clear_name = F){
    # get_Indicators is a function for extracting the desired indicators
    # from dataframe "Indicators"
    #
@@ -57,7 +59,8 @@ get_Indicators <- function(myTopic=NULL,
    #     myRegion = country geographical region [vector of strings]
    #     myCounties = country names, it could be also a string
    #                  from the list above [vector of strings]
-   #     
+   #     clear_name = TRUE if you don't want the unit of measure in the 
+   #                  indicator names, FALSE otherwise (FALSE dafault)
    #
    #
    #OUTPUT:
@@ -77,7 +80,12 @@ get_Indicators <- function(myTopic=NULL,
    library(dplyr)
    
    ####### extract the indicators ###########
-
+   if(!is.null(myInd.Name)){# IndicatorName is an activated criteria
+      if(!all(myInd.Name %in% Indicators$IndicatorName))
+         stop("ERROR: at least one Indicator name in input is not present in the dataframe")
+      Indicators <- Indicators %>%
+         filter(IndicatorName %in% myInd.Name)
+   }
    
    if(!is.null(myTopic)){ # Topic is an activated criteria
       my.idx.code <-Series %>% filter(Topic %in% myTopic) 
@@ -85,11 +93,16 @@ get_Indicators <- function(myTopic=NULL,
          filter(IndicatorCode %in% my.idx.code$SeriesCode)
    }
    else{
-      stop("ERROR: you must select a topic")
+      # if there's no Topic in input, warn the user that Indicators
+      # are selected from all the Topics
+      warning("WARNING:no Topic has been specified, I selected them all")
       
    }
    
+   
    if(!is.null(myYear)){ # Year is an activated criteria
+      if(!all(myYear %in% Indicators$Year))
+         stop("ERROR: at least one year is not present in the dataframe")
       Indicators <- Indicators %>%
          filter(Year %in% myYear)
    }
@@ -125,17 +138,35 @@ get_Indicators <- function(myTopic=NULL,
    
    ######## indicators from observation to variables  ############
    
-   # there might be problem with the casting, still thinking about it
+   # for each (CountryCode,Year) let IndicatorName be a variable (column)
    Indicators <- dcast(Indicators,formula = CountryCode + Year ~ IndicatorName,
                         value.var = "Value")
    
-   # rename each row with its country name
-   #row.names(Indicators.) <- Indicators.$CountryCode
-   # this line works just when myYear is a scalar.
-   # not a big problem, leave it like that for know
+   # clear unit of measure from indicator name
+   if(clear_name){
+      names(Indicators) <- gsub("\\(.*$", "", names(Indicators))
+      
+   }
+   
+   
    
    return(Indicators)
    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
