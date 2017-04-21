@@ -34,3 +34,13 @@ vignettes/*.pdf
 
 # file .csv
 *.csv
+
+# Temporary LaTeX files
+
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
