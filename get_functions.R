@@ -59,22 +59,24 @@ get_Indicators <- function(myTopic=NULL,
    #     myRegion = country geographical region [vector of strings]
    #     myCounties = country names, it could be also a string
    #                  from the list above [vector of strings]
+   #     myAggregate = aggregated states from the list above [vector of string]             
    #     clear_name = TRUE if you don't want the unit of measure in the 
    #                  indicator names, FALSE otherwise (FALSE dafault)
+   #     ind = "Indicator" dataframe
+   #     count = "Country" dataframe    
+   #     ser = "Series" dataframe         
    #
    #
    #OUTPUT:
-   #     Indicators = filtered and casted dataframe
+   #     Indicators = final dataframe ready for the analysis.
+   #                  row : Country name
+   #                  colums : indicator names
+   #                  example:
+   #                           GDP   population    growth
+   #                  italy    18    75485         7
+   #                  france   17    12545         6
+   #                  germany  35    652148        8
    #
-   #N.B. 1) before calling the function make sure the dataframes "Indicators",
-   #     "Series" and "Country" have been imported. Make also sure the names match.
-   #     However, if you don't want to use the dafault name for your dataframe,
-   #     pass them as argument to the function
-   #     2) we can't have argument x = x, hence the dot(.) 
-   #        http://stackoverflow.com/questions/4357101/promise-already-under-evaluation-recursive-default-argument-reference-or-earlie
-   #     3) you can avoid the order of the input arguments if you specify the label
-   #        for example call the function in this way:
-   #        q <- get_Indicators(myYear = myYear,myTopic = myTopic)
    
    library(reshape2)
    library(dplyr)
@@ -147,9 +149,7 @@ get_Indicators <- function(myTopic=NULL,
       names(Indicators) <- gsub("\\(.*$", "", names(Indicators))
       
    }
-   
-   
-   
+
    return(Indicators)
    
 }
