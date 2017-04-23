@@ -4,8 +4,8 @@ library(readr)
 
 # Update these to plot different indicators
 # indicatorName <- "Life expectancy at birth, total (years)"
-indicatorName <- "GDP per capita (current US$)"
-indicatorYear <- 2013
+indicatorName <- "Population ages 65 and above (% of total)"
+indicatorYear <- 2010
 
 # read the dataframe indicators
 # indicators <- read_csv("/home/andrea/StatApp/StatApp_test/Indicators.csv")
@@ -52,4 +52,4 @@ p <- ggplot(map.world) +
   ggtitle(paste0(indicatorName, " in ", indicatorYear))
    
 
-ggsave("GDP.png", p, width=7, height=4, units="in")
+ggsave("ageing.png", p, width=7, height=4, units="in")
