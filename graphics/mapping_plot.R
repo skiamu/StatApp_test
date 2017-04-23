@@ -45,4 +45,4 @@ p <- ggplot(map.world) +
         legend.position="bottom") +
   ggtitle(paste0(indicatorName, " in ", indicatorYear))
 
-# ggsave("map.png", p, width=7, height=4, units="in")
+ggsave("map.png", p, width=7, height=4, units="in")
