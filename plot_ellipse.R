@@ -1,7 +1,21 @@
-
+# this function draw an ellipse:
+#1) sample = TRUE --> it means that matrix Sigma is the sample variance. In this case
+#                     the elliptic reagion is a confidence reagion for the mean vector
+#2) sample = FALSE --> it means that matrix Sigma is the variance matrix of
+#                      a normal bivariate population. In this case the elliptic
+#                      reagion is a probability reagion @ level 1-alpha 
 plot_ellipse <- function (mu, Sigma, alpha = 0.05, sample = T,n = NULL){
+   # INPUT:
+   #      mu = mean vector (2-D)
+   #      Sigma = 2x2 positive def matrix
+   #      alpha = 
+   #      sample = T if Sigma is the sample varianze  F if it's the population's
+   #               variance
+   #      n = sample cardinality (numerosità campionaria)
+   # OUTPUT: none
    
-   library(car)
+   library(car) 
+   # Sigma must be 2x2
    if(all(dim(Sigma) != c(2,2))){
       stop("dimensioni matrice errate per plot 2-D")
    }
