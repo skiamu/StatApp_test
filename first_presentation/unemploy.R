@@ -41,6 +41,6 @@ p <- ggplot(map.world) +
    labs(title="Unemployment Rates (2013)",x="Longitude",y="Latitude")+
    theme(legend.position="bottom")
 
-ggsave("unemploy.png", p, width=7, height=4, units="in")
+ggsave("unemploy.png", p, width=7, height=4.2, units="in")
 
 
