@@ -1,0 +1,62 @@
+############ comandi base git ##############à
+
+legenda: i comnadi tra tonde sono da intendersi opzionali
+         ad esempio: git pull (origin master)
+         origin master potrebbe anke non mettersi (credo)
+
+# 1) clonare una repository da github
+
+1.1) da Github copiare l'indirizzo della repository 
+1.2) git clone "indirizzo della repository"
+
+# 2) aggiornare locale con remoto (da fare sempre prima di cominciare a lavorare)
+
+2.1) git pull (origin master)
+
+# 3) inizio a lavorare su un file (direttamente in cartella StatApp_test) oppure
+     altrove e quando finisco decido di caricare
+     
+3.1) git add (nome_del_file) {oppure git add . per caricarli tutti}
+
+# ora i file sono nella stage area, ossia git è a conoscenza della loro esistenza.
+# Facciamo il commit 
+
+3.2) git commit (nome file) -m "messaggio del commit"
+
+# ad esempio: git commit first_PCA.R -m "added first PCA"
+
+# 4) caricare su repo remota (Github)
+
+# fino ad ora tutto è stato fatto in locale, ora si vuole comunicare agli altri
+# prima faccio pull perche magari nel frattempo qualche file è cambiato, se è
+# cambiato proprio il file su cui stavo lavorando son cazzi, si deve risolvere il conflitto,
+# speriamo non accada.
+
+4.1) git pull
+     git push origin master
+     
+#########################################################################
+
+# 5) branching: area dove poter cambiare il codice per esperimenti
+
+5.1) git branch (nome_nuovo_branch)
+
+# supponendo nome_nuovo_branch = experimental, voglio ora cambiare branch per
+# cominciare l'esperimento
+
+5.2) git checkout experimental
+
+# voglio tornare al master (probabile che si lamenti ecc ecc, risolvere da stackoverflow)
+     git checkout master
+
+
+
+
+
+
+
+
+
+
+
+
