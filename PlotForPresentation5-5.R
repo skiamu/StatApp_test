@@ -18,7 +18,8 @@
 #   8) [optional] expand over the years
 
 # 00 - preliminars ----
-setwd("C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc")
+#setwd("C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc")
+setwd("/Users/mowythebest/Desktop/Ingegneria_matematica/5.2_Applied_Statistics/StatApp_test")
 library(dplyr)      # %>%
 library(reshape2)   # dcast
 library(ggplot2)    # ggplot
@@ -26,10 +27,11 @@ library(data.table) # setnames
 library("ggthemes") # theme_economist() https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html
 library(extrafont)  # for Officiana font
 # user-defined funtions
-source('filtering_functions.R')
+#source('filtering_functions.R')
 source('HowManyNA_functions.R')
 source("read_data.R") # some problems with dplyr and plyr
-
+read_data('/Users/mowythebest/Desktop/Ingegneria_matematica/5.2_Applied_Statistics/StatApp_test')
+load('data.RData')
 
 # 01 - Number of indicators per Year ----
 detach(package:plyr)    # otherwise the group_by gives problems
@@ -87,7 +89,7 @@ ggsave("plot0001.png",IndPerYear, width=10, height=5)
 temp <- Indicators %>% 
   filter(CountryName %in% c('Afghanistan','San Marino','USA')) %>% 
   group_by(CountryName,Year) %>% summarise(numIND = length(IndicatorCode))
-View(temp)
+#View(temp)
 numDistInd <- Indicators %>% select(IndicatorCode) %>% n_distinct() #unique() %>% length() #dim() %>% [1]
 
 IndCNT <- ggplot(temp, aes(x=Year, y=numIND, colour=CountryName, group=CountryName)) +
@@ -106,5 +108,24 @@ x11(); IndCNT
 ggsave("plot0002.png",IndCNT, width=10, height=5)
 
 
+# 03 - Number of indicator per each supertopic ----
+temp <- Series %>% select(Topic,IndicatorName) 
+temp$SuperTopic <- gsub("\\:.*$", "",temp$Topic)
+temp <- temp %>% 
+  group_by(SuperTopic) %>%
+  summarise(numInd = length(unique(IndicatorName)))
+head(temp)
 
+histSuper <- ggplot(temp, aes(x = SuperTopic, y = numInd)) +
+  theme_economist(base_size = 11, base_family = "Verdana",
+                  horizontal = TRUE) +
+  geom_bar(stat = "identity", fill='steelblue') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = '', y = 'number of indicators',
+       title = 'Number of indicators for each supertopic',
+       subtitle = 'Prevalence of economic indicators: our field of analysis',
+       caption = 'The supertopic is not present in the raw dataset but comes naturally from the topic. \n (e.g. topic = Infrastructure: Transportation, supertopic = Infrastructure)')
+x11(); histSuper # The dimensions should be nice in the image saved, not in this plot
+# save the image
+ggsave("plot0003.png",histSuper, width=10, height=5)
 # 
