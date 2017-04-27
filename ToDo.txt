@@ -35,10 +35,10 @@ next meetings scheduled : 11/04 h:8.30
 # Silde 15 (): [Leo] Our approach 5 select manually the ind
 # --- from now on only if in the presentation we will have time
 # Silde 16 (): [Leo] Our approach 6 evaluate fullness
-# Silde 17 (): [Leo] Our approach 6 consider remaining anomalies
-# Silde 18 (): [Leo] Our approach 6 missing values
-# Silde 19 (): [Leo] Our approach 6 expand over years
-# Silde 20 (): [Leo] Our approach 6 further studies
+# Silde 17 (): [Leo] Our approach 7 consider remaining anomalies
+# Silde 18 (): [Leo] Our approach 8 missing values
+# Silde 19 (): [Leo] Our approach 9 expand over years
+# Silde 20 (): [Leo] further studies
 
 
 ToDo: 
