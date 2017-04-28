@@ -1,30 +1,41 @@
-\documentclass{beamer}
+\documentclass[10pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[russian]{babel}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{pifont}
 \usecolortheme{orchid}
-\title[World development indicators]{\Huge{World development indicators}}
+\renewcommand{\familydefault}{verdana}
+\setbeamerfont{block title}{size=\normalsize}
+\title[World development indicators]{\huge World development indicators}
+\subtitle[Which country will develop more]{\large Which country will develop more}
 \author[Moawad, Commandi, Isaeva, Schiavon, Snesarevskii] {{\Large Group 12:\\}Stefano Moawad\\Leonardo Comandini\\Diana Isaeva\\Andrea Schiavon\\Viktor Snesarevskii}
 \date{April-May 2017}
 \usebackgroundtemplate{\tikz\node[opacity=0.3] {\vbox to \paperheight{\vfil\includegraphics[width=\paperwidth]{map}\vfil}};}
 
 \begin{document}
-\frame{\titlepage}
+\begin{frame}
+\titlepage
+\vfill
+\begin{flushright}
+\includegraphics[height=.7cm]{kaggle.png}\quad
+\includegraphics[height=.7cm]{worldbank.jpg}
+\end{flushright}
+\end{frame}
 
 % snapshot raw dataset
 \begin{frame}{Raw dataset}
-\begin{block}{Indicators}
+\begin{block}{Indicators (6 columns)}
 \scriptsize
 \begin{tabular}{*{6}{l}}
 Country name &
 \only<1-1>{Country code}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=red]{Country code};}& 
-Indicator name & Indicator code & Year & 
+\!\! Indicator name & \!\! Indicator code & Year & 
 \only<1-1>{Value}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=cyan]{Value};}
 \end{tabular}
 \end{block}
-\begin{block}{Country}
+\begin{block}{Country (31 columns)}
 \scriptsize
 \begin{tabular}{*{5}{l}}
 \only<1-1>{Country code}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=red]{Country code};}& 
@@ -35,7 +46,7 @@ Indice group & \textbf{etc...}
 \end{tabular}
 \end{block}
 
-\begin{block}{Country notes}
+\begin{block}{Country notes (3 columns)}
 \scriptsize
 \begin{tabular}{*{5}{l}}
 \only<1-1>{Country code}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=red]{Country code};}&
@@ -43,16 +54,16 @@ Indice group & \textbf{etc...}
 Description
 \end{tabular}
 \end{block}
-\begin{block}{Series}
+\begin{block}{Series (20 columns)}
 \scriptsize
-\begin{tabular}{*{5}{l}}
+\begin{tabular}{*{4}{l}}
 \only<1-1>{Series code}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=blue]{Series code};}&
-Topic & Indicator name\!\! & Short definition\!\! & Long definition \\[.15cm]
+Topic & Indicator name\!\! & Short definition \\[.15cm] Long definition & 
 \only<1-1>{Unit of measure}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=orange]{Unit of measure};}&
-Periodicity & Base period & Other notes & \textbf{etc...}
+Periodicity  & \textbf{etc...}
 \end{tabular}
 \end{block}
-\begin{block}{Series notes}
+\begin{block}{Series notes (3 columns)}
 \scriptsize
 \begin{tabular}{*{5}{l}}
 \only<1-1>{Series code}\only<2->{\!\!\tikz[baseline]\node[anchor=base,draw=blue]{Series code};}&
@@ -62,10 +73,10 @@ Description
 \end{block}
 \end{frame}
 
-\begin{frame}{examples of indicators}
+\begin{frame}{Examples of indicators}
 	\begin{figure}
 		\centering
-		\includegraphics [width=11cm]{indicators.png}
+		\includegraphics [width=\textwidth]{indicators.png}
 		
 	\end{figure}
 \end{frame}
@@ -74,109 +85,105 @@ Description
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{tables_2.png}
+		\includegraphics[width=\textwidth]{tables_2.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	Looking at \textit{Indicators} as a 3D matrix lead to some problems
+	Looking at \textit{Indicators} as a 3D matrix leads to some problems
 	\begin{itemize}
-		\item YEARS -> not homogeneous
-		\item COUNTRIES -> small ones
-		\item INDICATORS -> too many to choose easily
+		\item YEARS \ding{221} not homogeneous
+		\item COUNTRIES \ding{221} small ones
+		\item INDICATORS \ding{221} too many to choose easily
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0001.png}
+		\includegraphics[width=\textwidth]{plot0001.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0002.png}
+		\includegraphics[width=\textwidth]{plot0002.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0003.png}
+		\includegraphics[width=\textwidth]{plot0003.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0004.png}
+		\includegraphics[width=\textwidth]{plot0004.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{center}
-		An intermediate goal: 
-		\\
-		\\
-		extract a full matrix with meaningful indicators to perform PCA
+		{\Large An intermediate goal:} \\[.2cm]
+		Extract a full matrix with meaningful indicators to perform PCA
 	\end{center}
 \end{frame}
 
 \begin{frame}
 	\begin{center}
-		Fix the best year: 
-		\\
-		\\
-		2010
+		{\Large Fix the best year: \\[.3cm]
+		2010}
 	\end{center}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0005.png}
+		\includegraphics[width=\textwidth]{plot0005.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0006.png}
+		\includegraphics[width=\textwidth]{plot0006.png}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{plot0007.png}
+		\includegraphics[width=\textwidth]{plot0007.png}
 	\end{figure}
 \end{frame}
 
 
 % some examples of our indicators
-\begin{frame}{example 1}
+\begin{frame}{Example 1}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{GDP.png}
+		\includegraphics[width=\textwidth]{GDP.png}
 		\caption[GDP per capita, 2013]{GDP per capita, 2013}
 	\end{figure}
 		
 \end{frame}
-\begin{frame}{example 2}
+\begin{frame}{Example 2}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{ageing.png}
-		\caption[population over 65]{population over 65}
+		\includegraphics[width=1\textwidth]{ageing.png}
+		\caption[Population aged over 65]{Population aged over 65}
 	\end{figure}
 \end{frame}
 
-\begin{frame}{example 3}
+\begin{frame}{Example 3}
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{unemploy.png}
-		\caption[world unemplyment]{world unemplyment}
+		\includegraphics[width=\textwidth]{unemploy.png}
+		\caption[World unemployment]{World unemployment}
 	\end{figure}
 \end{frame}
 
