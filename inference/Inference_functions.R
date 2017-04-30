@@ -20,7 +20,8 @@ ConfidenceRegion <- function(X = NULL,
                              alpha = 0.05,
                              k = NULL,
                              to.do = NULL,
-                             A = NULL
+                             A = NULL,
+                             plot = FALSE
 ){
    # INPUT:
    #      X = dataframe 
@@ -28,7 +29,6 @@ ConfidenceRegion <- function(X = NULL,
    # OUTPUT:
    # 
    
-   load("mcshapiro.test.RData")
    # if not given as input, compute sample mean and sample covariance
    if(is.null(X_bar))
       X_bar <- colMeans(X)
@@ -38,16 +38,15 @@ ConfidenceRegion <- function(X = NULL,
    n <- dim(X)[1]  
    # population dimension
    p <- dim(X)[2]
+   # range dataframe value, it's a global variable
+   Range <<- range(X)
    
    if(!large_n){# n is small, relay on Gaussian hp
-      # check for gaussianity
-      mctest <- mcshapiro.test(X)
-      if(mctest$pvalue < alpha)
-         warning("WARNING: gaussian hp not supported by data, shapiro p-value = ",mctest$pvalue,"\n")
-      else
-         cat("You are assuming gaussianity, there's no evidence to say the contrary, shapiro p-value = ",mctest$pvalue,"\n")
       
-      # if A, the matrix of the directions, is not specified; by default let's
+      # check if the gaussian hp is supported by data (function defined below)
+      check_gaussianity(X, alpha)
+      
+      # if A, the matrix of the directions for sim conf intervals, is not specified; by default let's
       # compute the interval for the mean components
       if(is.null(A)){
          A <- diag(p)
@@ -63,17 +62,19 @@ ConfidenceRegion <- function(X = NULL,
              },
              sim_CI = {# case "simulatneous confidence interval"
                 
-                # IC is a matrix dim(A)[1]x2, each row is a CI
-                IC <- simult_CI(X_bar, S, alpha, A, n)
+                # IC is a matrix dim(A)[1]x2, each row is a CI (function defined below)
+                IC <- simult_CI(X_bar, S, alpha, A, n, plot = plot)
                 # print the results
+                print("--------------------")
                 cat("Simultaneus confidence interval @ level alpha = ",alpha,"\n")
                 print(IC)
              },
              Bonf_CI = {# case "Bonferroni confidence interval"
                 
                 # IC is a matrix dim(A)[1]x2, each row is a CI
-                IC <- simult_CI(X_bar, S, alpha, A, n, Bonf = T)
+                IC <- simult_CI(X_bar, S, alpha, A, n, Bonf = T, plot = plot)
                 # print the results
+                print("--------------------")
                 cat("Bonferroni confidence interval @ level alpha = ",alpha,"\n")
                 print(IC)
                 
@@ -90,12 +91,12 @@ ConfidenceRegion <- function(X = NULL,
       
    }
    
-   
+   return(IC)
    
 } # end function mean_inference
 
 # compute simultaneous confidence interval for linear combnations of mu
-simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE){
+simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
    # INPUT:
    #       X_bar = sample mean
    #       S = sample covariance
@@ -103,6 +104,7 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE){
    #       A = matrix whose COLUMNS ARE the direction for the linear comb
    #       n = sample cardinality
    #       Bonf = if TRUE Bonferroni interval otherwise F intervals
+   #       plot = if TRUE plots the simultanueous intervals
    # OUTPUT:
    #       IC = matrix whose row are confidence intervals
    #  
@@ -124,10 +126,45 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE){
       IC[i,2] <- t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi
       
    }
+   
+   # plot the intervals
+   if(plot)
+      
+      plot_intervals(IC, X_bar, k)
+      
    return(IC)
+   
 }# end simult_CI
 
+plot_intervals <- function(IC, X_bar, k){
+   #
+   # INPUT :
+   #        IC = confidence intervals matrix
+   #        X_bar = vectof of sample means
+   #        k = number of confidence intervals
+   #   
+   
+        
+   # open graphic device
+   x11()
+   # plot just the framework so as to use "segments" and "points"
+   matplot(1:k, 1:k, pch='', ylim = Range, xlab='Variables',ylab='T2 for a component', 
+           main='Simultaneous T2 conf. int. for the components')
+   for(i in 1:k) segments(i,IC[i,1],i,IC[i,2],lwd=3,col=i)
+   # add sample means
+   points(1:k, X_bar, pch=16, col=1:k)
+   
+} # end function plot_intervals
 
-
-
+check_gaussianity <- function(X, alpha){
+   
+   load("mcshapiro.test.RData")
+   # check for gaussianity
+   mctest <- mcshapiro.test(X)
+   if(mctest$pvalue < alpha)
+      warning("WARNING: gaussian hp not supported by data, shapiro p-value = ",mctest$pvalue,"\n")
+   else
+      cat("You are assuming gaussianity, there's no evidence to say the contrary, shapiro p-value = ",mctest$pvalue,"\n")
+   
+}
 
