@@ -12,7 +12,6 @@
 #             "sim_CI" = F simulataneous conf intervals
 #             "sim_Bonf" = Bonferroni simultaneous conf intervals
 #  
-
 ConfidenceRegion <- function(X = NULL,
                              large_n = F,
                              S = NULL,
@@ -21,8 +20,7 @@ ConfidenceRegion <- function(X = NULL,
                              k = NULL,
                              to.do = NULL,
                              A = NULL,
-                             plot = TRUE
-){
+                             plot = TRUE){
    # INPUT:
    #      X = dataframe 
    #      large_n = if TRUE asymptotic analysis, otherwihe gaussian hp
@@ -43,38 +41,28 @@ ConfidenceRegion <- function(X = NULL,
    # 
    
    # if not given as input, compute sample mean and sample covariance
-   if(is.null(X_bar))
-      X_bar <- colMeans(X)
-   if(is.null(S))
-      S <- cov(X)
-   # sample cardinality
-   n <- dim(X)[1]  
-   # population dimension
-   p <- dim(X)[2]
+   if(is.null(X_bar))  X_bar <- colMeans(X)
+   if(is.null(S))  S <- cov(X)
+   # sample cardinality        # population dimension
+   n <- dim(X)[1];             p <- dim(X)[2]
    # range dataframe value, it's a global variable
    Range <<- range(X)
    
    if(!large_n){# n is small, relay on Gaussian hp
-      
       # check if the gaussian hp is supported by data (function defined below)
       check_gaussianity(X, alpha)
-      
       # if A, the matrix of the directions for sim conf intervals, is not specified; by default let's
       # compute the interval for the mean components
-      if(is.null(A)){
-         A <- diag(p)
-      }
+      if(is.null(A))  A <- diag(p)
+      
       # let's start inference analysis
       switch(to.do,
              CR = {# case  "confidence region for the mean"
-                
                 source("plot_ellipse.R")
                 # plot the confidence region @ level 1-alpha for the mean
                 plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n)
-                
              },
              sim_CI = {# case "simulatneous confidence interval"
-                
                 # IC is a matrix dim(A)[1]x2, each row is a CI (function defined below)
                 IC <- simult_CI(X_bar, S, alpha, A, n, plot = plot)
                 # print the results
@@ -92,7 +80,6 @@ ConfidenceRegion <- function(X = NULL,
                 cat("Bonferroni confidence interval @ level alpha = ",alpha,"\n")
                 print(IC)
                 return(IC)
-                
              },
              {
                 print("default on switch \n")
@@ -103,7 +90,6 @@ ConfidenceRegion <- function(X = NULL,
       source("plot_ellipse.R")
       # plot the confidence region @ level 1-alpha for the mean
       plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n,large_n = T)
-      
    }
 } # end function mean_inference
 
@@ -122,10 +108,8 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
    #  
    
    if(!(length(X_bar) == dim(A)[1])) stop("dimension of matrix A disagrees")
-   # population dimension 
-   p <- dim(S)[1]  
-   # number of simultaneous interval
-   k <- dim(A)[2]
+   # population dimension     # number of simultaneous interval
+   p <- dim(S)[1];            k <- dim(A)[2]
    # initialization: IC will contain the simulataneous intervals
    IC <- matrix(nrow = k, ncol = 2)
    # coefficient that appears in the IC formula, it depends on Bonf or F
@@ -136,9 +120,8 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
       IC[i,1] <- t(a)%*% X_bar - sqrt(t(a)%*%S%*%a / n) * csi
       IC[i,2] <- t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi
    }
-   
    # plot the intervals
-   if(plot) plot_intervals(IC, X_bar, k)
+   if(plot)  plot_intervals(IC, X_bar, k)
       
    return(IC)
    
@@ -174,6 +157,5 @@ check_gaussianity <- function(X, alpha){
       warning("WARNING: gaussian hp not supported by data, shapiro p-value = ",mctest$pvalue,"\n")
    else
       cat("You are assuming gaussianity, there's no evidence to say the contrary, shapiro p-value = ",mctest$pvalue,"\n")
-   
-}
+}# end function "check_gaussianity"
 
