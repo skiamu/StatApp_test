@@ -21,12 +21,25 @@ ConfidenceRegion <- function(X = NULL,
                              k = NULL,
                              to.do = NULL,
                              A = NULL,
-                             plot = FALSE
+                             plot = TRUE
 ){
    # INPUT:
    #      X = dataframe 
    #      large_n = if TRUE asymptotic analysis, otherwihe gaussian hp
+   #      S = sample covariance matrix
+   #      X_bar = sample mean vector
+   #      alpha = type 1 error
+   #      k = number of Bonferroni intrervals (maybe removable)
+   #      to.do = string for telling the function to do different things
+   #              "CR" --> confidence region @ level alpha
+   #              "sim_CI" --> F simultaneous confidence intervals
+   #              "sim_Bonf" --> Bonferroni confidence intervals
+   #      A = matrix whose columns are the vector where we want to compute
+   #          the simultaneous confidence intervals.
+   #          Example: A[,i] = e_i if you want the CI for the i-th component
+   #      plot = TRUE if you want the CI plot              
    # OUTPUT:
+   #      IC = matrix with the simultaneous conf intervals
    # 
    
    # if not given as input, compute sample mean and sample covariance
@@ -68,6 +81,7 @@ ConfidenceRegion <- function(X = NULL,
                 print("--------------------")
                 cat("Simultaneus confidence interval @ level alpha = ",alpha,"\n")
                 print(IC)
+                return(IC)
              },
              Bonf_CI = {# case "Bonferroni confidence interval"
                 
@@ -77,6 +91,7 @@ ConfidenceRegion <- function(X = NULL,
                 print("--------------------")
                 cat("Bonferroni confidence interval @ level alpha = ",alpha,"\n")
                 print(IC)
+                return(IC)
                 
              },
              {
@@ -90,9 +105,6 @@ ConfidenceRegion <- function(X = NULL,
       plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n,large_n = T)
       
    }
-   
-   return(IC)
-   
 } # end function mean_inference
 
 # compute simultaneous confidence interval for linear combnations of mu
@@ -109,8 +121,7 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
    #       IC = matrix whose row are confidence intervals
    #  
    
-   if(!(length(X_bar) == dim(A)[1]))
-      stop("dimension of matrix A disagrees")
+   if(!(length(X_bar) == dim(A)[1])) stop("dimension of matrix A disagrees")
    # population dimension 
    p <- dim(S)[1]  
    # number of simultaneous interval
@@ -124,18 +135,16 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
       a <- A[,i]
       IC[i,1] <- t(a)%*% X_bar - sqrt(t(a)%*%S%*%a / n) * csi
       IC[i,2] <- t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi
-      
    }
    
    # plot the intervals
-   if(plot)
-      
-      plot_intervals(IC, X_bar, k)
+   if(plot) plot_intervals(IC, X_bar, k)
       
    return(IC)
    
 }# end simult_CI
 
+# definition function "plot_intervals"
 plot_intervals <- function(IC, X_bar, k){
    #
    # INPUT :

@@ -1,4 +1,6 @@
-
+# function for T2 Hotelling test of the mean vector.
+# Both exact case and asyntotic one.
+# plotting rejection region
 
 T2.test <- function( X = NULL,
                      mu0,
