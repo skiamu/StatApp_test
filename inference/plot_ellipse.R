@@ -49,7 +49,7 @@ plot_ellipse <- function (mu,
    # se campionario e large_n oppure non campionario è una chi-quadro
    qnt <- myifelse(sample && !large_n, qf(1-alpha,p,n - p), qchisq(1-alpha,2))
    # raggio ellisse
-   r <- myifelse(sample,sqrt((n-1)*p/(n-p))* 
+   r <- myifelse(sample && !large_n,sqrt((n-1)*p/(n-p))* 
                     sqrt(qnt),sqrt(qnt))
    S <- myifelse(sample,Sigma/n,Sigma)
    
@@ -64,7 +64,7 @@ plot_ellipse <- function (mu,
    print("--------------------")
    cat("semiasse maggiore = ", max.semiax,"\n")
    cat("semiasse minore = ",min.semiax,"\n")
-   
+   cat("raggio = ",r,"\n")
    # ylim <- c(mu[2] - 2 * sqrt(S[2,2]), mu[2] + 2 * sqrt(S[2,2]))
    # xlim <- c(mu[1] - 2 * sqrt(S[1,1]), mu[1] + 2 * sqrt(S[1,1]))
    ylim <- c(mu[2] - max.semiax,mu[2] + max.semiax)
@@ -82,6 +82,8 @@ plot_ellipse <- function (mu,
    m = e1[2]/e1[1]
    abline(a=mu[2] - m * mu[1], b = m, lty=2, col='grey')
    abline(a=mu[2] + mu[1]/m,b=-1/m,col='grey',lty=2)
+   abline(v=mu[1],col="black")
+   abline(h=mu[2],col="black")
    
 }# end function
 
