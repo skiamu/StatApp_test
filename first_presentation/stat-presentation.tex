@@ -1,15 +1,24 @@
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{verdana} %?
+%\usepackage{verdana} %?
 \usepackage[russian]{babel}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{pifont}
 \usetheme{Warsaw}
 \usecolortheme{orchid}
+\usefonttheme{serif}
+\setbeamertemplate{frametitle}
+{
+    \begin{beamercolorbox}[sep=0.3cm,ht=2em,wd=\paperwidth]{frametitle}
+        \vbox{}\vskip-2.0ex%
+        \strut\insertframetitle\strut
+        \vskip-0.8ex%
+    \end{beamercolorbox}
+}
 
-\renewcommand{\familydefault}{verdana}
+%\renewcommand{\familydefault}{verdana}
 \setbeamerfont{block title}{size=\normalsize}
 \title[World development indicators]{\huge World development indicators}
 \subtitle[Which country will develop more]{\large Which country will develop more}
@@ -29,11 +38,11 @@
 
 \begin{frame}{Our Goals} 
 Abstract: “… individuate the best countries where to invest, w.r.t. different economical and social fields"
-\begin{itemize} [<+->] % elements appears one by one
-	\item best = ? \\
-	\item best = upcoming largest development
-	\item development = ?
-	\item Invest = ?
+\begin{itemize}  % elements appears one by one
+	\only<1-1>{\item Best = ?}
+	\only<2->{\item Best = upcoming largest development}
+	\only<3->{\item Development = ?}
+	\only<4->{\item Invest = ?}
 \end{itemize}
 \end{frame}
 
@@ -87,27 +96,30 @@ Abstract: “… individuate the best countries where to invest, w.r.t. differen
 \end{frame}
 
 \begin{frame}{Examples of indicators}
-\begin{figure}
 \centering
 \includegraphics [width=\textwidth]{indicators.png}
-
-\end{figure}
 \end{frame}
 
 
+\usebackgroundtemplate{}
 \begin{frame}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{tables_2.png}
-\end{figure}
+	\centering
+	\includegraphics[width=\textwidth]{3Dmatrix.png}
 \end{frame}
+\usebackgroundtemplate{\tikz\node[opacity=0.3] {\vbox to \paperheight{\vfil\includegraphics[width=\paperwidth]{map}\vfil}};}
+%\begin{frame}
+%\begin{figure}
+%\centering
+%\includegraphics[width=\textwidth]{tables_2.png}
+%\end{figure}
+%\end{frame}
 
 \begin{frame}
 Looking at \textit{Indicators} as a 3D matrix leads to some problems
 \begin{itemize} [<+->]
-\item YEARS \ding{221} not homogeneous
-\item COUNTRIES \ding{221} small ones
-\item INDICATORS \ding{221} too varied to choose easily
+\item \textbf{Years} \ding{221} not homogeneous
+\item \textbf{Countries} \ding{221} small ones
+\item \textbf{Indicators} \ding{221} too varied to choose easily
 \end{itemize}
 \end{frame}
 
@@ -137,14 +149,6 @@ Looking at \textit{Indicators} as a 3D matrix leads to some problems
 \centering
 \includegraphics[width=\textwidth]{plot0004.png}
 \end{figure}
-\end{frame}
-
-\begin{frame}{}
-	\begin{figure}
-		\centering
-		\includegraphics[width=11cm]{3Dmatrix.png}
-		
-	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -184,12 +188,12 @@ Extract a full matrix with meaningful indicators to perform PCA
 \end{frame}
 
 \begin{frame}
-Next steps:
+{Next steps:}
 \begin{itemize} [<+->]
-	\item[1.] evaluate the fullness of the matrix
-	\item[2.] if problematic countries or indicators are still present, consider shrinking them
-	\item[3.] fill the \textit{real} missing data (via interpolation, value at the previous year or manually from the source)
-	\item[4.] expand the shrunk matrix over years 
+	\item[4.] Evaluate the fullness of the matrix
+	\item[5.] If problematic countries or indicators are still present, consider shrinking them
+	\item[6.] Fill the \textit{real} missing data (via interpolation, value at the previous year or manually from the source)
+	\item[7.] Expand the shrunk matrix over years 
 \end{itemize}
 \end{frame}
 
@@ -218,16 +222,5 @@ Next steps:
 \caption[World unemployment]{World unemployment}
 \end{figure}
 \end{frame}
-
-
-
-
-
-
-
-
-
-
-
 
 \end{document}
