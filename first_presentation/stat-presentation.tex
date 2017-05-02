@@ -1,6 +1,7 @@
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{verdana} %?
 \usepackage[russian]{babel}
 \usepackage{graphicx}
 \usepackage{tikz}
@@ -12,7 +13,7 @@
 \setbeamerfont{block title}{size=\normalsize}
 \title[World development indicators]{\huge World development indicators}
 \subtitle[Which country will develop more]{\large Which country will develop more}
-\author[Moawad, Commandi, Isaeva, Schiavon, Snesarevskii] {{\Large Group 12:\\}Stefano Moawad\\Leonardo Comandini\\Diana Isaeva\\Andrea Schiavon\\Viktor Snesarevskii}
+\author[Moawad, Comandini, Isaeva, Schiavon, Snesarevskii] {{\Large Group 12:\\}Stefano Moawad\\Leonardo Comandini\\Diana Isaeva\\Andrea Schiavon\\Viktor Snesarevskii}
 \date{April-May 2017}
 \usebackgroundtemplate{\tikz\node[opacity=0.3] {\vbox to \paperheight{\vfil\includegraphics[width=\paperwidth]{map}\vfil}};}
 
@@ -28,7 +29,7 @@
 
 \begin{frame}{Our Goals} 
 Abstract: “… individuate the best countries where to invest, w.r.t. different economical and social fields"
-\begin{itemize} [<+->]%Appare un elemento per volta.
+\begin{itemize} [<+->] % elements appears one by one
 	\item best = ? \\
 	\item best = upcoming largest development
 	\item development = ?
@@ -103,10 +104,10 @@ Abstract: “… individuate the best countries where to invest, w.r.t. differen
 
 \begin{frame}
 Looking at \textit{Indicators} as a 3D matrix leads to some problems
-\begin{itemize}
+\begin{itemize} [<+->]
 \item YEARS \ding{221} not homogeneous
 \item COUNTRIES \ding{221} small ones
-\item INDICATORS \ding{221} too many to choose easily
+\item INDICATORS \ding{221} too varied to choose easily
 \end{itemize}
 \end{frame}
 
@@ -145,11 +146,12 @@ Extract a full matrix with meaningful indicators to perform PCA
 \end{center}
 \end{frame}
 
+
 \begin{frame}
-\begin{center}
-{\Large Fix the best year: \\[.3cm]
-2010}
-\end{center}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{fix2010.png}
+\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -171,6 +173,16 @@ Extract a full matrix with meaningful indicators to perform PCA
 \centering
 \includegraphics[width=\textwidth]{plot0007.png}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+Next steps:
+\begin{itemize} [<+->]
+	\item[1.] evaluate the fullness of the matrix
+	\item[2.] if problematic countries or indicators are still present, consider shrinking them
+	\item[3.] fill the \textit{real} missing data (via interpolation, value at the previous year or manually from the source)
+	\item[4.] expand the shrunk matrix over years 
+\end{itemize}
 \end{frame}
 
 

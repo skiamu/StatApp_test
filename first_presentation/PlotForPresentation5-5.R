@@ -18,7 +18,7 @@
 #   8) [optional] expand over the years
 
 # 00 - preliminars ----
-setwd("C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc")
+setwd("C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc/first_presentation")
 #setwd("/Users/mowythebest/Desktop/Ingegneria_matematica/5.2_Applied_Statistics/StatApp_test")
 library(dplyr)      # %>%
 library(reshape2)   # dcast
@@ -65,7 +65,7 @@ IndPerYear <- ggplot(temp, aes(x=Year, y=numIND)) +
   scale_x_continuous("", breaks = c(1960, seq(1960, 2015, 10), 2015)) +
   geom_vline(xintercept = 2010,linetype = 2) +
   labs(x = 'year', y = 'number of observations',
-       title = 'Number of observations for each year',
+       title = 'Number of observations is not homogeneous',
        subtitle = 'Increasing in the years, dropping in the very last due to the difficulty to find recent data',
        caption = 'For each year, an indicator is counted multiple times if present for multiple countries')
 # plot
@@ -104,7 +104,7 @@ IndCNT <- ggplot(temp, aes(x=Year, y=numIND, colour=CountryName, group=CountryNa
   geom_segment(aes(x=1960, xend=2015, y=numDistInd, yend=numDistInd), size=1, linetype=2, colour='Black') +
   annotate("text", x=1973, y=numDistInd-50, label="number of distinct indicators (1344)", size=4) +
   labs(x = 'year', y = 'number of indicators', colour = 'Country',
-       title = 'Number of indicators for some significative countries',
+       title = 'Three different countries behaviour',
        subtitle = 'USA are normal, San Marino is small, Afghanistan is problematic')
 # plot
 x11(); IndCNT
@@ -114,12 +114,12 @@ ggsave("plot0002.png",IndCNT, width=10, height=5)
 
 # 03 - Number of indicators per each supertopic ----
 temp <- Series %>% select(Topic,IndicatorName) 
-View(temp)
+# View(temp)
 temp$SuperTopic <- gsub("\\:.*$", "",temp$Topic)
 temp <- temp %>% 
   group_by(SuperTopic) %>%
   summarise(numInd = length(unique(IndicatorName)))
-head(temp)
+# head(temp)
 
 histSuper <- ggplot(temp, aes(x = SuperTopic, y = numInd)) +
   theme_economist(base_size = 11, base_family = "Verdana",
@@ -128,7 +128,7 @@ histSuper <- ggplot(temp, aes(x = SuperTopic, y = numInd)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = '', y = 'number of indicators',
        title = 'Number of indicators for each supertopic',
-       subtitle = 'Prevalence of economic indicators: our field of analysis',
+       subtitle = 'Prevalence of economic indicators: great for our analysis',
        caption = 'The supertopic is not present in the raw dataset but comes naturally from the topic. \n (e.g. topic = Infrastructure: Transportation, supertopic = Infrastructure)')
 x11(); histSuper # The dimensions should be nice in the image saved, not in this plot
 # save the image
@@ -149,6 +149,14 @@ ggsave("plot0004.png",histSuperArrow, width=10, height=5)
 # 04 - Fix the best year: 2010 ----
 FixedYear <- 2010 
 df04 <- Indicators %>% filter(Year == FixedYear)        # only the obs of FixedYear
+
+FixYear <- IndPerYear + labs(title = '1. Fix the best year: 2010',
+                             subtitle = 'Put aside the year dipendency for simplicity', 
+                             caption = '')
+# plot
+x11(); FixYear
+# save the image
+ggsave("fix2010.png",FixYear, width=10, height=5)
 
 # 05 - Number of missing indicators per countries ----
 df05 <- df04 %>% FIlter_Countries_Region(Country,'')    # out the aggregate conutries
@@ -179,7 +187,7 @@ p_cnt05 <- ggplot(cnt05, aes(x = reorder(CountryName, +numInd), y = numInd)) +
                       colour=factor(numInd>Tind))) + 
   scale_colour_manual(values=c("Red", "Dark Green")) +
   labs(x = 'countries', y = 'number of indicators',
-       title = 'Which countries have too few indicators?',
+       title = '2. Shrink the countries with too few indicators',
        subtitle = 'Threshold set at 400 indicators, in red the countries out, in green the countries in',
        caption = 'The threshold was set in order not to exclude the first significative country: Libya') + 
   guides(colour=FALSE)
@@ -214,9 +222,9 @@ p_ind06 <- ggplot(ind06, aes(x = reorder(IndicatorName, +numCnt), y=numCnt))+
   geom_hline(yintercept=numDistCnt06) + 
   geom_bar(position="dodge", stat='identity', fill='steelblue') + 
   theme_economist(base_size = 11, base_family = "Verdana",horizontal = FALSE) +
-  scale_y_continuous(limits=c(183,187),oob=rescale_none) +
+  scale_y_continuous(limits=c(184,187),oob=rescale_none) +
   labs(x = 'indicators', y = 'number of countries',
-       title = 'The fullest indicators',
+       title = '3. Select the indicators among the fullest',
        subtitle = 'Look at the indicators manually and select the most significative',
        caption = 'At this point the countries remaining are 187') + 
   coord_flip() 
