@@ -18,9 +18,9 @@ df[c('Year','NAT')]
 df[2:3]
 
 # Access rows
-df[1,]
-df[1:2,]
-df[c(1,3),]
+#df[1,]
+#df[1:2,]
+#df[c(1,3),]
 
 # Access subtables
 df[1:2,c('NAT','Year')]

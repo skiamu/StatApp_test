@@ -4,7 +4,7 @@
 # Mowy
 
 # 01 ------- Set working directory (set yours) and import libraries (check you installed them) #####
-setwd('/Users/mowythebest/Desktop/Ingegneria matematica/5.2 Applied Statistics/world-development-indicators')
+setwd('/home/diana/world-development-indicators')
 library(dplyr)    # %>%
 library(reshape2) # dcast
 library(ggplot2)  # ggplot
@@ -14,7 +14,7 @@ library(data.table) # setnames
 ind <- read.csv('Indicators.csv')
 country <- read.csv('Country.csv')
 country_notes <- read.csv('CountryNotes.csv')
-foot_notes <- read.csv('CountryNotes.csv')
+foot_notes <- read.csv('FootNotes.csv')
 ser <- read.csv('Series.csv')
 ser_notes <- read.csv('SeriesNotes.csv')
 

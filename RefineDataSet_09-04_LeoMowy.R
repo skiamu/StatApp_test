@@ -46,7 +46,7 @@ MI <- YI %>%
 # Fix a threshold for the minimum mean number of indicators that we accept every year
 T1 <- 200
 
-# Plot                                         ***FIND NICER COLOURS***
+# Plot    so                                     ***FIND NICER COLOURS***
 #  scale_colour_manual(values = rep(brewer.pal(5,"Set1")), times=1) +
 Plot_Indicators_w_Mean <- ggplot() +
   geom_line(data = YI, aes(x = Year, y = NumIND, colour = CountryCode), show.legend = FALSE) +
