@@ -4,9 +4,42 @@ meeting 06/04/2017 :
 1) set following meeting dates
 2) git subscriptions 
 
+meeting 27/04/2017
+1) discussed about the graphs for presentation
+2) things left to do: 2.1) modify slide "ind 3-D"
 next meetings scheduled : 11/04 h:8.30
                           21/04 h:8.30
                           27/04 h:8.30
+
+
+# ---- ToDoList for the Presentation 5-5
+#
+# General: [victor ?] change font to 'Verdana' (Economist-like)
+# Slide 1 (title): [victor ?] add kaggle and world bank logo. add subtitle (which country will develop more)
+# Slide 2 (goals): [mowy] ...
+# Slide 3 (raw dataset): [victor ?] add dimension of the tables
+# Slide 4 (links): OK
+# Slide 5 (Indicators): OK 
+# Slide 6 (Indicators as 3d matrix): [diana ?] show table with countries as rows and indicators as col (via 'dcast' or by hand),
+#                                              show 3 layer 'like a pile seen from above',
+#                                              indicate somehow the years (with arrows ?)
+#                                              other ideas are welcome
+# Silde 7 (Problems): [Leo] 
+# Silde 8 (Problems, year): [Leo] plot0001
+# Silde 9 (Problems, small country): [Leo] plot0002
+# Silde 10 (Problems, too many indicators): [Leo] plot0003
+# Silde 11 (): [Leo] Our approach 1 goal
+# Silde 12 (): [Leo] Our approach 2 fix year (2010)
+# Silde 13 (): [Leo] Our approach 3 shrink countries with too many missing values
+# Silde 14 (): [Leo] Our approach 4 order the indicator by 'fullness'
+# Silde 15 (): [Leo] Our approach 5 select manually the ind
+# --- from now on only if in the presentation we will have time
+# Silde 16 (): [Leo] Our approach 6 evaluate fullness
+# Silde 17 (): [Leo] Our approach 7 consider remaining anomalies
+# Silde 18 (): [Leo] Our approach 8 missing values
+# Silde 19 (): [Leo] Our approach 9 expand over years
+# Silde 20 (): [Leo] further studies
+
 
 ToDo: 
      1) find thresholds for states, same analysis for indicators
