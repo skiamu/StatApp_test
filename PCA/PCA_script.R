@@ -1,12 +1,11 @@
 ########### PCA script #############
 path <- "/home/andrea/StatApp/StatApp_test"
-source(paste(path,"functionsFullMatrix.R",sep = "/"))
+source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 source(paste(path,"get_functions.R",sep = "/"))
-source(paste(path,"outlier.R",sep = "/"))
 source(paste(path,"outlier.R",sep = "/"))
 source(paste(path,"PCA/PCA_function.R",sep = "/"))
 source(paste(path,"clear_na.R",sep = "/"))
-load(paste(path,"data.RData",sep = "/"))
+load(paste(path,"ReadData/data.RData",sep = "/"))
 
 # show the best M Indicators
 M <- 600
@@ -16,14 +15,13 @@ df <- extract2DmatrixWithFullestIndicators(Indicators,
                                            M,
                                            viewFlag=TRUE,
                                            Tind = 400) # another name for the function?
-
 # selection Indicators i'm interested in
-myInd <- c("Methane emissions (kt of CO2 equivalent)",
-           "PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
-           "CO2 emissions (kt)",
-           "Inflation, consumer prices (annual %)",
-           "GDP per capita (constant LCU)",
-           "Unemployment, total (% of total labor force)")
+myInd <- c("Export value index (2000 = 100)",
+           #"GDP at market prices (current US$)",
+           "Import value index (2000 = 100)",
+           "GDP growth (annual %)",
+           "Merchandise trade (% of GDP)"
+           )
 # myInd <- c("Energy use (kg of oil equivalent per capita)",
 #            "Fossil fuel energy consumption (% of total)",
 #            "Electricity production from oil sources (% of total)",
@@ -42,14 +40,15 @@ q <- get_Indicators(myYear = myYear,
 
 # remove na
 w <- clear_na(q, Country)
-# remove first 2 columns   
-w <- w[,3:dim(w)[2]]
+# remove first 2 columns   S
+w1 <- w[,3:dim(w)[2]]
 # remove outlier
-w <- find_outlier(w, remove = T)
+w2 <- find_outlier(w1, remove = T)
+graphics.off()
 # PCA
-pc_data1<-PC(w,method="eigen",scaled=T,graph=T,rm.na=T,print.results=T)
+pc_data1<-PC(w1,method="eigen",scaled=T,graph=F,rm.na=T,print.results=F)
 
-
+w1 <- mutate(w1, test = X1 - X2)
 
 
 

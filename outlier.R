@@ -7,7 +7,7 @@
 #           4) compute and analyse Mahalanobis distance
 #            
 
-find_outlier <- function(X, remove = FALSE){
+find_outlier <- function(X, remove = FALSE,plot = F){
    #
    # INPUT:
    #       X = dataframe
@@ -22,6 +22,7 @@ find_outlier <- function(X, remove = FALSE){
    
    # sample cardinality         # sample dimensionality
    n <- dim(X)[1];              p <- dim(X)[2]
+   if(plot){
    # open a big plot device
    x11(width=15) 
    # deviide it in a 2xp matrix
@@ -29,14 +30,16 @@ find_outlier <- function(X, remove = FALSE){
    # extract columns name
    names <- colnames(X) 
    for(i in 1:p)  plot(X[,i],main = names[i])
-   
+   }
    ## 2) multiple dot plot
+   if(plot){
    x11()
    plot(X)
-   
+   }
    ## 3) standardized values
    
    # center and normalize the data
+   if(plot){
    Z <- scale(X)
    x11()
    par(mfrow = c(2,ceiling(p/2)))
@@ -46,7 +49,7 @@ find_outlier <- function(X, remove = FALSE){
       plot(Z[,i],main = names[i],ylim = c(-4,4))
       abline(h = -3:3)
    }  
-   
+   }
    ## 4) mahalanobis distance
    d <- mahalanobis(as.matrix(X),colMeans(X),cov(X))
    x11()
