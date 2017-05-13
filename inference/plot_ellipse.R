@@ -17,7 +17,8 @@ plot_ellipse <- function (mu,
                           alpha = 0.05,
                           sample = T,
                           n = NULL,
-                          large_n = F){
+                          large_n = F,
+                          title_plot = NULL){
    # INPUT:
    #      mu = mean vector (2-D)
    #      Sigma = 2x2 positive def matrix
@@ -25,7 +26,8 @@ plot_ellipse <- function (mu,
    #      sample = T if Sigma is the sample varianze  F if it's the population's
    #               variance
    #      n = sample cardinality (numerosità campionaria)
-   #      large_n = if TRUE asymptotic region 
+   #      large_n = if TRUE asymptotic region
+   #      title_plot = title of ellipse plot (rejection region, confidence region ecc) 
    # OUTPUT: none
    
    library(car) 
@@ -71,7 +73,9 @@ plot_ellipse <- function (mu,
    xlim <- c(mu[1] - max.semiax, mu[1] + max.semiax)
    # plotting
    x11()
-   title_plot <- ifelse(sample,ifelse(large_n,paste("Asyntotic Confidence Region for mu @ level alpha ",alpha,sep = ""),paste("Confidence Region  for mu @ level alpha ",alpha,sep = "")),paste("Probability Region @ level alpha ",alpha,sep = ""))                                                                     
+   if(is.null(title_plot)){
+      title_plot <- ifelse(sample,ifelse(large_n,paste("Asyntotic Confidence Region for mu @ level alpha ",alpha,sep = ""),paste("Confidence Region  for mu @ level alpha ",alpha,sep = "")),paste("Probability Region @ level alpha ",alpha,sep = ""))                                                                     
+   }
    plot(mu[1],mu[2],
         ylim= ylim,
         xlim = xlim,
@@ -82,9 +86,8 @@ plot_ellipse <- function (mu,
    m = e1[2]/e1[1]
    abline(a=mu[2] - m * mu[1], b = m, lty=2, col='grey')
    abline(a=mu[2] + mu[1]/m,b=-1/m,col='grey',lty=2)
-   abline(v=mu[1],col="black")
-   abline(h=mu[2],col="black")
-   
+   abline(v=0,col='grey',lty=2)
+   abline(h=0,col='grey',lty=2)
 }# end function
 
 # implementazione funzione myifelse

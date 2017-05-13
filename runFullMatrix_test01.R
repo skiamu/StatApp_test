@@ -10,7 +10,7 @@ load('data.RData')
 # df similar to indicators
 # dc after dcast
 
-M <- 30
+M <- 300
 df <- extract2DmatrixWithFullestIndicators(Indicators,M,viewFlag=TRUE) # another name for the function?
 print(dimInd(df))
 print(fullness(df))

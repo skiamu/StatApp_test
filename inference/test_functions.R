@@ -19,8 +19,10 @@ T2.test <- function( X = NULL,
    # OUTPUT:
    #      p.value = p-value of the T2 test or the asyntotic test (if n large)
    
-   # load function for checking gaussianity
-   load("mcshapiro.test.RData")
+   # load function for checking gaussianity and functions for confidence region
+   load("/home/andrea/StatApp/StatApp_test/inference/mcshapiro.test.RData")
+   source("/home/andrea/StatApp/StatApp_test/inference/Inference_functions.R")
+   
    # if not given as input, compute sample mean and sample covariance
    if(is.null(X_bar)) X_bar <- colMeans(X)
    if(is.null(S)) S <- cov(X)
@@ -41,11 +43,11 @@ T2.test <- function( X = NULL,
    # plot the rejection region if X is bidimensional
    if(p==2){
       # load file with function "plot_ellipse"
-      source("plot_ellipse.R")
+      source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
       # plot rejection region and give information about the ellipse
       plot_ellipse(mu0, S, alpha = alpha, sample = T, n = n,
-                   large_n = ifelse(large_n,T,F))
-      title(paste("Rejection region @ level ", alpha, sep = ""))
+                   large_n = ifelse(large_n,T,F),
+                   title_plot = paste("Rejection region @ level ", alpha, sep = ""))
       # add the null hp, center of the ellipse
       points(mu0[1], mu0[2], pch = 19, cex = 1.5, lwd = 2, col ='blue')
       # add the sample mean, if this point is from too far from mu0 we
@@ -60,7 +62,6 @@ T2.test <- function( X = NULL,
    # of the mean vector mu, if we've rejected H0 we want to see if
    # the sample mean of some components don't belong to its confidence 
    # interval
-   source("Inference_functions.R")
    IC <- ConfidenceRegion(X,large_n = F,alpha = alpha,to.do = "sim_CI",plot = T)
    points(1:p,mu0,pch=16, col = "orange")
    
@@ -71,7 +72,7 @@ T2.test <- function( X = NULL,
 # definition of the function for checking gaussianity
 check_gaussianity <- function(X, alpha){
    
-   load("mcshapiro.test.RData")
+   load("/home/andrea/StatApp/StatApp_test/inference/mcshapiro.test.RData")
    # check for gaussianity
    mctest <- mcshapiro.test(X)
    if(mctest$pvalue < alpha)

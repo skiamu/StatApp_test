@@ -59,7 +59,7 @@ find_outlier <- function(X, remove = FALSE){
    lines(seq(min(d),max(d),length.out = 200),
          dchisq(seq(min(d),max(d),length.out = 200),p),
          col='blue', lty=2)
-   cfr.chi_squared <- qchisq(0.99,p)
+   cfr.chi_squared <- qchisq(0.95,p)
    # draw the chi-squared quantile @ level 99%: values grater than
    # quantile may be considered as outlier
    abline(v = cfr.chi_squared,col="orange")
@@ -75,7 +75,7 @@ find_outlier <- function(X, remove = FALSE){
          mutate(d = d) %>%
          filter(d <= cfr.chi_squared)
       cat("I've filtered out",which(X$d >= cfr.chi_squared),"\n")
-      return(filtered)
+      return(select(filtered,-d))
    }
    
 }# end "find_outlier"

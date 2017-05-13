@@ -43,6 +43,8 @@ ConfidenceRegion <- function(X = NULL,
    # if not given as input, compute sample mean and sample covariance
    if(is.null(X_bar))  X_bar <- colMeans(X)
    if(is.null(S))  S <- cov(X)
+   if(is.null(to.do))
+      stop("to.do not specified, i don't know what to do")
    # sample cardinality        # population dimension
    n <- dim(X)[1];             p <- dim(X)[2]
    # range dataframe value, it's a global variable
@@ -58,9 +60,14 @@ ConfidenceRegion <- function(X = NULL,
       # let's start inference analysis
       switch(to.do,
              CR = {# case  "confidence region for the mean"
-                source("plot_ellipse.R")
+                source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
                 # plot the confidence region @ level 1-alpha for the mean
                 plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n)
+                # add the projection of the ellipse along the axis: in other
+                # words compute the F simultaneous intervals and plot them
+                IC <- simult_CI(X_bar, S, alpha, A, n, plot = F)
+                segments(IC[1,1],0,IC[1,2],0,lty=1,lwd=2,col='red')
+                segments(0,IC[2,1],0,IC[2,2],lty=1,lwd=2,col='red')
              },
              sim_CI = {# case "simulatneous confidence interval"
                 # IC is a matrix dim(A)[1]x2, each row is a CI (function defined below)
@@ -71,7 +78,7 @@ ConfidenceRegion <- function(X = NULL,
                 print(IC)
                 return(IC)
              },
-             Bonf_CI = {# case "Bonferroni confidence interval"
+             sim_Bonf = {# case "Bonferroni confidence interval"
                 
                 # IC is a matrix dim(A)[1]x2, each row is a CI
                 IC <- simult_CI(X_bar, S, alpha, A, n, Bonf = T, plot = plot)
@@ -87,7 +94,7 @@ ConfidenceRegion <- function(X = NULL,
       ) # end switch
    }
    else{# n is large, build an asyntotic confidence region for the mean
-      source("plot_ellipse.R")
+      source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
       # plot the confidence region @ level 1-alpha for the mean
       plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n,large_n = T)
    }
@@ -150,7 +157,7 @@ plot_intervals <- function(IC, X_bar, k){
 
 check_gaussianity <- function(X, alpha){
    
-   load("mcshapiro.test.RData")
+   load("/home/andrea/StatApp/StatApp_test/inference/mcshapiro.test.RData")
    # check for gaussianity
    mctest <- mcshapiro.test(X)
    if(mctest$pvalue < alpha)
