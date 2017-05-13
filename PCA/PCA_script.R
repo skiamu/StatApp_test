@@ -1,9 +1,10 @@
 ########### PCA script #############
-source('functionsFullMatrix.R')
+setwd('/Users/mowythebest/Desktop/StatApp_test')
+source('Filters/functionsFullMatrix.R')
 source("get_functions.R")
 source("outlier.R")
-source("/home/andrea/StatApp/StatApp_test/PCA/PCA_function.R")
-load("data.RData")
+source("PCA/PCA_function.R")
+load("ReadData/data.RData")
 
 # I want to keep the fullest M indicators
 M <- 600
