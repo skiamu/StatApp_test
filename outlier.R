@@ -1,6 +1,6 @@
 # this function tries to detect outlier from a mulativariate dataframe
 # 
-# ALGORITMO:
+# ALGORITHM:
 #           1) make a scatter plot of each variable
 #           2) make a general scatter plot
 #           3) compute and analyze standardized values

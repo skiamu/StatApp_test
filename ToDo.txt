@@ -1,5 +1,12 @@
 file for weekly assignments, switch to english?
 
+meeting 13-05-2017
+1) Iwrite a for cycle to have a matrix per year after the Leo filtering, by tjhe Andre reshape
+2) see if scatter plots and so on are on ggplot
+
+
+
+
 meeting 06/04/2017 : 
 1) set following meeting dates
 2) git subscriptions 
