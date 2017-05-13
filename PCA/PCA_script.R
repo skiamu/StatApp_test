@@ -1,13 +1,16 @@
 ########### PCA script #############
-path <- "/home/andrea/StatApp/StatApp_test"
-source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
-source(paste(path,"get_functions.R",sep = "/"))
-source(paste(path,"outlier.R",sep = "/"))
-source(paste(path,"PCA/PCA_function.R",sep = "/"))
-source(paste(path,"clear_na.R",sep = "/"))
-load(paste(path,"ReadData/data.RData",sep = "/"))
+
 
 # show the best M Indicators
+
+setwd('/Users/mowythebest/Desktop/StatApp_test')
+source('Filters/functionsFullMatrix.R')
+source("get_functions.R")
+source("outlier.R")
+source("PCA/PCA_function.R")
+load("ReadData/data.RData")
+
+# I want to keep the fullest M indicators
 M <- 600
 # countries with Tind indicators or more in a specified year, the other
 # are discarded. Data frame in Indicators-like format
