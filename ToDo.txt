@@ -1,15 +1,8 @@
-file for weekly assignments, switch to english?
+#UPDATE ON THE TOP TO BE MORE COMUNICATIVE
 
-meeting 06/04/2017 : 
-1) set following meeting dates
-2) git subscriptions 
-
-meeting 27/04/2017
-1) discussed about the graphs for presentation
-2) things left to do: 2.1) modify slide "ind 3-D"
-next meetings scheduled : 11/04 h:8.30
-                          21/04 h:8.30
-                          27/04 h:8.30
+meeting 13-05-2017
+1) Write a for cycle to have a matrix per year after the Leo filtering, by the Andre reshape.
+2) see if scatter plots and so on are on ggplot.
 
 
 # ---- ToDoList for the Presentation 5-5
@@ -40,10 +33,19 @@ next meetings scheduled : 11/04 h:8.30
 # Silde 19 (): [Leo] Our approach 9 expand over years
 # Silde 20 (): [Leo] further studies
 
-
 ToDo: 
      1) find thresholds for states, same analysis for indicators
      2) look for indicators with sum constraints
      3) pca with % and abs values, how to behave?
      4) which data should be gaussian?
      
+meeting 27/04/2017
+1) discussed about the graphs for presentation
+2) things left to do: 2.1) modify slide "ind 3-D"
+next meetings scheduled : 11/04 h:8.30
+                          21/04 h:8.30
+                          27/04 h:8.30
+
+meeting 06/04/2017 : 
+1) set following meeting dates
+2) git subscriptions 
