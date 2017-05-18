@@ -81,7 +81,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   return(Indicators)
 }
 
-# 02 getCntInd
+# 02.1 getCntInd
 # getCntInd extract for a given year ('year') from a dataframe like Indicators a dataframe with
 # rows : countries
 # cols : indicators
@@ -115,13 +115,13 @@ getCntInd <- function(df, year, dropNA = T, showCnt = T){
   return(dc)
 }
 
-# 03 getIndYear
+# 02.2 getIndYear
 # getIndYear extract for a given country ('cnt') from a dataframe like Indicators a dataframe with
 # rows : indicators
 # cols : years
 # if dropNA =T drop the indicators with at least one NA
 # if showCnt=T print the indicators filtered out
-getIndYear <- function(df, cnt, dropNA = T, showCnt = T){
+getIndYear <- function(df, cnt, dropNA = T, showInd = T){
   # -- INPUT: 
   #    - df      : dataframe Indicators-like
   #    - cnt     : fixed country                                     [CountryName]
@@ -132,23 +132,58 @@ getIndYear <- function(df, cnt, dropNA = T, showCnt = T){
   # -- USES:
   #    - %>%
   #    - dcast
-  df <- filter(df, CountryName==cnt)                                      # fix the year
+  df <- filter(df, CountryName==cnt)                                # fix the country
   dc <- dcast(df, IndicatorName ~ Year, value.var = "Value")        # reshape
-  row.names(dc) <- dc$IndicatorName                                   # set cnt as row names
+  row.names(dc) <- dc$IndicatorName                                 # set ind as row names
   dc <- select(dc,-IndicatorName)
+  dcAll <- dc
   if(dropNA){                                                       # drop the NA
     dcFil <- na.omit(dc)
-    if(showCnt){                                                    # show the filtered out
-      indIn  <- dcFil %>% row.names()
-      indOut <- dc    %>% row.names() %>% setdiff(indIn)
+    if(showInd){                                                    # show the filtered out
+      indIn  <- dc    %>% row.names()
+      indOut <- dcAll %>% row.names() %>% setdiff(indIn)
       if(length(indOut)!=0){print(paste(length(indOut),'Indicators out:')); print(indOut)}
       else{print('No indicators has been filtered out')}
     }
   }
-  return(dcFil)
+  return(dc)
 }
 
-# 04 unifCnt 
+# 02.3 getCntYear
+# getCntYear extract for a given indicator ('ind') from a dataframe like Indicators a dataframe with
+# rows : countries
+# cols : years
+# if dropNA =T drop the countries with at least one NA
+# if showCnt=T print the countries filtered out
+getCntYear <- function(df, ind, dropNA = T, showCnt = T){
+  # -- INPUT: 
+  #    - df      : dataframe Indicators-like
+  #    - ind     : fixed indicator                                 [CountryName]
+  #    - dropNA  : TRUE for dropping the countries with a NA value
+  #    - showCnt : TRUE for showing the countries filtered out
+  # -- OUTPUT:
+  #    - dcFil   : "Indicators" dataframe filtered
+  # -- USES:
+  #    - %>%
+  #    - dcast
+  df <- filter(df, IndicatorName==ind)                              # fix the indicator
+  dc <- dcast(df, CountryName ~ Year, value.var = "Value")          # reshape
+  row.names(dc) <- dc$CountryName                                   # set cnt as row names
+  dc <- select(dc,-CountryName)
+  dcAll <- dc
+  if(dropNA){                                                       # drop the NA
+    dc <- na.omit(dc)
+    if(showCnt){                                                    # show the filtered out
+      cntIn  <- dc    %>% row.names()
+      cntOut <- dcAll %>% row.names() %>% setdiff(cntIn)
+      if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
+      else{print('No countries has been filtered out')}
+    }
+  }
+  return(dc)
+}
+
+# 03 unifCnt 
 # unifCnt for a dataframe Indicators-like performs an intersection of the countries over years
 # so that for each year you will have the same Indicators and the smae countries 
 # (the 3D matrix is full)
@@ -188,7 +223,7 @@ unifCnt <- function(df, showCnt=T, showInd=T){
   return(filter(df,CountryName %in% cnt))
 }
 
-# 05 get3D
+# 04 get3D
 # get3D
 # get3D from a dataframe Inidcators-like creates a list of 2D dataframe 'cnt vs ind'
 # the i-th element of the list correspond to the i-th year in 'years'

@@ -51,8 +51,10 @@ indF <- getIndicators(myYear = myYears,
 # Cnt vs Ind  for 2010
 dcCntInd  <- getCntInd(indF, 2010, dropNA = T, showCnt = T)
 # Ind vs Year for Italy
-dcIndYear <- getIndYear(indF, 'Italy', dropNA = T, showCnt = T)
-# View(dcCntInd); View(dcIndYear)
+dcIndYear <- getIndYear(indF, 'Italy', dropNA = T, showInd = T)
+# Cnt vs Year for 'GDP (current LCU)'
+dcCntYear <- getCntYear(indF, 'GDP (current LCU)', dropNA = T, showCnt = T)
+# View(dcCntInd); View(dcIndYear); View(dcCntYear)
 # REM:you may create similar functions with different combinations of rows and columns
 
 # drop the countries which have a missing values for at least one year and one indicator
