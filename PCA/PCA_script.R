@@ -7,7 +7,7 @@ source("PCA/PCA_function.R")
 load("ReadData/data.RData")
 
 # I want to keep the fullest M indicators
-M <- 600
+M <- 400
 # countries with Tind indicators or more in a specified year
 df <- extract2DmatrixWithFullestIndicators(Indicators,
                                            M,

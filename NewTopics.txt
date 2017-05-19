@@ -56,12 +56,17 @@ Commercial bank branches (per 100,000 adults) (177)
 Automated teller machines (ATMs) (per 100,000 adults) (214) (? Maybe not enough countries)
 Net financial account (BoP, current US$) (271) (? Maybe not enough countries)
 
-Telecomunications:
-Fixed telephone subscriptions (per 100 people) (22)
-Mobile cellular subscriptions (per 100 people) (30)
-Internet users (per 100 people) (50)
-Secure Internet servers (per 1 million people) (102)
-Fixed broadband subscriptions (138)
+Telecommunications:
+Access to electricity (% of pop) (1) (187)
+Population growth (annual %) (7) (187) 
+Population, total (8) (187)
+Fixed telephone subscriptions (total or per 100 people) (21 or 22?) (186) (seconda perché confrontabile meglio tra stati)
+Mobile cellular subscriptions (total or per 100 people) (29 or 30) (186) (seconda perché confrontabile meglio tra stati)
+Urban population (total or %) (37 or 39) (186)
+Urban population growth (annual %) (39) (186)
+Internet users (per 100 people) (50) (185)
+Secure Internet servers (total or per 1 million people) (101 or 102) (183) (seconda perché confrontabile meglio tra stati)
+Fixed broadband subscriptions (138) (180)
 
 Economy:
 Export value index (2000 = 100) (58)
