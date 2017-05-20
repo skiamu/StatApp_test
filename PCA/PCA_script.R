@@ -11,9 +11,11 @@ source("PCA/PCA_function.R")
 load("ReadData/data.RData")
 
 # I want to keep the fullest M indicators
+
 M <- 600
 # countries with Tind indicators or more in a specified year, the other
 # are discarded. Data frame in Indicators-like format
+
 df <- extract2DmatrixWithFullestIndicators(Indicators,
                                            M,
                                            viewFlag=TRUE,
