@@ -15,6 +15,10 @@ source("PCA/PCA_function.R")
 
 # Data:
 load("ReadData/data.RData")
+
+# Libraries
+library(dplyr)
+
 # 01 --- Setting the working dataframe ----
 
 # REMARK: HOW I SELECT INDICATORS BEFORE APPLING PCA
@@ -163,3 +167,70 @@ biplot(TelePCA, scale=0, cex=.7)
 #
 # x11()
 # PCbiplot(prcomp(scale(TeleMatrix)))
+
+# 04 --- PCA along different years ----
+
+# Without acces to electricity it work super good!
+
+myInd <- c(#"Access to electricity (% of population)",
+  "Population growth (annual %)",
+  "Fixed telephone subscriptions (per 100 people)",
+  "Mobile cellular subscriptions (per 100 people)",
+  "Urban population growth (annual %)",
+  "Urban population growth (annual %)",
+  "Internet users (per 100 people)")
+
+# keep only the countries with at least Tind indicators in 2010
+myCnt <- df$CountryName %>% unique() 
+# years
+myYears <- c(1995:2000)
+
+# filter Indicators
+indF <- getIndicators(myYear = myYears, 
+                      myCnt = myCnt, 
+                      myInd = myInd)
+
+indFull <- unifCnt(indF) # it's Indicators-like with the correspondent 3D matrix is Full
+
+# get 3D matrices
+indFull3D <- get3D(indFull, myYears) # full
+
+for (i in 1:length(myYears)) {
+# We compute the standardized variables
+TeleMatrixStd <- data.frame(scale(indFull3D[[i]]))
+
+TelePCA <- princomp(TeleMatrixStd, scores=T)
+TelePCA
+summary(TelePCA)
+# To obtain the rows of the summary: -standard deviation of the components TelePCA$sd
+#                                    -proportion of variance explained by each PC TelePCA^2/sum(TelePCA^2)
+#                                    -cumulative proportion of explained variance cumsum(TelePCA$sd^2)/sum(TelePCA$sd^2)
+
+# Loadings 
+
+TeleLoad <- TelePCA$loadings
+TeleLoad
+
+# graphical representation of the loadings of the first three principal components
+x11()
+par(mar = c(1,4,0,2), mfrow = c(3,1))
+for(j in 1:2) barplot(TeleLoad[,j], ylim = c(-1, 1), las=1)
+
+# Interpretation of the loadings:
+# First PCs: mean of actual communication (neg) VS mean of population idicators (pos)
+# Second PCs: Population growth and new technlogies (all neg) (havier the growth)
+
+# Explained variance
+x11()
+layout(matrix(c(2,3,1,3),2,byrow=T))
+barplot(TelePCA$sdev^2, las=2, main='Principal Components', ylim=c(0,4), ylab='Variances')
+abline(h=1, col='blue')
+barplot(sapply(TeleMatrixStd,sd)^2, las=2, main='Original Variables', ylim=c(0,4), ylab='Variances')
+plot(cumsum(TelePCA$sdev^2)/sum(TelePCA$sde^2), type='b', axes=F, xlab='number of components',
+     ylab='contribution to the total variance', ylim=c(0,1))
+box()
+axis(2,at=0:10/10,labels=0:10/10)
+axis(1,at=1:ncol(TeleMatrixStd),labels=1:ncol(TeleMatrixStd),las=2)
+}
+# From 1995 to 2010 (maybe I can extent more) loosing some countries the loadings and the var explained
+# are always the same! really good without electic accebility
