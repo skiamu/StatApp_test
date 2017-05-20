@@ -69,7 +69,11 @@ TeleDF <- getIndicators(myYear = myYear, myCnt = myCnt, myInd = myInd, ind = df
 # TeleMatrix = Matrix Country-Indicators created from TeleDF
 TeleMatrix <- getCntInd(TeleDF, myYear, dropNA = T, showCnt = T)
 
-# w <- find_outlier(TeleMatrix, remove = T) Remark: THERE ARE OUTLIERS
+# TeleMatrix <- find_outlier(TeleMatrix, remove = T) 
+# Remark: THERE ARE OUTLIERS: working without them means a 72,21% covered by the first compo, the second is 
+#                             almost the same of with outilers. The loadings are the same!
+#                             working with them means 64,21% covered by the first, the others the same of no
+#                             outlier. Same Loadings. The boxplot of the second has a lot of outliers.
 
 # 02 --- Pre-analysis ----
 
@@ -94,6 +98,7 @@ boxplot(TeleMatrixStd)
 
 # IT IS CLEAR THE NEED TO STANDARDIZE THE VALUES
 # TOO MUCH OUTLIERS IN THE FIFTH VARIABLE
+graphics.off()
 
 # 03 --- PCA on original data ----
 
@@ -112,14 +117,13 @@ TeleLoad
 # graphical representation of the loadings of the first three principal components
 x11()
 par(mar = c(1,4,0,2), mfrow = c(3,1))
-for(i in 1:3) barplot(TeleLoad[,i], ylim = c(-1, 1), las=1)
+for(i in 1:2) barplot(TeleLoad[,i], ylim = c(-1, 1), las=1)
 
 # Interpretation of the loadings:
-# First PCs: mean of the strict communication VS the population idicators
-# Second PCs: Population growth and new technlogies
-# Third PCs: I have still to find an idea to interpret it
+# First PCs: mean of actual communication (neg) VS mean of population idicators (pos)
+# Second PCs: Population growth and new technlogies (all neg) (havier the growth)
 
-#################################### Explained variance
+# Explained variance
 x11()
 layout(matrix(c(2,3,1,3),2,byrow=T))
 barplot(TelePCA$sdev^2, las=2, main='Principal Components', ylim=c(0,4), ylab='Variances')
@@ -131,16 +135,31 @@ box()
 axis(2,at=0:10/10,labels=0:10/10)
 axis(1,at=1:ncol(TeleMatrixStd),labels=1:ncol(TeleMatrixStd),las=2)
 
-# The first two PC explains more than 82.87% of the total variability. 
-# Da interpretare
+# The first two PC explains more than 82.87% of the total variability.
+
 # Scores: repr of the original data in the space PC1 PC2
 TeleScores <- TelePCA$scores  
 
 layout(matrix(c(1,2),2))
-boxplot(TelePCA, las=2, col='red', main='Original variables')
+boxplot(TeleMatrixStd, las=2, col='red', main='Original variables')
 TeleScores <- data.frame(TeleScores)
 boxplot(TeleScores, las=2, col='red', main='Principal components')
 
 # biplot
 x11()
 biplot(TelePCA, scale=0, cex=.7)
+
+# INTERPRETAZIONE: the more on the right the more the growth of the pop overtakes the actual telecom
+#                  the more on the left the more the actual telcom satisfy the actual and the next pop
+#                  the upper the more neg growth than advanced tech or small growth and small difussion of advanced tech
+#                  the lower the more advanced communication and growth are present (and if growth is neg the comm are super diffused)
+# Middle east is super advanced but the growth of the pop is still more
+# Lituania and Latvia No gorwth of the pop and communication are advanced
+# Cuba and Samoa is like upper in the discription of before  (no left or right)
+# African States are really alot of pop growth and no communications
+# West Europa and Hong kong China are good tech e no much growth of pop
+# east europa like Lituania and latvia but less advanced tech and more growth
+# latino american countrie on the 0 of every compo
+#
+# x11()
+# PCbiplot(prcomp(scale(TeleMatrix)))
