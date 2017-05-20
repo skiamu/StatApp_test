@@ -149,7 +149,7 @@ plot_intervals <- function(IC, X_bar, k){
    # plot just the framework so as to use "segments" and "points"
    matplot(1:k, 1:k, pch='', ylim = Range, xlab='Variables',ylab='T2 for a component', 
            main='Simultaneous T2 conf. int. for the components')
-   for(i in 1:k) segments(i,IC[i,1],i,IC[i,2],lwd=3,col=i)
+   for(i in 1:k) segments(i,IC[i,1],i,IC[i,3],lwd=3,col=i)
    # add sample means
    points(1:k, X_bar, pch=16, col=1:k)
    
