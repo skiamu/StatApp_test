@@ -30,7 +30,7 @@ myAgg <- c("East Asia & Pacific (all income levels)",
 # get the specified Indicators
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
-                     myAggregate = myAgg
+                     myCnt =  myAgg
 )
 # get the desired dataframe ready to be analysed, drop the observation
 # if there's at least one NA, show who it is

@@ -47,8 +47,7 @@ Employment to population ratio, ages 15-24, female (%) (228)  (? Maybe not enoug
 Employment to population ratio, ages 15-24, total (%) (230) (? Maybe not enough countries)
 
 
-Income e spese per singolo cittadino (vedi se ha senso con social):
-GNI (118)
+Income e spese per singolo cittadino (vedi se ha senso con social o capacita di acquisto):
 Consumer price index (2010 = 100) (217)
 Gross Domestic savings 235
 Inflation, consumer prices (annual %) (241)
@@ -78,16 +77,12 @@ GDP per capita (current US$) (65)
 GDP at market prices (current US$) (63)
 GDP growth (annual %) (84)
 Inflation, GDP deflator (annual %) (88)
-GNI (118)
-Gross national expenditure (current US$) (189)
 Price level ratio of PPP conversion factor (GDP) to market exchange rate (127)
-Consumer price index (2010 = 100) (217)
-Gross Domestic savings 235
 Inflation, consumer prices (annual %) (241)
-Net financial account (BoP, current US$) (271) (? Maybe not enough countries)
-Net primary income (BoP, current US$) (272)
-Net secondary income (BoP, current US$) (273)
-288 Household final consumption expenditure (current US$)
+
+utili?
+Gross Domestic savings 235
+Gross national expenditure (current US$) (189)
 Total tax rate (% of commercial profits) (334)
 Official exchange rate (LCU per US$, period average) (369)
 
