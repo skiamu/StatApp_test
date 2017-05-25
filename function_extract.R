@@ -12,11 +12,14 @@ source('Filters/functionsFullMatrix.R') # fullness
 # 2) countries  in myCnt       [CountryName]
 # 3) indicators in myInd       [IndicatorName]
 # 4) topics     in myTopic
-# 5) regions    in myRegion    (REM: aggregate countries have region = '')
+# 5) regions    in myRegion    (REM: aggregate countries have region = '',
+#                                    to pick only them set myRegion = '',
+#                                    to exlcude them set agg to FALSE)
 # giving as an output a data.frame with 4 columns: cnt, ind, year, val 
 # (same structure of Indicators, without the Code columns for cnt and ind)
 
 getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = NULL, myRegion = NULL,
+                          agg = T,
                           ind = Indicators, ser = Series, count = Country){
   # -- INPUT: 
   #    - myYear     : years                        [vector of int]
@@ -24,6 +27,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   #    - myInd      : indicators                   [vector of strings]
   #    - myTopic    : topics                       [vector of strings]
   #    - myRegion   : country geographical regions [vector of strings]
+  #    - agg        : set to FALSE if you want to exclude the aggregate countries
   #    - ind        : "Indicator" dataframe
   #    - count      : "Country" dataframe    
   #    - ser        : "Series" dataframe 
@@ -32,6 +36,12 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   # -- USES:
   #    - %>%
   #    - dcast
+  
+  # Out the aggregate
+  if(!agg){
+    my.country.code <- filter(Country, Region == '')$CountryCode
+    Indicators <- Indicators %>% filter(!(CountryCode %in% my.country.code))
+  }
   
   # Years
   if(!is.null(myYear)){ # Year is an activated criteria
