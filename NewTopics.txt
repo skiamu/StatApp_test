@@ -1,6 +1,4 @@
 TASKS
-Reduce some
-Divide economic one in more
 full the education
 think about one about medicine and health care
 
@@ -48,13 +46,18 @@ Employment to population ratio, 15+, total (%) (227) (? Maybe not enough countri
 Employment to population ratio, ages 15-24, female (%) (228)  (? Maybe not enough countries)
 Employment to population ratio, ages 15-24, total (%) (230) (? Maybe not enough countries)
 
-Finance:
-Foreign direct investment, net inflows (BoP, current US$) (24)
-DEC alternative conversion factor (LCU per US$) (47)
-Inflation, GDP deflator (annual %) (88)
-Commercial bank branches (per 100,000 adults) (177)
-Automated teller machines (ATMs) (per 100,000 adults) (214) (? Maybe not enough countries)
+
+Income e spese per singolo cittadino (vedi se ha senso con social):
+GNI (118)
+Consumer price index (2010 = 100) (217)
+Gross Domestic savings 235
+Inflation, consumer prices (annual %) (241)
 Net financial account (BoP, current US$) (271) (? Maybe not enough countries)
+Net primary income (BoP, current US$) (272)
+Net secondary income (BoP, current US$) (273)
+288 Household final consumption expenditure (current US$)
+Tax payments (number) (329)
+
 
 Telecommunications:
 Access to electricity (% of pop) (1) (187)
@@ -68,41 +71,76 @@ Internet users (per 100 people) (50) (185)
 Secure Internet servers (total or per 1 million people) (101 or 102) (183) (seconda perché confrontabile meglio tra stati)
 Fixed broadband subscriptions (138) (180)
 
-Economy:
-Export value index (2000 = 100) (58)
+Economy indicators:
+Foreign direct investment, net inflows (BoP, current US$) (24 or 80)
+DEC alternative conversion factor (LCU per US$) (47) “exchange rate”
+GDP per capita (current US$) (65)
 GDP at market prices (current US$) (63)
-Import value index (2000 = 100) (66)
 GDP growth (annual %) (84)
-Merchandise trade (% of GDP) (122)
-PPP conversion factor, GDP (LCU per international $) (126)
+Inflation, GDP deflator (annual %) (88)
+GNI (118)
+Gross national expenditure (current US$) (189)
 Price level ratio of PPP conversion factor (GDP) to market exchange rate (127)
+Consumer price index (2010 = 100) (217)
+Gross Domestic savings 235
+Inflation, consumer prices (annual %) (241)
+Net financial account (BoP, current US$) (271) (? Maybe not enough countries)
+Net primary income (BoP, current US$) (272)
+Net secondary income (BoP, current US$) (273)
+288 Household final consumption expenditure (current US$)
+Total tax rate (% of commercial profits) (334)
+Official exchange rate (LCU per US$, period average) (369)
+
+trade:
+Export value index (2000 = 100) (58)
+Import value index (2000 = 100) (66)
+Merchandise trade (% of GDP) (122)
 Cost to export (US$ per container) (178)
 Cost to import (US$ per container) (179)
 Documents to export (number) (180)
 Documents to import (number) (181)
 Exports of goods and services (% of GDP) (182)
-Exports of goods and services (current US$) (184)
-Gross national expenditure (current US$) (189)
 Imports of goods and services (% of GDP) (190)
-Imports of goods and services (current US$) (192)
 Time to export (days) (194)
 Time to import (days) (195)
 Trade (% of GDP) (196)
+278 Service exports (BoP, current US$)
+279 Service imports (BoP, current US$)
+301 Trade in services (% of GDP)
+
+turismo:
 International tourism, number of arrivals (206)
 International tourism, receipts (current US$) (207)
-Net income from abroad (current US$) (212)
-Consumer price index (2010 = 100) (217)
 International tourism, expenditures (current US$) (221)
+International tourism, expenditures for travel items (current $)
+290 International tourism, expenditures (% of total imports)
+291 International tourism, receipts (% of total exports)
+
+valore settori:
+Adjusted savings: consumption of fixed capital (curreent used 54
 Industry, value added (current US$) (240)
-Inflation, consumer prices (annual %) (241)
+Services, etc., value added (current US$) 245
+Agriculture, value added (% of GDP) 308
+Industry, value added (% of GDP) 310
+316 Services, etc., value added (% of GDP)
+Manufacturing, value added (% of GDP) (364)
+
+start an activity:
+Cost to export (US$ per container) (178)
+Cost to import (US$ per container) (179)
+Documents to export (number) (180)
+Documents to import (number) (181)
+Time to export (days) (194)
+Time to import (days) (195)
+Tax payments (number) (329)
 Cost of business start-up procedures (% of GNI per capita) (322)
 Start-up procedures to register a business (number) (328)
-Tax payments (number) (329)
 Time required to start a business (days) (332)
 Time to prepare and pay taxes (hours) (333)
 Total tax rate (% of commercial profits) (334)
-Manufacturing, value added (current US$) (349)
-Pump price for gasoline (US$ per liter) (356)
+339 Time required to build a warehouse (days)
+340 Time required to register property (days)
+
 
 Education
 Scientific and technical journal articles (175)

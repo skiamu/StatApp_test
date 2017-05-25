@@ -6,7 +6,7 @@ library(dplyr)    # %>%
 # source('Filters/functionsFullMatrix.R') # fullness
 source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
-# 01 getIndicators
+# 01 getIndicators ----
 # getIndicators filter from 'Indicators' the observations which have:
 # 1) years      in myYear
 # 2) countries  in myCnt       [CountryName]
@@ -107,7 +107,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
    return(Indicators)
 }
 
-# 02.1 getCntInd
+# 02.1 getCntInd ----
 # getCntInd extract for a given year ('year') from a dataframe like Indicators a dataframe with
 # rows : countries
 # cols : indicators
@@ -141,7 +141,7 @@ getCntInd <- function(df, year, dropNA = T, showCnt = T){
    return(dc)
 }
 
-# 02.2 getIndYear
+# 02.2 getIndYear ----
 # getIndYear extract for a given country ('cnt') from a dataframe like Indicators a dataframe with
 # rows : indicators
 # cols : years
@@ -175,7 +175,7 @@ getIndYear <- function(df, cnt, dropNA = T, showInd = T){
    return(dc)
 }
 
-# 02.3 getCntYear
+# 02.3 getCntYear ----
 # getCntYear extract for a given indicator ('ind') from a dataframe like Indicators a dataframe with
 # rows : countries
 # cols : years
@@ -209,7 +209,7 @@ getCntYear <- function(df, ind, dropNA = T, showCnt = T){
    return(dc)
 }
 
-# 03 unifCnt 
+# 03 unifCnt ----
 # unifCnt for a dataframe Indicators-like performs an intersection of the countries over years
 # so that for each year you will have the same Indicators and the smae countries 
 # (the 3D matrix is full)
@@ -249,7 +249,7 @@ unifCnt <- function(df, showCnt=T, showInd=T){
    return(filter(df,CountryName %in% cnt))
 }
 
-# 04 get3D
+# 04 get3D ----
 # get3D
 # get3D from a dataframe Inidcators-like creates a list of 2D dataframe 'cnt vs ind'
 # the i-th element of the list correspond to the i-th year in 'years'
