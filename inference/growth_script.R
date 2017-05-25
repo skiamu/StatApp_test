@@ -13,7 +13,8 @@ source(paste(path,"inference/Inference_functions.R",sep = "/"))
 source(paste(path,"inference/test_functions.R",sep = "/"))
 source(paste(path,"outlier.R",sep = "/"))
 source(paste(path,"gaussianity/is_gaussian.R",sep = "/"))
-
+library(ggplot2)
+library(directlabels)
 # fix the time window
 myYear <- 1970:2013
 # select the desired indicators
@@ -23,9 +24,9 @@ myAgg <- c("East Asia & Pacific (all income levels)",
            "Europe & Central Asia (all income levels)",
            "Latin America & Caribbean (all income levels)",
            "Middle East & North Africa (all income levels)",
-           "Sub-Saharan Africa (all income levels)",
-           "North America" 
-)
+           "North America" ,
+           "Sub-Saharan Africa (all income levels)")
+
 # get the specified Indicators
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
@@ -37,10 +38,9 @@ df <- getCntYear(df1,
                  myInd,
                  dropNA = T,
                  showCnt = T)
-
+df1$CountryName <- gsub("\\(.*$", "", df1$CountryName)
 # plot lines:
-pp1 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName, 
-                     linetype = CountryName)) +
+pp1 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName)) +
    geom_line()  +
    geom_point()  + 
    geom_dl(aes(label = CountryCode),
@@ -52,7 +52,9 @@ pp1 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName,
 
 pp1
 
-# question: has the Growth been constant (without trends) over the last 4 
+ggsave(filename = "growth.png",plot = pp1, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")
+# question1: has the Growth been constant (without trends) over the last 4 
 # decades? dubbi, discutere 
 # 
 # traspose the dataframe
@@ -70,13 +72,35 @@ df <- as.data.frame(t(df))
 delta0 <- rep(0,p)
 T2.test(X = diff, delta0)
 
-# question: has the Growth been zero, ON AVERAGE, over the last four decades?
+# question2: has the Growth been zero, ON AVERAGE, over the last four decades?
 # 
 # method applied: T2 test for the mean vector + Bonferroni for marginal
 df.t <- as.data.frame(t(df))
 delta0 <- rep(0,p)
-T2.test(X = df.t, delta0)
+t <- T2.test(X = df.t, delta0)
+# non uso il plot che esce dalla funzione T2.test perche non fancy
+# lo faccio a mano con ggplot (che sbatti)
 
+myAgg2 <- c("East Asia & Pacific (all income levels)",
+           "Europe & Central Asia (all income levels)",
+           "Latin America & Caribbean (all income levels)",
+           "Middle East & North Africa (all income levels)",
+           "North America" ,
+           "Sub-Saharan Africa (all income levels)")
+IC <- t$IC
+data <- data.frame(IC)
+data <- mutate(data, Region = gsub("\\(.*$", "", myAgg2))
+data <- mutate(data, x = 1:6)
+q <- ggplot(data,aes(x = Region ,y = X1))
+q <- q + geom_segment(aes(x = x, y = X1, xend = x, yend = X3, colour = Region),
+                      data = data,size = 4)
+q <- q + geom_point(data = data,aes(x = x, y = X2)) +
+   geom_hline(yintercept=0) + labs(y = "GDP per capita growth (annual %)") +
+   ggtitle("Bonferroni CI for regions")
+   
+q
+ggsave(filename = "CI.png",plot = q, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")
 ########### impact of the crisis ###########
 # inspired by plot 1 let's analyse what happend in 2008 /2009.
 # It must bu something really impactful since data at continent level
@@ -110,12 +134,14 @@ pp2 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName)) +
    geom_point()  + guides(colour=FALSE) +
    geom_dl(aes(label = CountryCode),
            method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
-   ggtitle("GDP per capita growth (annual %)") +
+   ggtitle("GDP per capita growth (annual %) during the financial crisis") +
    theme(axis.text=element_text(size=12),
          axis.title=element_text(size=14,face="bold"),
-         legend.key.size = unit(1.5,"cm"))
+         legend.key.size = unit(1.5,"cm")) + labs(y = "Growth (%)")
 
 pp2
+ggsave(filename = "crisis.png",plot = pp2, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")
 
 # define contrast matrix: we want to study mu1-mu2,mu1-mu3
 C <- rbind(c(1,-1,0),c(1,0,-1))
@@ -209,6 +235,8 @@ ppp <- ggplot(data = w,
          axis.title=element_text(size=14,face="bold"),
          legend.key.size = unit(1.5,"cm"))
 ppp
+ggsave(filename = "inter1.png",plot = ppp, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")
 
 ppp2 <- ggplot(data = w,
               aes(x = fRegion, y = Value, colour = Year, group=Year)) +
@@ -219,17 +247,22 @@ ppp2 <- ggplot(data = w,
          axis.title=element_text(size=14,face="bold"),
          legend.key.size = unit(1.5,"cm"))
 ppp2
-
+# looking at the distance between the green and pink line we can undderstand
+# how North America and Europe were stoke more heavily by the financial crisis
 ppp3 <- ggplot(data = w,
                aes(x = fIncome, y = Value, colour = Year, group=Year)) +
    stat_summary(fun.y=mean, geom="point")+
    stat_summary(fun.y=mean, geom="line")
 ppp3
-
-# in questo vedo bene che la crisi ha colpito più gli stati ad high income
+ggsave(filename = "Income1.png",plot = ppp3, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")
+# in questo vedo bene che la crisi ha colpito più gli stati ad high income, mentre
+# poco i low income. Questo me lo spiego dicendo che è stata una crisi finanziaria
+# e in nazioni dove la finanza è meno sviluppata hanno inizialmente sofferto meno
 ppp4 <- ggplot(data = w,
                aes(x = Year, y = Value, colour = fIncome, group=fIncome)) +
    stat_summary(fun.y=mean, geom="point")+
    stat_summary(fun.y=mean, geom="line")
 ppp4
-
+ggsave(filename = "Income2.png",plot = ppp4, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")

@@ -52,4 +52,5 @@ p <- ggplot(map.world) +
   ggtitle(paste0(indicatorName, " in ", indicatorYear))
    
 
-ggsave("ageing.png", p, width=7, height=4, units="in")
+ggsave("mappa.png", plot = p, path = paste(path,"/second_presentation",sep = "/"),
+       width = 20, height = 10, units = "cm")

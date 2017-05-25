@@ -65,7 +65,7 @@ T2.test <- function( X = NULL,
    IC <- ConfidenceRegion(X,large_n = F,alpha = alpha,to.do = "sim_Bonf",plot = T)
    points(1:p,mu0,pch=16, col = "orange")
    
-   return(p.value)
+   return(list(p.value = p.value, IC = IC))
    
 } # end t2.test function
 
