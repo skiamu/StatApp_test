@@ -114,18 +114,18 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
    #       IC = matrix whose row are confidence intervals
    #  
    
-   if(!(length(X_bar) == dim(A)[1])) stop("dimension of matrix A disagrees")
    # population dimension     # number of simultaneous interval
    p <- dim(S)[1];            k <- dim(A)[2]
    # initialization: IC will contain the simulataneous intervals
-   IC <- matrix(nrow = k, ncol = 2)
+   IC <- matrix(nrow = k, ncol = 3)
    # coefficient that appears in the IC formula, it depends on Bonf or F
    csi <- ifelse(Bonf,qt(1 - alpha/(2*k),n-1), sqrt(p*(n-1)/(n-p) * qf(1-alpha, p, n-p)))
    for(i in 1:k){
       # select the direction for the linear combination
       a <- A[,i]
-      IC[i,1] <- t(a)%*% X_bar - sqrt(t(a)%*%S%*%a / n) * csi
-      IC[i,2] <- t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi
+      IC[i,] <- c(inf = t(a)%*% X_bar - sqrt(t(a)%*%S%*%a / n) * csi,
+                  M = a%*%X_bar,
+                  sup = t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi)
    }
    # plot the intervals
    if(plot)  plot_intervals(IC, X_bar, k)
@@ -149,7 +149,7 @@ plot_intervals <- function(IC, X_bar, k){
    # plot just the framework so as to use "segments" and "points"
    matplot(1:k, 1:k, pch='', ylim = Range, xlab='Variables',ylab='T2 for a component', 
            main='Simultaneous T2 conf. int. for the components')
-   for(i in 1:k) segments(i,IC[i,1],i,IC[i,2],lwd=3,col=i)
+   for(i in 1:k) segments(i,IC[i,1],i,IC[i,3],lwd=3,col=i)
    # add sample means
    points(1:k, X_bar, pch=16, col=1:k)
    

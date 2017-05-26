@@ -3,8 +3,8 @@
 library(reshape2) # dcast
 library(dplyr)    # %>%
 
-source('Filters/functionsFullMatrix.R') # fullness
-
+# source('Filters/functionsFullMatrix.R') # fullness
+source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
 # 01 getIndicators ----
 # getIndicators filter from 'Indicators' the observations which have:
@@ -12,11 +12,15 @@ source('Filters/functionsFullMatrix.R') # fullness
 # 2) countries  in myCnt       [CountryName]
 # 3) indicators in myInd       [IndicatorName]
 # 4) topics     in myTopic
-# 5) regions    in myRegion    (REM: aggregate countries have region = '')
+# 5) regions    in myRegion    (REM: aggregate countries have region = '',
+#                                    to pick only them set myRegion = '',
+#                                    to exlcude them set agg to FALSE)
 # giving as an output a data.frame with 4 columns: cnt, ind, year, val 
 # (same structure of Indicators, without the Code columns for cnt and ind)
 
+
 getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = NULL, myRegion = NULL,
+                          agg = T,
                           ind = Indicators, ser = Series, count = Country){
   # -- INPUT: 
   #    - myYear     : years                        [vector of int]
@@ -24,6 +28,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   #    - myInd      : indicators                   [vector of strings]
   #    - myTopic    : topics                       [vector of strings]
   #    - myRegion   : country geographical regions [vector of strings]
+  #    - agg        : set to FALSE if you want to exclude the aggregate countries
   #    - ind        : "Indicator" dataframe
   #    - count      : "Country" dataframe    
   #    - ser        : "Series" dataframe 
@@ -32,6 +37,12 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   # -- USES:
   #    - %>%
   #    - dcast
+  
+  # Out the aggregate
+  if(!agg){
+    my.country.code <- filter(Country, Region == '')$CountryCode
+    Indicators <- Indicators %>% filter(!(CountryCode %in% my.country.code))
+  }
   
   # Years
   if(!is.null(myYear)){ # Year is an activated criteria
@@ -79,6 +90,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   }
   
   return(Indicators)
+
 }
 
 # 02.1 getCntInd ----
@@ -88,31 +100,31 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
 # if dropNA =T drop the countries with at least one NA
 # if showCnt=T print the countries filtered out
 getCntInd <- function(df, year, dropNA = T, showCnt = T){
-  # -- INPUT: 
-  #    - df      : dataframe Indicators-like
-  #    - year    : fixed year
-  #    - dropNA  : TRUE for dropping the countries with a NA value
-  #    - showCnt : TRUE for showing the countries filtered out
-  # -- OUTPUT:
-  #    - Indicators : "Indicators" dataframe filtered
-  # -- USES:
-  #    - %>%
-  #    - dcast
-  df <- filter(df, Year==year)                                      # fix the year
-  dc <- dcast(df, CountryName ~ IndicatorName, value.var = "Value") # reshape
-  row.names(dc) <- dc$CountryName                                   # set cnt as row names
-  dc <- select(dc,-CountryName)
-  dcAll <- dc
-  if(dropNA){                                                       # drop the NA
-    dc <- na.omit(dcAll)
-    if(showCnt){                                                    # show the filtered out
-      cntIn  <- dc    %>% row.names()
-      cntOut <- dcAll %>% row.names() %>% setdiff(cntIn)
-      if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
-      else{print('No countries has been filtered out')}
-    }
-  }
-  return(dc)
+   # -- INPUT: 
+   #    - df      : dataframe Indicators-like
+   #    - year    : fixed year
+   #    - dropNA  : TRUE for dropping the countries with a NA value
+   #    - showCnt : TRUE for showing the countries filtered out
+   # -- OUTPUT:
+   #    - Indicators : "Indicators" dataframe filtered
+   # -- USES:
+   #    - %>%
+   #    - dcast
+   df <- filter(df, Year==year)                                      # fix the year
+   dc <- dcast(df, CountryName ~ IndicatorName, value.var = "Value") # reshape
+   row.names(dc) <- dc$CountryName                                   # set cnt as row names
+   dc <- select(dc,-CountryName)
+   dcAll <- dc
+   if(dropNA){                                                       # drop the NA
+      dc <- na.omit(dcAll)
+      if(showCnt){                                                    # show the filtered out
+         cntIn  <- dc    %>% row.names()
+         cntOut <- dcAll %>% row.names() %>% setdiff(cntIn)
+         if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
+         else{print('No countries has been filtered out')}
+      }
+   }
+   return(dc)
 }
 
 # 02.2 getIndYear ----
@@ -122,31 +134,31 @@ getCntInd <- function(df, year, dropNA = T, showCnt = T){
 # if dropNA =T drop the indicators with at least one NA
 # if showCnt=T print the indicators filtered out
 getIndYear <- function(df, cnt, dropNA = T, showInd = T){
-  # -- INPUT: 
-  #    - df      : dataframe Indicators-like
-  #    - cnt     : fixed country                                     [CountryName]
-  #    - dropNA  : TRUE for dropping the countries with a NA value
-  #    - showCnt : TRUE for showing the countries filtered out
-  # -- OUTPUT:
-  #    - Indicators : "Indicators" dataframe filtered
-  # -- USES:
-  #    - %>%
-  #    - dcast
-  df <- filter(df, CountryName==cnt)                                # fix the country
-  dc <- dcast(df, IndicatorName ~ Year, value.var = "Value")        # reshape
-  row.names(dc) <- dc$IndicatorName                                 # set ind as row names
-  dc <- select(dc,-IndicatorName)
-  dcAll <- dc
-  if(dropNA){                                                       # drop the NA
-    dcFil <- na.omit(dc)
-    if(showInd){                                                    # show the filtered out
-      indIn  <- dc    %>% row.names()
-      indOut <- dcAll %>% row.names() %>% setdiff(indIn)
-      if(length(indOut)!=0){print(paste(length(indOut),'Indicators out:')); print(indOut)}
-      else{print('No indicators has been filtered out')}
-    }
-  }
-  return(dc)
+   # -- INPUT: 
+   #    - df      : dataframe Indicators-like
+   #    - cnt     : fixed country                                     [CountryName]
+   #    - dropNA  : TRUE for dropping the countries with a NA value
+   #    - showCnt : TRUE for showing the countries filtered out
+   # -- OUTPUT:
+   #    - Indicators : "Indicators" dataframe filtered
+   # -- USES:
+   #    - %>%
+   #    - dcast
+   df <- filter(df, CountryName==cnt)                                # fix the country
+   dc <- dcast(df, IndicatorName ~ Year, value.var = "Value")        # reshape
+   row.names(dc) <- dc$IndicatorName                                 # set ind as row names
+   dc <- select(dc,-IndicatorName)
+   dcAll <- dc
+   if(dropNA){                                                       # drop the NA
+      dcFil <- na.omit(dc)
+      if(showInd){                                                    # show the filtered out
+         indIn  <- dc    %>% row.names()
+         indOut <- dcAll %>% row.names() %>% setdiff(indIn)
+         if(length(indOut)!=0){print(paste(length(indOut),'Indicators out:')); print(indOut)}
+         else{print('No indicators has been filtered out')}
+      }
+   }
+   return(dc)
 }
 
 # 02.3 getCntYear ----
@@ -156,31 +168,31 @@ getIndYear <- function(df, cnt, dropNA = T, showInd = T){
 # if dropNA =T drop the countries with at least one NA
 # if showCnt=T print the countries filtered out
 getCntYear <- function(df, ind, dropNA = T, showCnt = T){
-  # -- INPUT: 
-  #    - df      : dataframe Indicators-like
-  #    - ind     : fixed indicator                                 [CountryName]
-  #    - dropNA  : TRUE for dropping the countries with a NA value
-  #    - showCnt : TRUE for showing the countries filtered out
-  # -- OUTPUT:
-  #    - dcFil   : "Indicators" dataframe filtered
-  # -- USES:
-  #    - %>%
-  #    - dcast
-  df <- filter(df, IndicatorName==ind)                              # fix the indicator
-  dc <- dcast(df, CountryName ~ Year, value.var = "Value")          # reshape
-  row.names(dc) <- dc$CountryName                                   # set cnt as row names
-  dc <- select(dc,-CountryName)
-  dcAll <- dc
-  if(dropNA){                                                       # drop the NA
-    dc <- na.omit(dc)
-    if(showCnt){                                                    # show the filtered out
-      cntIn  <- dc    %>% row.names()
-      cntOut <- dcAll %>% row.names() %>% setdiff(cntIn)
-      if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
-      else{print('No countries has been filtered out')}
-    }
-  }
-  return(dc)
+   # -- INPUT: 
+   #    - df      : dataframe Indicators-like
+   #    - ind     : fixed indicator                                 [CountryName]
+   #    - dropNA  : TRUE for dropping the countries with a NA value
+   #    - showCnt : TRUE for showing the countries filtered out
+   # -- OUTPUT:
+   #    - dcFil   : "Indicators" dataframe filtered
+   # -- USES:
+   #    - %>%
+   #    - dcast
+   df <- filter(df, IndicatorName==ind)                              # fix the indicator
+   dc <- dcast(df, CountryName ~ Year, value.var = "Value")          # reshape
+   row.names(dc) <- dc$CountryName                                   # set cnt as row names
+   dc <- select(dc,-CountryName)
+   dcAll <- dc
+   if(dropNA){                                                       # drop the NA
+      dc <- na.omit(dc)
+      if(showCnt){                                                    # show the filtered out
+         cntIn  <- dc    %>% row.names()
+         cntOut <- dcAll %>% row.names() %>% setdiff(cntIn)
+         if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
+         else{print('No countries has been filtered out')}
+      }
+   }
+   return(dc)
 }
 
 # 03 unifCnt ----
@@ -191,36 +203,36 @@ getCntYear <- function(df, ind, dropNA = T, showCnt = T){
 # if showInd=T print the number of missing values for each indicators 
 #              [use it to figure out if there are some problematic (over time) indicators]
 unifCnt <- function(df, showCnt=T, showInd=T){
-  # -- INPUT: 
-  #    - df      : dataframe Indicators-like
-  #    - showCnt : TRUE for showing the countries filtered out
-  #    - showInd : TRUE for showing the number of missing values for each indicators (View)
-  # -- OUTPUT:
-  #    -         : df without countries outside the intersection
-  # -- USES:
-  #    - %>%
-  #    - dcast
-  multDc <- dcast(df, CountryName + Year ~ IndicatorName, value.var = "Value") # reshape df
-  if(showInd){ # show the number of missing values for each indicators 
-    numNa    <- sapply(multDc[,-c(1,2)], function(x) sum(is.na(x))) # compute the number of NA values
-    df_numNa <- data.frame(Value=numNa, row.names=names(numNa))      # dataframe for the View
-    colnames(df_numNa) <- 'Number of missing values'                # reset the col name
-    View(df_numNa)
-  }
-  years  <- df$Year        %>% unique() 
-  cntAll <- df$CountryName %>% unique() # all the cnt
-  cnt    <- cntAll
-  for(y in years){
-    dc  <- filter(multDc, Year==y)       # filter only the observations in year y
-    dc  <- na.omit(dc)                   # drop the cnt with a missing value
-    cnt <- intersect(cnt,dc$CountryName) # perform the intersection
-  }
-  if(showCnt){ # show the filtered out
+   # -- INPUT: 
+   #    - df      : dataframe Indicators-like
+   #    - showCnt : TRUE for showing the countries filtered out
+   #    - showInd : TRUE for showing the number of missing values for each indicators (View)
+   # -- OUTPUT:
+   #    -         : df without countries outside the intersection
+   # -- USES:
+   #    - %>%
+   #    - dcast
+   multDc <- dcast(df, CountryName + Year ~ IndicatorName, value.var = "Value") # reshape df
+   if(showInd){ # show the number of missing values for each indicators 
+      numNa    <- sapply(multDc[,-c(1,2)], function(x) sum(is.na(x))) # compute the number of NA values
+      df_numNa <- data.frame(Value=numNa, row.names=names(numNa))      # dataframe for the View
+      colnames(df_numNa) <- 'Number of missing values'                # reset the col name
+      View(df_numNa)
+   }
+   years  <- df$Year        %>% unique() 
+   cntAll <- df$CountryName %>% unique() # all the cnt
+   cnt    <- cntAll
+   for(y in years){
+      dc  <- filter(multDc, Year==y)       # filter only the observations in year y
+      dc  <- na.omit(dc)                   # drop the cnt with a missing value
+      cnt <- intersect(cnt,dc$CountryName) # perform the intersection
+   }
+   if(showCnt){ # show the filtered out
       cntOut <-  setdiff(cntAll,cnt)
       if(length(cntOut)!=0){print(paste(length(cntOut),'Countries out:')); print(cntOut)}
       else{print('No countries has been filtered out')}
-  }
-  return(filter(df,CountryName %in% cnt))
+   }
+   return(filter(df,CountryName %in% cnt))
 }
 
 # 04 get3D ----
@@ -230,23 +242,23 @@ unifCnt <- function(df, showCnt=T, showInd=T){
 # REM: I need to have 'years' as parameter so I can get the correspondence with the positions 
 #      in the list
 get3D <- function(df,years){
-  # -- INPUT: 
-  #    - df    : dataframe Indicators-like
-  #    - years : years to pun in the list            [vector of int]
-  # -- OUTPUT:
-  #    - ll    : list of 2D dataframe 'cnt vs ind' representing the 3D-matrix 
-  # -- USES:
-  #    - fullness
-  #    - getCntInd
-  if(!all(years %in% df$Year))
-    stop("ERROR: at least one year is not present in the dataframe")
-  if(fullness(df)!=1) 
-    warning("WARNING: the 3D matrix is not full")
-  i <- 1
-  ll <- list()
-  for(y in years){
-    ll[[i]] <- getCntInd(df, y, dropNA = F, showCnt = F)
-    i = i+1
-  }
-  return(ll)
+   # -- INPUT: 
+   #    - df    : dataframe Indicators-like
+   #    - years : years to pun in the list            [vector of int]
+   # -- OUTPUT:
+   #    - ll    : list of 2D dataframe 'cnt vs ind' representing the 3D-matrix 
+   # -- USES:
+   #    - fullness
+   #    - getCntInd
+   if(!all(years %in% df$Year))
+      stop("ERROR: at least one year is not present in the dataframe")
+   if(fullness(df)!=1) 
+      warning("WARNING: the 3D matrix is not full")
+   i <- 1
+   ll <- list()
+   for(y in years){
+      ll[[i]] <- getCntInd(df, y, dropNA = F, showCnt = F)
+      i = i+1
+   }
+   return(ll)
 }

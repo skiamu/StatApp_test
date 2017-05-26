@@ -62,10 +62,10 @@ T2.test <- function( X = NULL,
    # of the mean vector mu, if we've rejected H0 we want to see if
    # the sample mean of some components don't belong to its confidence 
    # interval
-   IC <- ConfidenceRegion(X,large_n = F,alpha = alpha,to.do = "sim_CI",plot = T)
+   IC <- ConfidenceRegion(X,large_n = F,alpha = alpha,to.do = "sim_Bonf",plot = T)
    points(1:p,mu0,pch=16, col = "orange")
    
-   return(p.value)
+   return(list(p.value = p.value, IC = IC))
    
 } # end t2.test function
 

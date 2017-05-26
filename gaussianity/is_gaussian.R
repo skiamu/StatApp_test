@@ -6,7 +6,7 @@ is.gauss <- function(X){
    # 
    # OUTPUT:
    
-   source("mcshapiro.test.RData")
+   
    n <- dim(X)[1] # number of observations
    p <- dim(X)[2] # number of variables
    

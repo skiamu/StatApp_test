@@ -88,5 +88,6 @@ extract2DmatrixWithFullestIndicators <- function(Indicators,M,fixYear=2010,Tind=
   if(viewFlag) {View(ind4)}
   temp4 <- temp3 %>%                       # in the first M indicators
     filter(temp3$IndicatorName %in% ind4$IndicatorName)
+  return(list(x = ind4, y = temp4))
 }
 

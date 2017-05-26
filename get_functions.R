@@ -59,7 +59,9 @@ get_Indicators <- function(myTopic=NULL,
    #     myRegion = country geographical region [vector of strings]
    #     myCounties = country names, it could be also a string
    #                  from the list above [vector of strings]
-   #     myAggregate = aggregated states from the list above [vector of string]             
+   #     myAggregate = aggregated states from the list above [vector of string]
+   #                   if this argument is NULL the aggregated countries will be
+   #                   eliminated             
    #     clear_name = TRUE if you don't want the unit of measure in the 
    #                  indicator names, FALSE otherwise (FALSE dafault)
    #     ind = "Indicator" dataframe
@@ -125,6 +127,14 @@ get_Indicators <- function(myTopic=NULL,
       Indicators <- Indicators %>%
          filter(CountryName %in% myAggregate)
       
+   }
+   else{# remove aggregated Country from Indicators
+      agg_code <- Country %>%
+         filter(Region == "") %>% # agg countries have "Region" blank
+         select(CountryCode)
+      Indicators <- Indicators %>%
+         filter(!(CountryCode %in% agg_code$CountryCode))
+      warning("I've eliminated aggregated countries from the dataframe")
    }
    
    if(!is.null(myCountries)){ # Countryname is an activated criteria
