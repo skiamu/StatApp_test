@@ -1,0 +1,7 @@
+PCA tradeindicators: GOOD DIM REDUCTION and, by biplot, I individuate the state that has huge problems from the costs and the time of trading, and an incredible complicated red tape
+
+PCA on the Productivity topic: Clustering by the economic sector on which they relay (3 different version of which i did 2)
+
+PCA on the Economic indicators topic: Clustering by the economic devenlopment by the indicator that we select from the theory and from the database to explain the growth of a state
+
+PCA on Easetostart: State that are poblematic for start-ups and witch are the problems
