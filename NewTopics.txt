@@ -23,7 +23,6 @@ Agricultural land (% of land area) (40)
 Arable land (% of land area) (42)
 Cereal production (metric tons) (209) (? Maybe not enough countries)
 Agriculture, value added (current US$) (224) (? Maybe not enough countries)
-Net primary income (BoP, current US$) (272) (? Maybe not enough countries)
 
 Environment:
 Adjusted savings: carbon dioxide damage (current US$) (10)
@@ -58,7 +57,7 @@ Net secondary income (BoP, current US$) (273)
 Tax payments (number) (329)
 
 
-Telecommunications:
+Telecommunications: OK
 Access to electricity (% of pop) (1) (187)
 Population growth (annual %) (7) (187) 
 Population, total (8) (187)
@@ -70,7 +69,7 @@ Internet users (per 100 people) (50) (185)
 Secure Internet servers (total or per 1 million people) (101 or 102) (183) (seconda perché confrontabile meglio tra stati)
 Fixed broadband subscriptions (138) (180)
 
-Economy indicators:
+Economy indicators: OK
 Foreign direct investment, net inflows (BoP, current US$) (24 or 80)
 DEC alternative conversion factor (LCU per US$) (47) “exchange rate”
 GDP per capita (current US$) (65)
@@ -86,7 +85,7 @@ Gross national expenditure (current US$) (189)
 Total tax rate (% of commercial profits) (334)
 Official exchange rate (LCU per US$, period average) (369)
 
-trade:
+trade: OK
 Export value index (2000 = 100) (58)
 Import value index (2000 = 100) (66)
 Merchandise trade (% of GDP) (122)
@@ -103,24 +102,24 @@ Trade (% of GDP) (196)
 279 Service imports (BoP, current US$)
 301 Trade in services (% of GDP)
 
-turismo:
-International tourism, number of arrivals (206)
-International tourism, receipts (current US$) (207)
-International tourism, expenditures (current US$) (221)
-International tourism, expenditures for travel items (current $)
-290 International tourism, expenditures (% of total imports)
-291 International tourism, receipts (% of total exports)
-
-valore settori:
+Produzione: OK PER GDP FARE QUELLO ASSOLUTO
 Adjusted savings: consumption of fixed capital (curreent used 54
+GDP per capita (current US$) (65)
+GDP at market prices (current US$) (63)
+GDP growth (annual %) (84)
+Merchandise trade (% of GDP) (122)
+Trade (% of GDP) (196)
+Agriculture, value added (current US$) 224
 Industry, value added (current US$) (240)
 Services, etc., value added (current US$) 245
+301 Trade in services (% of GDP)
 Agriculture, value added (% of GDP) 308
 Industry, value added (% of GDP) 310
 316 Services, etc., value added (% of GDP)
+Manufacturing, value added (current US$) 349
 Manufacturing, value added (% of GDP) (364)
 
-start an activity:
+start an activity: IO
 Cost to export (US$ per container) (178)
 Cost to import (US$ per container) (179)
 Documents to export (number) (180)
