@@ -30,7 +30,8 @@ myAgg <- c("East Asia & Pacific (all income levels)",
 # get the specified Indicators
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
-                     myCnt =  myAgg
+                     myCnt =  myAgg,
+                     agg = T
 )
 # get the desired dataframe ready to be analysed, drop the observation
 # if there's at least one NA, show who it is
@@ -41,14 +42,16 @@ df <- getCntYear(df1,
 df1$CountryName <- gsub("\\(.*$", "", df1$CountryName)
 # plot lines:
 pp1 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName)) +
+   geom_hline(yintercept = 0,size = 1,colour = "Blue") +
    geom_line()  +
    geom_point()  + 
-   geom_dl(aes(label = CountryCode),
-           method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
+   #geom_dl(aes(label = CountryCode),
+   #        method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
    ggtitle("GDP per capita growth (annual %)") +
    theme(axis.text=element_text(size=12),
          axis.title=element_text(size=14,face="bold"),
-         legend.key.size = unit(1.5,"cm"))
+         legend.key.size = unit(1.5,"cm")) +
+   ylim(c(-13,13))
 
 pp1
 
@@ -110,11 +113,12 @@ ggsave(filename = "CI.png",plot = q, path = paste(path,"/second_presentation",se
 #
 # applied technique : inference with repeated measure
 # repeated measure: before, during and after the crisis
-myYear <- c(2007,2009,2014)
-# myYear <- c(2000,2003,2006)
+# myYear <- c(2007,2009,2014)
+myYear <- c(2000,2003,2006)
 
 df1 <- getIndicators(myYear = myYear,
-                     myInd = myInd
+                     myInd = myInd,
+                     agg = F
                      #myAggregate = myAgg
 )
 df <- getCntYear(df1,
@@ -132,12 +136,13 @@ df1 <- df1 %>%
 pp2 <- ggplot(df1,aes(x = Year,y = Value, colour = CountryName)) +
    geom_line()  +
    geom_point()  + guides(colour=FALSE) +
-   geom_dl(aes(label = CountryCode),
-           method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
+  # geom_dl(aes(label = CountryCode),
+  #         method = list(dl.combine("first.points", "last.points"), cex = 0.8)) +
    ggtitle("GDP per capita growth (annual %) during the financial crisis") +
    theme(axis.text=element_text(size=12),
          axis.title=element_text(size=14,face="bold"),
-         legend.key.size = unit(1.5,"cm")) + labs(y = "Growth (%)")
+         legend.key.size = unit(1.5,"cm")) + labs(y = "Growth (%)") +
+   scale_color_grey()
 
 pp2
 ggsave(filename = "crisis.png",plot = pp2, path = paste(path,"/second_presentation",sep = "/"),
@@ -146,7 +151,7 @@ ggsave(filename = "crisis.png",plot = pp2, path = paste(path,"/second_presentati
 # define contrast matrix: we want to study mu1-mu2,mu1-mu3
 C <- rbind(c(1,-1,0),c(1,0,-1))
 # remove outlier, fuck them
-w <- find_outlier(X = df,remove = T,plot = T)
+w <- find_outlier(X = df,remove = T,plot = F)
 # set the null hp
 delta0 <- rep(0,dim(C)[1])
 # performe the analysis
@@ -233,7 +238,9 @@ ppp <- ggplot(data = w,
    ggtitle("GDP per capita growth (annual %)") +
    theme(axis.text=element_text(size=12),
          axis.title=element_text(size=14,face="bold"),
-         legend.key.size = unit(1.5,"cm"))
+         legend.key.size = unit(1.5,"cm")) 
+   
+  
 ppp
 ggsave(filename = "inter1.png",plot = ppp, path = paste(path,"/second_presentation",sep = "/"),
        width = 20, height = 10, units = "cm")

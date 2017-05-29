@@ -1,0 +1,40 @@
+% presentazione talk secondo WIP
+
+\documentclass[12pt,twoside,a4paper]{article}
+
+\begin{document}
+	\title{Andrea's talk}
+	\date{}
+	\maketitle
+	
+	\section{There has been growth?}
+	If we had listened to the news over the past years the word \textit{growth} was always there.
+	The question is: what do they mean by growth?
+	the definition of growth goes as follows: it's percentage annual change in the GDP (normalized by the population) in local currency.
+	\newline
+	In the plot we see the pattern of growth over the last four decades for six different macro-economic regions. A question that naturally raises is: was, on average, the growth zero in this time span?(end second slide) \newline
+	We performed a T2 test on the mean vector ($\mu$ is the vector of the average growth over the last 4 decades for six different economical regions). Not surprisingly we rejected the null hypothesis with a p.value almost zero. What is interesting is that considering the Bonferroni confidence intervals on the mean vector components, we reject $H_0$ for all the economic regions but the Sub-Saharan Africa meaning that for this region we can't claim that an economic growth took place (end third slide).\newline
+	
+	\section{Growth vs the economic crisis}
+	Going back to the first plot we notice that in 2009 the world economy fell into a dramatic recession. We asked ourselves if the crisis had a statistically significant influence on \textit{growth}. We fixed three years: 2007, 2009 and 2014 and we considered more than 150 countries. In the graph we see the pattern of growth before, during and right after the crisis. We set the null hp $ C\underline{\mu} = \underline{0} $. This hp basically means that the crisis didn't have any effect on growth and that there's no difference economic-wise between 2007 and 2014.
+	Performing the test on repeated measures we rejected the null hp with a p.value almost zero, concluding that the crisis affected in a negative way growth (end fourth slide).\newline
+	
+	\section{Growth vs Region, Year and Income}
+	Once we've seen that the 2008/2009 crisis had an impact on growth we asked ourselves if during and economic turmoils other factors affect growth. Looking at the map we observe that in 2009 the growth behaves differently according on the geographical region a country belongs to. Natural question are: during an economic crisis does geography play a role? what about the IncomeGroup? (end fifth slide). \newline
+	We performe a two-way ANOVA and the factors are: 1) geographical region 2) years including an economic crisis (2007,2009,2014),
+	years not including an economic crisis (2000,2003,2006).
+	Interestingly enough, the ANOVA is telling us that both Region and Year are significant factors in every states of the economy but during an economic crisis an interaction between the geographical region and the Year comes to existence. In other words, looking at the pictures, we see that switching from one year to another the growth's decrease has a different slope depending on the geographical region a country belongs to; for instance, for Europe and North America the decrease was drastic in 2009 while for the middle East not so significant. This can be heuristically explained by saying that countries with a more developed financial system are more liable to suffer from a crisis (end sixth slide). \newline
+	Finally, we repeated the ANOVA for factors Year and IncomeGroup, the result is that also a significant interaction between the IncomeGroup and the Year exists, the crisis was heavier for high-income nations than for low-income ones.
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+\end{document}
