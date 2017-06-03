@@ -218,6 +218,8 @@ myYear <- c(2000,2003,2006)
 fit.anova3 <- aov(Growth ~ fRegion + Year + fIncome)
 summary.aov(fit.anova3)
 
+fit.anova3 <- aov(Growth ~ Year + fIncome + Year:fIncome)
+summary.aov(fit.anova3)
 # with interaction
 fit.anova4 <- aov(Growth ~ fRegion + Year + fIncome + Year:fRegion + Year:fIncome + fIncome:fRegion )
 summary.aov(fit.anova4)
