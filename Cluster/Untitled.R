@@ -16,6 +16,10 @@ load("ReadData/data.RData")
 
 # Libraries
 library(dplyr)
+library(mvtnorm)
+library(rgl)
+library(car)
+library(MASS)
 
 # 01 --- Setting the working dataframe ----
 
@@ -46,7 +50,7 @@ TeleDF <- getIndicators(myYear = myYear, myInd = myInd, agg = F)
 # TeleMatrix = Matrix Country-Indicators created from TeleDF
 TeleMatrix <- getCntInd(TeleDF, myYear, dropNA = T, showCnt = T)
 
-# 02 --- Clustering ####
+# 02 --- Aggregate Hierarchical Clustering ####
 x11()
 pairs(TeleMatrix)
 dev.off()
@@ -242,40 +246,45 @@ table(cluster6.ew)
 table(cluster6.mw)
 
 # Da gerarchico 4 clusters mw esce vincitore, forse 5 ec non male con 4ec
-### K-mean method: bomba per earthquakes ####
+# 03 ---K-mean method ####
 
-### in automatic, command kmeans()
-result.k <- kmeans(Q, centers=2) # Centers: fixed number of clusters
+cluster3.k <- kmeans(TeleMatrix, centers=3) # Centers: fixed number of clusters
+cluster4.k <- kmeans(TeleMatrix, centers=4) # Centers: fixed number of clusters
+cluster5.k <- kmeans(TeleMatrix, centers=5) # Centers: fixed number of clusters
+cluster6.k <- kmeans(TeleMatrix, centers=6) # Centers: fixed number of clusters
 
-names(result.k)
 
-result.k$cluster      # labels of clusters
-result.k$centers      # centers of the clusters
-result.k$totss        # tot. sum of squares
-result.k$withinss     # sum of squares within clusters
-result.k$tot.withinss # sum(sum of squares nei cluster)
-result.k$betweenss    # sum of squares between clusters
-result.k$size         # dimention of the clusters
+cluster4.k$cluster      # labels of clusters
+cluster4.k$centers      # centers of the clusters
 
 x11()
-plot(Q, col = result.k$cluster+1)
+plot(TeleMatrix, col = cluster3.k$cluster+1)
+x11()
+plot(TeleMatrix, col = cluster4.k$cluster+1)
+x11()
+plot(TeleMatrix, col = cluster5.k$cluster+1)
+# Sembra 4 migliore
 
 open3d()
-plot3d(Q, size=3, col=result.k$cluster+1, aspect = F) 
-points3d(result.k$centers, pch = 4, cex = 2, lwd = 4)
+plot3d(TeleMatrix, size=3, col=cluster3.k$cluster+1, aspect = F) 
+points3d(cluster3.k$centers, pch = 4, cex = 2, lwd = 4)
+open3d()
+plot3d(TeleMatrix, size=3, col=cluster4.k$cluster+1, aspect = F) 
+points3d(cluster4.k$centers, pch = 4, cex = 2, lwd = 4)
+open3d()
+plot3d(TeleMatrix, size=3, col=cluster5.k$cluster+1, aspect = F) 
+points3d(cluster5.k$centers, pch = 4, cex = 2, lwd = 4)
+open3d()
+plot3d(TeleMatrix, size=3, col=cluster6.k$cluster+1, aspect = F) 
+points3d(cluster6.k$centers, pch = 4, cex = 2, lwd = 4)
 
-### to choose k:
-### 1) evaluate the variability between the groups wrt the variability withing the groups
-### 2) evaluate the result of hierarchical clustering (computationally expensive)
-
-# method 1) (we've just seed method 2 and suggested k = 2)
-
+# to choose k: evaluate the variability between the groups wrt the variability withing the groups
 b <- w <- NULL
 for(k in 1:10){
   
-  result.k <- kmeans(Q, k)
-  w <- c(w, sum(result.k$wit))
-  b <- c(b, result.k$bet)
+  telecom.k <- kmeans(TeleMatrix, k)
+  w <- c(w, sum(telecom.k$wit))
+  b <- c(b, telecom.k$bet)
   
 }
 
@@ -287,14 +296,4 @@ x11()
 matplot(1:10, w/(w+b), pch='', xlab='clusters', ylab='within/tot', main='Choice of k', ylim=c(0,1))
 lines(1:10, w/(w+b), type='b', lwd=2)
 
-
-# this method seems to suggest k = 2 or 3
-# let's try also k=3:
-result.k <- kmeans(Q, 3)
-
-x11()
-plot(Q, col = result.k$cluster+1)
-
-open3d()
-plot3d(Q, size=3, col=result.k$cluster+1, aspect = F) 
-points3d(result.k$centers, pch = 4, cex = 2, lwd = 4)
+# nonostante questi ris numerici che spingerebbero peravere più cluster pox, 4-5 perfetti per interpretazione
