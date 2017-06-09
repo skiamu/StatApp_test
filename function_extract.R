@@ -3,8 +3,8 @@
 library(reshape2) # dcast
 library(dplyr)    # %>%
 
-# source('Filters/functionsFullMatrix.R') # fullness
-source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
+source('Filters/functionsFullMatrix.R') # fullness
+#source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
 # 01 getIndicators ----
 # getIndicators filter from 'Indicators' the observations which have:
