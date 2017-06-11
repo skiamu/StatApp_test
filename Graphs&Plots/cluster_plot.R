@@ -1,22 +1,36 @@
 # function to plot cluster analysis
 
 # maybe change colors to some nicer ones
-colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) , 
-              '2'=rgb(0.8,0.2,0.5,0.9) , 
-              '3'=rgb(0.7,0.5,0.1,0.9) , 
-              '4'=rgb(0.9,1.0,0.1,0.9) , 
-              '5'=rgb(0.5,0.7,0.2,0.9) , 
-              '6'=rgb(0.9,0.1,0.0,0.9) , 
-              '7'=rgb(0.1,1.0,0.9,0.9) , 
+# colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) , 
+#               '2'=rgb(0.8,0.2,0.5,0.9) , 
+#               '3'=rgb(0.7,0.5,0.1,0.9) , 
+#               '4'=rgb(0.9,1.0,0.1,0.9) , 
+#               '5'=rgb(0.5,0.7,0.2,0.9) , 
+#               '6'=rgb(0.9,0.1,0.0,0.9) , 
+#               '7'=rgb(0.1,1.0,0.9,0.9) , 
+#               'NA'='grey' ) # important that it is in the end
+# colClIn <- c( '1'=rgb(0.2,0.5,0.5,0.4) , 
+#               '2'=rgb(0.8,0.2,0.5,0.4) , 
+#               '3'=rgb(0.7,0.5,0.1,0.4) , 
+#               '4'=rgb(0.9,1.0,0.1,0.4) , 
+#               '5'=rgb(0.5,0.7,0.2,0.4) , 
+#               '6'=rgb(0.9,0.1,0.0,0.4) , 
+#               '7'=rgb(0.1,1.0,0.9,0.4) )
+colorCl <- c( '1'='red' ,
+              '2'='green' ,
+              '3'='blue' ,
+              '4'='yellow' ,
+              '5'='black' ,
+              '6'='brown' ,
+              '7'='pink' ,
               'NA'='grey' ) # important that it is in the end
-colClIn <- c( '1'=rgb(0.2,0.5,0.5,0.4) , 
-              '2'=rgb(0.8,0.2,0.5,0.4) , 
-              '3'=rgb(0.7,0.5,0.1,0.4) , 
-              '4'=rgb(0.9,1.0,0.1,0.4) , 
-              '5'=rgb(0.5,0.7,0.2,0.4) , 
-              '6'=rgb(0.9,0.1,0.0,0.4) , 
-              '7'=rgb(0.1,1.0,0.9,0.4) )
-
+colClIn <- c( '1'='red' ,
+              '2'='green' ,
+              '3'='blue' ,
+              '4'='yellow' ,
+              '5'='black' ,
+              '6'='brown' ,
+              '7'='pink')
 # fill a map of the world with clusters
 plotClusterMap <- function(cl, n) { 
   # cl is a named vector of clusters (the first argument of kmeans)

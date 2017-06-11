@@ -1,7 +1,7 @@
 # cluster on agriculture
 
 # 00 preliminars ----
-setwd("C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc")
+setwd('/Users/mowythebest/Desktop/StatApp_test')
 
 # User defined functions:
 source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, fullness
