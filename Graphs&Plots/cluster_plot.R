@@ -1,22 +1,22 @@
 # function to plot cluster analysis
 
 # maybe change colors to some nicer ones
-# colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) , 
-#               '2'=rgb(0.8,0.2,0.5,0.9) , 
-#               '3'=rgb(0.7,0.5,0.1,0.9) , 
-#               '4'=rgb(0.9,1.0,0.1,0.9) , 
-#               '5'=rgb(0.5,0.7,0.2,0.9) , 
-#               '6'=rgb(0.9,0.1,0.0,0.9) , 
-#               '7'=rgb(0.1,1.0,0.9,0.9) , 
-#               'NA'='grey' ) # important that it is in the end
-# colClIn <- c( '1'=rgb(0.2,0.5,0.5,0.4) , 
-#               '2'=rgb(0.8,0.2,0.5,0.4) , 
-#               '3'=rgb(0.7,0.5,0.1,0.4) , 
-#               '4'=rgb(0.9,1.0,0.1,0.4) , 
-#               '5'=rgb(0.5,0.7,0.2,0.4) , 
-#               '6'=rgb(0.9,0.1,0.0,0.4) , 
-#               '7'=rgb(0.1,1.0,0.9,0.4) )
-colorCl <- c( '1'='red' ,
+colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) ,
+              '2'=rgb(0.8,0.2,0.5,0.9) ,
+              '3'=rgb(0.7,0.5,0.1,0.9) ,
+              '4'=rgb(0.9,1.0,0.1,0.9) ,
+              '5'=rgb(0.5,0.7,0.2,0.9) ,
+              '6'=rgb(0.9,0.1,0.0,0.9) ,
+              '7'=rgb(0.1,1.0,0.9,0.9) ,
+              'NA'='grey' ) # important that it is in the end
+colClIn <- c( '1'=rgb(0.2,0.5,0.5,0.4) ,
+              '2'=rgb(0.8,0.2,0.5,0.4) ,
+              '3'=rgb(0.7,0.5,0.1,0.4) ,
+              '4'=rgb(0.9,1.0,0.1,0.4) ,
+              '5'=rgb(0.5,0.7,0.2,0.4) ,
+              '6'=rgb(0.9,0.1,0.0,0.4) ,
+              '7'=rgb(0.1,1.0,0.9,0.4) )
+colorClMac <- c( '1'='red' ,
               '2'='green' ,
               '3'='blue' ,
               '4'='yellow' ,
@@ -24,15 +24,9 @@ colorCl <- c( '1'='red' ,
               '6'='brown' ,
               '7'='pink' ,
               'NA'='grey' ) # important that it is in the end
-colClIn <- c( '1'='red' ,
-              '2'='green' ,
-              '3'='blue' ,
-              '4'='yellow' ,
-              '5'='black' ,
-              '6'='brown' ,
-              '7'='pink')
 # fill a map of the world with clusters
-plotClusterMap <- function(cl, n) { 
+plotClusterMap <- function(cl, n, mac=F) {
+  if(mac) colorCl=colorClMac
   # cl is a named vector of clusters (the first argument of kmeans)
   # n number of clusters [not realy necessary]
   map.world <- map_data(map="world")
@@ -82,10 +76,11 @@ plotClusterHierarchical <- function(dc, showDist=T, showDend=T){
 }
 
 # k-means ----
-kmeansPlot     <- function(dc, cent=2, showSp=T, showMap=T, showMeans=T){
+kmeansPlot     <- function(dc, cent=2, showSp=T, showMap=T, showMeans=T, mac=F){
+  if(mac) {colClIn=NULL; colorCl=colorClMac}
   res <- kmeans(dc,centers = cent,nstart = 100)
   if(showSp)  {x11(); plot(dc, col = res$cluster+1)}
-  if(showMap) {x11(); print(plotClusterMap(res$cluster, cent))}
+  if(showMap) {x11(); print(plotClusterMap(res$cluster, cent, mac))}
   if(showMeans) {
     dc$cluster <- sapply(row.names(dc), function(x) as.character(res$cluster[x]))
     meansCl <- dc %>% group_by(cluster) %>% summarize_each(funs(mean))
@@ -97,12 +92,12 @@ kmeansPlot     <- function(dc, cent=2, showSp=T, showMap=T, showMeans=T){
     colors_in=    colClIn
     radarchart(meansCl[,!names(meansCl) %in% c('cluster')] , axistype=0 , maxmin=F,
                #custom polygon
-               pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+               pcol=colors_border , pfcol=colClIn , plwd=4 , plty=1,
                #custom the grid
                cglcol="grey", cglty=1, axislabcol="black", cglwd=0.8, 
                #custom labels
                vlcex=0.8 )
-    legend(x=0.7, y=1.2, legend = meansCl$cluster, bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
+    legend(x=0.7, y=1.2, legend = meansCl$cluster, bty = "n", pch=20 , col=colors_border , text.col = "grey", cex=1.2, pt.cex=3)
   }
 }
 

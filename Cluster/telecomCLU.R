@@ -255,7 +255,7 @@ lines(1:10, w/(w+b), type='b', lwd=2)
 #scelgo guindi clusterizzazione mediante k-means, i particolare con 5 cluster l'interpretazione è chiara e teoricamente sensata
 # 04 --- Plot cluster ####
 set.seed(2000)
-kmeansPlot(TeleMatrixStd,5, showSp=, showMap=T, showMeans=T)
+kmeansPlot(TeleMatrixStd,5, showSp=, showMap=T, showMeans=T, mac=T)
 # 1 paesi poverissimi con telecomm scarsissime e futura crescita popolaz alta ma non attualmente exploitabile
 # 2 paesi con telecomunic avanzatix ma crescità pop non prosperosa (invest finance)
 # 3 paesi avanzatissimi con anche futura crescita popo (ha senso investire industrialmente, ma competiz altissima)
