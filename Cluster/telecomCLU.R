@@ -256,6 +256,11 @@ lines(1:10, w/(w+b), type='b', lwd=2)
 # 04 --- Plot cluster ####
 set.seed(2000)
 kmeansPlot(TeleMatrixStd,5, showSp=, showMap=T, showMeans=T)
+# 1 paesi poverissimi con telecomm scarsissime e futura crescita popolaz alta ma non attualmente exploitabile
+# 2 paesi con telecomunic avanzatix ma crescità pop non prosperosa (invest finance)
+# 3 paesi avanzatissimi con anche futura crescita popo (ha senso investire industrialmente, ma competiz altissima)
+# 4 paesi aanzati ma non cosi tecnologici ma con crescita popo schifo ==> c'è bisogno convenzioni per favorire lo sviluppo 
+# 5 paesi con telecom da schifo ma buona futura crescita popo e non cosi poveri
 # 05 --- Existence of a difference in the mean value of the clusters distributions ####
 
 p  <- 6
