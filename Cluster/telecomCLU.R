@@ -11,6 +11,7 @@ source("function_name.R")               # name2codeCnt, ...
 source("outlier.R")                     # 
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot, kmeansCompare
+source("/Users/mowythebest/Desktop/StatApp_test/Cluster/fda.R")
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -30,7 +31,8 @@ library(GGally)                         # ggpairs # http://stackoverflow.com/que
 library(fmsb)                           # radarchart
 
 # Functions
-load("/Users/mowythebest/Desktop/Ingegneria_matematica/5.2_Applied_Statistics/funzioni_esame/mcshapiro.test.RData")
+load("/Users/mowythebest/Desktop/StatApp_test/Gaussianity/mcshapiro.test.RData")
+
 # 01 --- Setting the working dataframe ----
 
 # Indicators of this topic: "Access to electricity (% of population)" ?, 
@@ -46,7 +48,6 @@ myInd <- c(#"Access to electricity (% of population)",
            "Population growth (annual %)",
            "Fixed telephone subscriptions (per 100 people)",
            "Mobile cellular subscriptions (per 100 people)",
-           "Urban population growth (annual %)",
            "Urban population growth (annual %)",
            "Internet users (per 100 people)"
 )
@@ -263,7 +264,7 @@ kmeansPlot(TeleMatrixStd,5, showSp=, showMap=T, showMeans=T, mac=T)
 # 5 paesi con telecom da schifo ma buona futura crescita popo e non cosi poveri
 # 05 --- Existence of a difference in the mean value of the clusters distributions ####
 
-p  <- 6
+p  <- 5
 n1 <- table(cluster5.k$cluster)[1]
 n2 <- table(cluster5.k$cluster)[2]
 n3 <- table(cluster5.k$cluster)[3]
@@ -276,5 +277,187 @@ mcshapiro.test(TeleMatrixStd[cluster5.k$cluster=='2',])
 mcshapiro.test(TeleMatrixStd[cluster5.k$cluster=='3',])
 mcshapiro.test(TeleMatrixStd[cluster5.k$cluster=='4',])
 mcshapiro.test(TeleMatrixStd[cluster5.k$cluster=='5',])
-
+graphics.off()
 # the distributions are normal as ARF is short to study
+# 06 --- Fisher discriminant analysis ####
+# we look for the directions that highlight the discrimination among groups: the canonical directions
+# Remark: Assumptions: homogeneity of the covariance structure [we relax the normal assumption] for this reason I can use it with this daaset
+
+# assumption
+t1.cov  <-  cov(TeleMatrixStd[cluster5.k$cluster=='1',])
+t2.cov  <-  cov(TeleMatrixStd[cluster5.k$cluster=='2',])
+t3.cov  <-  cov(TeleMatrixStd[cluster5.k$cluster=='3',])
+t4.cov  <-  cov(TeleMatrixStd[cluster5.k$cluster=='4',])
+t5.cov  <-  cov(TeleMatrixStd[cluster5.k$cluster=='5',])
+
+round(t1.cov,digits=1)
+round(t2.cov,digits=1)
+round(t3.cov,digits=1)
+round(t4.cov,digits=1)
+round(t5.cov,digits=1)
+
+x11(width=21)
+par(mfrow=c(2,3))
+image(t1.cov, col=heat.colors(100),main='Cov. 1', asp=1, axes = FALSE, breaks = quantile(rbind(t1.cov,t2.cov,t3.cov,t4.cov,t5.cov), (0:100)/100, na.rm=TRUE))
+image(t2.cov, col=heat.colors(100),main='Cov. 2', asp=1, axes = FALSE, breaks = quantile(rbind(t1.cov,t2.cov,t3.cov,t4.cov,t5.cov), (0:100)/100, na.rm=TRUE))
+image(t3.cov, col=heat.colors(100),main='Cov. 3', asp=1, axes = FALSE, breaks = quantile(rbind(t1.cov,t2.cov,t3.cov,t4.cov,t5.cov), (0:100)/100, na.rm=TRUE))
+image(t4.cov, col=heat.colors(100),main='Cov. 4', asp=1, axes = FALSE, breaks = quantile(rbind(t1.cov,t2.cov,t3.cov,t4.cov,t5.cov), (0:100)/100, na.rm=TRUE))
+image(t5.cov, col=heat.colors(100),main='Cov. 5', asp=1, axes = FALSE, breaks = quantile(rbind(t1.cov,t2.cov,t3.cov,t4.cov,t5.cov), (0:100)/100, na.rm=TRUE))
+# ... bah, faccio finta che valga come HP
+
+g=5 
+
+i1 <- which(cluster5.k$cluster=='1')
+i2 <- which(cluster5.k$cluster=='2')
+i3 <- which(cluster5.k$cluster=='3')
+i4 <- which(cluster5.k$cluster=='4')
+i5 <- which(cluster5.k$cluster=='5')
+
+n1 <- length(i1)
+n2 <- length(i2)
+n3 <- length(i3)
+n4 <- length(i4)
+n5 <- length(i5)
+n <- n1+n2+n3+n4+n5
+
+m <-  colMeans(TeleMatrixStd)
+m1 <- colMeans(TeleMatrixStd[i1,])
+m2 <- colMeans(TeleMatrixStd[i2,])
+m3 <- colMeans(TeleMatrixStd[i3,])
+m4 <- colMeans(TeleMatrixStd[i4,])
+m5 <- colMeans(TeleMatrixStd[i5,])
+
+Sp  <- ((n1-1)*t1.cov+(n2-1)*t2.cov+(n3-1)*t3.cov+(n4-1)*t4.cov+(n5-1)*t5.cov)/(n-g)
+
+# covariance among groups (estimate)
+B <- 1/n*(n1* cbind(m1 - m) %*% rbind(m1 - m) +
+            n2* cbind(m2 - m) %*% rbind(m2 - m) +
+            n3* cbind(m3 - m) %*% rbind(m3 - m) +
+            n4* cbind(m4 - m) %*% rbind(m4 - m) +
+            n5* cbind(m5 - m) %*% rbind(m5 - m) )
+B
+
+# covariance within groups (estimate)
+Sp
+
+# how many coordinates?
+g <- 5
+p <- 5
+s <- min(g-1,p)
+s
+
+# Matrix Sp^(-1/2)
+val.Sp <- eigen(Sp)$val
+vec.Sp <- eigen(Sp)$vec
+invSp.3 <- 1/sqrt(val.Sp[1])*vec.Sp[,1]%*%t(vec.Sp[,1]) + 1/sqrt(val.Sp[2])*vec.Sp[,2]%*%t(vec.Sp[,2]) + 1/sqrt(val.Sp[3])*vec.Sp[,3]%*%t(vec.Sp[,3])
+invSp.3 
+
+spec.dec <- eigen(invSp.3 %*% B %*% invSp.3)
+
+# first canonical coordinate
+a1 <- invSp.3 %*% spec.dec$vec[,1]
+a1
+
+cc1.telecom <- as.matrix(TeleMatrixStd)%*%a1
+
+# second canonical coordinate
+a2 <- invSp.3 %*% spec.dec$vec[,2]
+a2
+
+cc2.telecom <- as.matrix(TeleMatrixStd)%*%a2
+
+# third canonical coordinate
+a3 <- invSp.3 %*% spec.dec$vec[,3]
+a3
+
+cc3.telecom <- as.matrix(TeleMatrixStd)%*%a3
+
+### How do I classify a new observation?
+x.new=
+# compute the canonical coordinates
+cc.new=c(x.new%*%a1, x.new%*%a2, x.new%*%a3)
+cc.m1 <- c(m1%*%a1, m1%*%a2, m1%*%a3)
+cc.m2 <- c(m2%*%a1, m2%*%a2, m1%*%a3)
+cc.m3 <- c(m3%*%a1, m3%*%a2, m1%*%a3)
+cc.m4 <- c(m4%*%a1, m4%*%a2, m1%*%a3)
+cc.m5 <- c(m5%*%a1, m5%*%a2, m1%*%a3)
+# compute the distance from the means
+dist.m=c(d1=sqrt(sum((cc.new-cc.m1)^2)),
+         d2=sqrt(sum((cc.new-cc.m2)^2)),
+         d3=sqrt(sum((cc.new-cc.m3)^2)),
+         d4=sqrt(sum((cc.new-cc.m4)^2)),
+         d5=sqrt(sum((cc.new-cc.m5)^2)))
+# assign to the nearest mean
+which.min(dist.m)
+# 07 --- Validation of the classifier ####
+
+# Compute the canonical coordinates of the data
+coord.cc=cbind(as.matrix(TeleMatrixStd)%*%cbind(a1),
+               as.matrix(TeleMatrixStd)%*%cbind(a2),
+               as.matrix(TeleMatrixStd)%*%cbind(a3))
+# Compute the coordinates of the mean within groups along the canonical directions
+cc.m1 <- c(m1%*%a1, m1%*%a2, m1%*%a3)
+cc.m2 <- c(m2%*%a1, m2%*%a2, m1%*%a3)
+cc.m3 <- c(m3%*%a1, m3%*%a2, m1%*%a3)
+cc.m4 <- c(m4%*%a1, m4%*%a2, m1%*%a3)
+cc.m5 <- c(m5%*%a1, m5%*%a2, m1%*%a3)
+
+# Assign data to groups
+f.class=rep(0, n)
+for(i in 1:n) # for each datum
+{
+  # Compute the Euclidean distance of the i-th datum from mean within the groups
+  dist.m=c(d1=sqrt(sum((coord.cc[i,]-cc.m1)^2)),
+           d2=sqrt(sum((coord.cc[i,]-cc.m2)^2)),
+           d3=sqrt(sum((coord.cc[i,]-cc.m3)^2)),
+           d4=sqrt(sum((coord.cc[i,]-cc.m4)^2)),
+           d5=sqrt(sum((coord.cc[i,]-cc.m5)^2)))
+  # Assign the datum to the group whose mean is the nearest
+  f.class[i]=which.min(dist.m)
+}
+f.class
+table(classe.vera=cluster5.k$cluster, classe.allocata=f.class)
+
+errors <- (f.class != cluster5.k$cluster)
+sum(errors)
+length(cluster5.k$cluster)
+
+APERf   <- sum(errors)/length(cluster5.k$cluster)
+APERf
+
+# Compute the estimate of the AER by cross-validation
+loocv <- 0
+for (k in 1:199) {
+  trainTeleMatrixStd <- TeleMatrixStd[-k, ]
+  traincluster5.k <- cluster5.k$cluster[-k]
+  testTeleMatrixStd <- data.matrix(TeleMatrixStd[k, ])
+  fdc <- fda(trainTeleMatrixStd,traincluster5.k,c('1','2','3','4','5'),3,5)
+  
+  cc.new=c(testTeleMatrixStd%*%fdc[,1], testTeleMatrixStd%*%fdc[,2], testTeleMatrixStd%*%fdc[,3])
+  # compute the distance from the means
+  i1 <- which(traincluster5.k=='1')
+  i2 <- which(traincluster5.k=='2')
+  i3 <- which(traincluster5.k=='3')
+  i4 <- which(traincluster5.k=='4')
+  i5 <- which(traincluster5.k=='5')
+  m1 <- colMeans(trainTeleMatrixStd[i1,])
+  m2 <- colMeans(trainTeleMatrixStd[i2,])
+  m3 <- colMeans(trainTeleMatrixStd[i3,])
+  m4 <- colMeans(trainTeleMatrixStd[i4,])
+  m5 <- colMeans(trainTeleMatrixStd[i5,])
+  cc.m1 <- c(m1%*%fdc[,1], m1%*%fdc[,2], m1%*%fdc[,3])
+  cc.m2 <- c(m2%*%fdc[,1], m2%*%fdc[,2], m1%*%fdc[,3])
+  cc.m3 <- c(m3%*%fdc[,1], m3%*%fdc[,2], m1%*%fdc[,3])
+  cc.m4 <- c(m4%*%fdc[,1], m4%*%fdc[,2], m1%*%fdc[,3])
+  cc.m5 <- c(m5%*%fdc[,1], m5%*%fdc[,2], m1%*%fdc[,3])
+  dist.m=c(d1=sqrt(sum((cc.new-cc.m1)^2)),
+           d2=sqrt(sum((cc.new-cc.m2)^2)),
+           d3=sqrt(sum((cc.new-cc.m3)^2)),
+           d4=sqrt(sum((cc.new-cc.m4)^2)),
+           d5=sqrt(sum((cc.new-cc.m5)^2)))
+  # assign to the nearest mean
+  cv=which.min(dist.m)
+  loocv <- loocv + (cv != cluster5.k$cluster[k])
+}
+AERCV   <- loocv/length(cluster5.k$cluster)
+AERCV
