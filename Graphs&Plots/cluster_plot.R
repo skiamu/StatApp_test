@@ -1,5 +1,13 @@
 # function to plot cluster analysis
 
+simCnt <- function(dc,cnt,n){ # find the n most similar countries to cnt
+  return(sort(as.matrix(dist(dc))[cnt,])[2:(n+1)])
+}
+
+getClu <- function(cnt,km) { # find the cluster of cnt
+  return(km$cluster[cnt])
+}
+
 # maybe change colors to some nicer ones
 colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) ,
               '2'=rgb(0.8,0.2,0.5,0.9) ,
@@ -42,7 +50,9 @@ plotClusterMap <- function(cl, n, mac=F) {
           axis.ticks.x=element_blank()) +
     theme(axis.title.y=element_blank(),
           axis.text.y=element_blank(),
-          axis.ticks.y=element_blank())
+          axis.ticks.y=element_blank()) + 
+    theme(legend.position = "bottom") +
+    guides(fill = guide_legend(nrow = 1, label.position = "bottom",label.hjust = 0.5))
   return(gg)
 }
 
@@ -84,9 +94,6 @@ kmeansPlot     <- function(dc, cent=2, showSp=T, showMap=T, showMeans=T, mac=F){
   if(showMeans) {
     dc$cluster <- sapply(row.names(dc), function(x) as.character(res$cluster[x]))
     meansCl <- dc %>% group_by(cluster) %>% summarize_each(funs(mean))
-    #View(meansCl)
-    #View(meansCl[,-'cluster'])
-    #print(meansCl[,-cluster])
     x11()
     colors_border=colorCl
     colors_in=    colClIn
@@ -113,3 +120,23 @@ kmeansCompare <- function(dc, maxCl=10, n=1){
   lines(1:maxCl, b/(w+b), type='b', lwd=2)
   print('REM: k-means is sensible to the starting baricenters, if you run it 2 times it gives different results')
 }
+
+radarTopic <- function(dc,km,cntRad=NULL,mac=F){
+  if(mac) {colClIn=NULL; colorCl=colorClMac}
+  dc$cluster <- sapply(row.names(dc), function(x) as.character(km$cluster[x]))
+  meansCl <- dc %>% group_by(cluster) %>% summarize_each(funs(mean))
+  if(!is.null(cntRad)){ # put a country in cntRad to plot it on the radarplot
+    meansCl <- rbind(meansCl,dc[cntRad,])
+    meansCl[cntRad,'cluster'] <- cntRad 
+  }
+  radarchart(meansCl[,!names(meansCl) %in% c('cluster')] , axistype=0 , maxmin=F,
+             #custom polygon
+             pcol=colorCl , pfcol=colClIn , plwd=4 , plty=1,
+             #custom the grid
+             cglcol="grey", cglty=1, axislabcol="black", cglwd=0.8, 
+             #custom labels
+             vlcex=0.8 )
+  #legend(x=0, y=-1.3, xjust = 0.5, horiz=T, legend = meansCl$cluster, bty = "n", pch=20 , col=colorCl , text.col = "grey", cex=1.2, pt.cex=3)
+  return(recordPlot())
+}
+

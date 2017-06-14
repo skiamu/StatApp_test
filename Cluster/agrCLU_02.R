@@ -96,3 +96,66 @@ kmeansPlot(agrDC_s,5, showSp=T, showMap=T, showMeans=T)
 # is it due to the fact that the ditribution is centered in 0 with some outliers?
 # how should we deal with that?
 
+set.seed(2000)
+kmAgr <- kmeans(agrDC_s, 5, nstart = 100)
+pCluAgr <- plotClusterMap(kmAgr$cluster, 5)
+x11(); pCluAgr
+
+radarTopic <- function(dc,km,cntRad=NULL,mac=F){
+  if(mac) {colClIn=NULL; colorCl=colorClMac}
+  dc$cluster <- sapply(row.names(dc), function(x) as.character(km$cluster[x]))
+  meansCl <- dc %>% group_by(cluster) %>% summarize_each(funs(mean))
+  if(!is.null(cntRad)){ # put a country in cntRad to plot it on the radarplot
+    meansCl <- rbind(meansCl,dc[cntRad,])
+    meansCl[cntRad,'cluster'] <- cntRad 
+  }
+  radarchart(meansCl[,!names(meansCl) %in% c('cluster')] , axistype=0 , maxmin=F,
+             #custom polygon
+             pcol=colorCl , pfcol=colClIn , plwd=4 , plty=1,
+             #custom the grid
+             cglcol="grey", cglty=1, axislabcol="black", cglwd=0.8, 
+             #custom labels
+             vlcex=0.8 )
+  #legend(x=0, y=-1.3, xjust = 0.5, horiz=T, legend = meansCl$cluster, bty = "n", pch=20 , col=colorCl , text.col = "grey", cex=1.2, pt.cex=3)
+  return(recordPlot())
+}
+
+pRadAgr <- radarTopic(agrDC_s,kmAgr)
+x11(); pRadAgr 
+
+# find similar countries
+simCnt <- function(dc,cnt,n){ # find the n most similar countries to cnt
+  return(sort(as.matrix(dist(dc))[cnt,])[2:(n+1)])
+}
+
+simCnt(agrDC_s,'Italy',3)
+
+cluAgr <- data.frame(
+  Cluster=1:nClu,
+  Description=c('agriculture is an important component in the GDP',
+                'high forest area',
+                'high extension of permanent cropland (coffee, gum, etc)',
+                'high agricultural land',
+                'efficient agriculture'),
+  NumCountries=kmAgr$size
+)
+
+getClu <- function(cnt,km) {return(km$cluster[cnt])}
+
+getClu('Italy',kmAgr)
+
+test <- as.data.frame(t(getClu(names(simCnt(agrDC_s,'Italy',3)),kmAgr)))
+
+
+test
+
+
+
+
+
+
+
+
+
+
+
