@@ -51,7 +51,7 @@ find_outlier <- function(X, remove = FALSE,plot = F){
    }  
    }
    ## 4) mahalanobis distance
-   d <- mahalanobis(as.matrix(X),colMeans(X),cov(X))
+   d <- mahalanobis(as.matrix(scale(X)),colMeans(scale(X)),cov(scale(X)))
    x11()
    # histogram of d
    hist(d, prob = T, main="Mahalanobis distance hist",

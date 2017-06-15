@@ -3,7 +3,7 @@
 library(reshape2) # dcast
 library(dplyr)    # %>%
 
-source('Filters/functionsFullMatrix.R') # fullness
+#source('Filters/functionsFullMatrix.R') # fullness
 #source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
 # 01 getIndicators ----
@@ -38,6 +38,18 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
   #    - %>%
   #    - dcast
   
+   
+   
+   # Indicators
+   if(!is.null(myInd)){# IndicatorName is an activated criteria
+      if(!all(myInd %in% Indicators$IndicatorName)){
+         print('Indicators in myInd not in Indicators$IndicatorName :')
+         print(setdiff(myInd, Indicators$IndicatorName))
+         stop("ERROR: at least one indicator in input is not present in the dataframe")
+      }
+      Indicators <- Indicators %>% filter(IndicatorName %in% myInd)
+   }
+   
   # Out the aggregate
   if(!agg){
     my.country.code <- filter(Country, Region == '')$CountryCode
@@ -62,15 +74,6 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
     Indicators <- Indicators %>% filter(CountryCode %in% my.country.name$CountryCode)
   }
   
-  # Indicators
-  if(!is.null(myInd)){# IndicatorName is an activated criteria
-    if(!all(myInd %in% Indicators$IndicatorName)){
-      print('Indicators in myInd not in Indicators$IndicatorName :')
-      print(setdiff(myInd, Indicators$IndicatorName))
-      stop("ERROR: at least one indicator in input is not present in the dataframe")
-    }
-    Indicators <- Indicators %>% filter(IndicatorName %in% myInd)
-  }
   
   # Topics
   if(!is.null(myTopic)){ # Topic is an activated criteria

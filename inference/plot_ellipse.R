@@ -18,7 +18,8 @@ plot_ellipse <- function (mu,
                           sample = T,
                           n = NULL,
                           large_n = F,
-                          title_plot = NULL){
+                          title_plot = NULL,
+                          print.result = T){
    # INPUT:
    #      mu = mean vector (2-D)
    #      Sigma = 2x2 positive def matrix
@@ -58,15 +59,17 @@ plot_ellipse <- function (mu,
    # stampa caratteristiche ellisse
    max.semiax <- sqrt(lambda1) * r
    min.semiax <- sqrt(lambda2) * r 
-   print("--------------------")
-   cat("(lambda1, lambda2) = ",c(lambda1,lambda2),"\n",sep = "  ")
-   print("--------------------")
-   print("autovettori = ")
-   print(w$vectors)
-   print("--------------------")
-   cat("semiasse maggiore = ", max.semiax,"\n")
-   cat("semiasse minore = ",min.semiax,"\n")
-   cat("raggio = ",r,"\n")
+   if(print.result){
+      print("--------------------")
+      cat("(lambda1, lambda2) = ",c(lambda1,lambda2),"\n",sep = "  ")
+      print("--------------------")
+      print("autovettori = ")
+      print(w$vectors)
+      print("--------------------")
+      cat("semiasse maggiore = ", max.semiax,"\n")
+      cat("semiasse minore = ",min.semiax,"\n")
+      cat("raggio = ",r,"\n")
+   }
    # ylim <- c(mu[2] - 2 * sqrt(S[2,2]), mu[2] + 2 * sqrt(S[2,2]))
    # xlim <- c(mu[1] - 2 * sqrt(S[1,1]), mu[1] + 2 * sqrt(S[1,1]))
    ylim <- c(mu[2] - max.semiax,mu[2] + max.semiax)

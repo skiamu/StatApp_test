@@ -58,6 +58,7 @@ PC <- function(X,
    z<-list(values=values,vectors=vectors,scores=scores,importance=importance
            ,sdev=sdev)
    if(graph==1){
+      x11()
       biplot(scores[,1:2],vectors[,1:2], main="Biplot of Data",xlab=do.call
              (paste,c("PC1 (",as.list(round(z$importance[2,1]*100,2)),"%)",sep=""))
              ,ylab=do.call(paste,c("PC2(",as.list(round(z$importance[2,2]*100,2)),"%)",sep="")), cex=0.7)
