@@ -19,8 +19,7 @@ myInd <- c("Gross enrolment ratio, tertiary, both sexes (%)",
            "CPIA property rights and rule-based governance rating (1=low to 6=high)",
            "Trade (% of GDP)",
            "Inflation, consumer prices (annual %)",
-           "GDP per capita (constant LCU)"
-           )
+           "GDP per capita (constant LCU)")
 # anni dell'analisi
 myYear <- 1975:1995
 
@@ -30,8 +29,10 @@ Indicators$IndicatorName[3942726]
 View(Indicators %>% select(IndicatorName) %>% unique())
 # estraggo ciò che mi interessa tenendo ancora tutto in una forma
 # Indicators-like
+all(myInd %in% Indicators$IndicatorName)
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
-                     agg = F)
+                     agg = F,
+                     ind = Indicators)
 
 
