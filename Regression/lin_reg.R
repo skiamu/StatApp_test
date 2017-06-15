@@ -13,6 +13,8 @@
 # 
 # REMARK : se non voglio intervalli inferenza sui parametri lascio list.A NULL
 #          se non voglio predizione du nuove osservazioni lascio interval NULL
+#          se voglio predirre simultaneo su dati in input applico correzioni di
+#          Bonferroni sull'alpha.pred
 library(MASS)
 library(car)
 library(rgl)
@@ -22,17 +24,19 @@ source(paste(path,"outlier.R",sep = "/"))
 
 lin_reg <- function(Y, 
                     X,
+                    formula,
                     list.A = NULL,
                     list.b = NULL,
                     X0.new = NULL,
                     interval = NULL,
                     alpha = 0.05,
-                    print.plot = T,
+                    alpha.pred = 0.05,
+                    print.plot = F,
                     print.result = T,
-                    print.result.PCA = T,
+                    PCA = F,
                     print.plot.DIAGN = F,
-                    sim.band = T,
-                    pointwise = T,
+                    sim.band = F,
+                    pointwise = F,
                     remove = F){
    # numerosità campionaria
    n <- dim(X)[1]
@@ -54,13 +58,18 @@ lin_reg <- function(Y,
          box3d()
          axes3d()
       }
+      
+   }
+   
+   
+   if(PCA){
       # calcolo gli scores che potrebbero servirmi dopo, e plotto il risultato solo
       # se rischiesto
-      pc <- PC(X, print.results = F, graph = print.result.PCA)
+      pc <- PC(X, print.results = F, graph = T)
    }
    
    ########## MODEL FITTING ############
-   fit <- lm(Y ~ . , data = X)
+   fit <- lm(as.formula(formula), data = X)
    # stampa il summary della regressione
    if(print.result){print(summary(fit))}
    # stampa per diagniostica
@@ -92,8 +101,8 @@ lin_reg <- function(Y,
       # vettori dei parametri stimati del modello
       B <- coefficients(fit)
       for(i in 1:length(list.A)){
-         A <- matrix(unlist(list.A[i]),ncol = r+1)
-         b <- unlist(list.b[i])
+         A <- list.A[[i]]
+         b <- list.b[[i]]
          print("#######################")
          print(linearHypothesis(fit, A, b))
          # build confidence intervals
@@ -124,15 +133,16 @@ lin_reg <- function(Y,
       if(length(interval) == 2){
          names(X0.new) <- colnames(X)
          # predizione + CI per risposta media
-         Y.conf <- predict(fit, X0.new, interval='confidence', level=1-alpha) 
+         Y.conf <- predict(fit, X0.new, interval='confidence', level=1-alpha.pred) 
          # predizione + CI per nuova osservazione
-         Y.pred <- predict(fit, X0.new, interval='prediction', level=1-alpha)
+         Y.pred <- predict(fit, X0.new, interval='prediction', level=1-alpha.pred)
          new.response <- list(Y.conf, Y.pred)
       }
       if(length(interval) == 1){
          # in output restituisco un dataframe dove nella prima colonna ho il valore
          # fittato e nella altre due l' il confidence o prediction interval
-         new.response <- predict(fit, X0.new, interval=interval, level=1-alpha)
+         print(alpha.pred)
+         new.response <- predict(fit, X0.new, interval=interval, level=1-alpha.pred)
       }
       # costuizione di bande di confidenza simultanee da plottare,
       if(print.plot){
@@ -217,7 +227,7 @@ lin_reg <- function(Y,
    # prediction.sim = intervalli di confidenza o predizioni su nuove ossrvazioni
    #                  SIMULTANEI
    return(list(model = fit,
-               PC = pc,
+               PC = myifelse(PCA,pc,"no PCA"),
                IC = myifelse(!is.null(list.A),list(IC.Bonf = IC.Bonf,IC.sim = IC.sim),"no inferenza"),
                prediction = myifelse(!is.null(interval),new.response,"no predizione"),
                myifelse(sim.band,list(Conf.sim = Conf,Pred.sim = Pred),"no predizione simulatanea")))
