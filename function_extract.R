@@ -3,7 +3,7 @@
 library(reshape2) # dcast
 library(dplyr)    # %>%
 
-source('Filters/functionsFullMatrix.R') # fullness
+#source('Filters/functionsFullMatrix.R') # fullness
 #source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
 # 01 getIndicators ----
