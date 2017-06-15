@@ -3,20 +3,20 @@
 #            2) same covariance matrix, 
 #            3) prior prob proportional to the number of elements
 
-fda <- function(data, clusters, clustersLabels, numComp, numClusters){
+fda <- function(data, clusters, clustersLabels, numComp, numVar){
   
   # -- INPUT: 
   #    - data          : dataframe on which perform the discrimination
   #    - clusters      : column with the groups already given
   #    - clustersLabels: labels of the clusters [vector of strings]
   #    - numComp       : number of fisher components  
-  #    - numClusters   : number of clusters
+  #    - numVar        : number of variables
   # -- OUTPUT:
   #    - a  : matrix in which the cloumns are the components
   #    - cc : centres of the Fisher analysis
   
   # ingridient to compute the Matrix Sp^(-1/2)
-  m <-  colMeans(data)
+  m <- colMeans(data)
   g <- length(clustersLabels)
   p <- numVar
   s <- min(g-1,p)
