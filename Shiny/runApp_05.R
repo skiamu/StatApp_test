@@ -1,4 +1,5 @@
 # run App_05
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
 setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
 load("ReadData/data.RData")

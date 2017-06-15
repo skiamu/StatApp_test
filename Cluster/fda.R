@@ -12,21 +12,24 @@ fda <- function(data, clusters, clustersLabels, numComp, numClusters){
   #    - numComp       : number of fisher components  
   #    - numClusters   : number of clusters
   # -- OUTPUT:
-  #    - a : matrix in which the cloumns are the components
+  #    - a  : matrix in which the cloumns are the components
+  #    - cc : centres of the Fisher analysis
   
+  # ingridient to compute the Matrix Sp^(-1/2)
   m <-  colMeans(data)
-  g <- 5
-  p <- 5
+  g <- length(clustersLabels)
+  p <- numVar
   s <- min(g-1,p)
   nTot <- 0
   Sp <- 0
   B <- 0
+  mcol <- array(0, c(g, p))
   for(i in 1:g){
     indeces <- which(clusters==clustersLabels[i])
     n <- length(indeces)
     nTot=nTot+n
     cov  <-  cov(data[indeces,])
-    mcol <- colMeans(data[indeces,])
+    mcol[i,] <- colMeans(data[indeces,])
     Sp = Sp + (n-1)*cov
     B= B + n * cbind(mcol - m) %*% rbind(mcol - m)
   }
@@ -40,7 +43,11 @@ fda <- function(data, clusters, clustersLabels, numComp, numClusters){
   for(i in 1:numComp){ invSp = invSp + 1/sqrt(val.Sp[i])*vec.Sp[,i]%*%t(vec.Sp[,i])}
   spec.dec <- eigen(invSp %*% B %*% invSp)
   
+  # computation of the Fisher components
   a <- array(0, c(p,numComp))
   for(i in 1:numComp){a[,i] <- invSp %*% spec.dec$vec[,i]}
-  return(a)
+  
+  # discrimination
+  cc<- mcol%*%a
+  return(list(FCompo=a, centres=cc))
 }
