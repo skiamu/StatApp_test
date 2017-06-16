@@ -9,7 +9,8 @@ source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
-                                        # kmeansCompare, radarTopic
+source('Cluster/fda.R')                 # fda
+
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -52,18 +53,16 @@ agrDC <- getCntInd(agrDF,2010)
 colnames(agrDC) <- cleanName(colnames(agrDC))
 
 # stdize data
-agrDC_s <- data.frame(scale(agrDC))
+sc <- scale(agrDC)
+
+agrDC_s <- data.frame(sc)
+meanAgr <- attributes(sc)$'scaled:center'
+varAgr  <- attributes(sc)$'scaled:scale'
 
 nCluAgr <- 5
 
 set.seed(2000)
 kmAgr <- kmeans(agrDC_s, nCluAgr, nstart = 100) # see agrCLU_02 to see why we choose 5 clusters
-#pCluAgr  <- plotClusterMap(kmAgr$cluster, nCluAgr)
-#pCluAgrM <- plotClusterMap(kmAgr$cluster, nCluAgr, mac=T)
-#x11(); pCluAgr
-
-pRadAgr <- radarTopic(agrDC_s,kmAgr)
-#x11(); pRadAgr 
 
 cluAgr <- data.frame(
   Cluster=1:nCluAgr,
@@ -75,4 +74,44 @@ cluAgr <- data.frame(
   NumCountries=kmAgr$size
 )
 
-save(nCluAgr,cluAgr,kmAgr,agrDC_s,file = "ReadData/agrData.RData")
+# FDA
+#fdaAgr <- fda(agrDC_s, kmAgr$cluster, 1:nCluAgr, 3, length(myInd))
+# giusto x farlo andare in attesa del fix
+fdaAgr <- fda(TeleMatrixStd, cluster5.k$cluster, 1:5,3,5)
+
+# find the years in which a certain state has all the features
+findYears <- function(ind,cnt){
+  temp  <- getIndicators(myInd = ind, myCnt = cnt)
+  temp1 <- getIndYear(temp,'Italy')
+  dc    <- temp1[ , colSums(is.na(temp1)) == 0]
+  yearOk <- colnames(dc)
+  return(list(years=yearOk,dc=dc))
+}
+
+#test <- findYears(myInd,'Italy')
+
+findValues <- function(dc,year){
+  return(dc[,as.character(year)])
+}
+
+#val <- findValues(test$dc,2000)
+
+std <- function(val,mm,vv){
+  return((val-mm)/vv)
+}
+
+#valS <- std(val,meanAgr,varAgr)
+
+
+
+
+
+myIndAgr <- myInd
+
+save(nCluAgr,cluAgr,kmAgr,
+     agrDC_s,meanAgr,varAgr,myIndAgr,
+     fdaAgr,
+     file = "ReadData/agrData.RData")
+
+
+

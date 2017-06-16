@@ -47,10 +47,15 @@ server <- function(input, output, session) {
   output$tabSimAgr <- renderTable({
     as.data.frame(t(getClu(names(simCnt(agrDC_s,input$cnt,input$numSimCnt)),kmAgr)))
     })
-  output$textAgrTemp <- renderText({ 'Consider how to insert the predictions (via FisherDA)' }) 
-  output$space1      <- renderText({ '... ' }) 
-  output$space2      <- renderText({ '... ' })
-  output$space3      <- renderText({ '... ' })
+  output$textAgrTemp <- renderText({ paste('In another year would',input$cnt,'be in another cluster?') })
+  yearsAgr <- reactive({ findYears(myIndAgr,input$cnt)$years })
+  dcAgrCnt <- reactive({ findYears(myIndAgr,input$cnt)$dc })
+  valAgrCnt <- reactive({ std(findValues(dcAgrCnt(),yearsAgr()),meanAgr,varAgr) })
+  output$space1      <- renderText({ 'ora gli faccio stampare tutti valori e i rispettivi cluster' }) 
+  output$space2      <- renderTable({ as.data.frame(valAgrCnt()) })
+  output$space2.1    <- renderText({ paste('cluster in',input$yAgr,':',
+                                           fdaPred(fdaAgr$a,fdaAgr$cc,data.matrix(t(valAgrCnt()[,input$yAgr])))) })
+  output$space3      <- renderText({ 'This analysis was made by Fisher FDA and the classifier has a AERCV = ...' })
 }
 
 ui <- pageWithSidebar(
@@ -81,8 +86,10 @@ ui <- pageWithSidebar(
                             min = 1, max = 9),
                tableOutput("tabSimAgr"),
                textOutput("textAgrTemp"),
+               selectInput('yAgr', 'Year', 1960:2015, 2010),
                textOutput("space1"),
-               textOutput("space2"),
+               textOutput("space2.1"),
+               tableOutput("space2"),
                textOutput("space3")
                ),
       tabPanel("Natural Resources"),
