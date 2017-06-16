@@ -3,8 +3,8 @@
 library(reshape2) # dcast
 library(dplyr)    # %>%
 
-#source('Filters/functionsFullMatrix.R') # fullness
-#source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
+# source('Filters/functionsFullMatrix.R') # fullness
+source(paste(path,"Filters/functionsFullMatrix.R",sep = "/"))
 
 # 01 getIndicators ----
 # getIndicators filter from 'Indicators' the observations which have:
@@ -80,11 +80,7 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
     my.idx.code <-Series %>% filter(Topic %in% myTopic) 
     Indicators <- Indicators %>% filter(IndicatorCode %in% my.idx.code$SeriesCode)
   }
-  else{
-    # if there's no Topic in input, warn the user that Indicators
-    # are selected from all the Topics
-    warning("WARNING:no Topic has been specified, I selected them all")
-  }
+  
   
   # Region 
   if(!is.null(myRegion)){ # Region is an activated criteria
