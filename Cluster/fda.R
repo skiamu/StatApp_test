@@ -28,12 +28,14 @@ fda <- function(data, clusters, clustersLabels, numComp, numVar){
     indeces <- which(clusters==clustersLabels[i])
     n <- length(indeces)
     nTot=nTot+n
-    cov  <-  cov(data[indeces,])
     mcol[i,] <- colMeans(data[indeces,])
-    Sp = Sp + (n-1)*cov
     B= B + n * cbind(mcol - m) %*% rbind(mcol - m)
   }
-  B  = B/nTot  
+  B  = B/nTot
+  for(i in 1:p){
+    cov  <-  cov(data[indeces,])
+    Sp = Sp + (n-1)*cov
+  }
   Sp = Sp/(nTot-g)
   
   # Matrix Sp^(-1/2)
