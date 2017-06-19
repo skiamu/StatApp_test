@@ -30,8 +30,8 @@ myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
 myInd.continum <- c("General government final consumption expenditure (% of GDP)",
                     "Trade (% of GDP)")
 # anni dell'analisi
-myYear <- seq(1974,2004,by = 10)
-myYear.continum <- 1974:2004
+myYear <- seq(1971,2001,by = 10)
+myYear.continum <- 1971:2001
 h <- 10
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
@@ -311,7 +311,7 @@ fit <- lin_reg(Y,
                print.plot.DIAGN = F)
 plot(fit$model)
 # queste correzioni vanno bene solo per anni 1975:2005
-XD <- XD[-c(128,61),]; Y <- Y[-c(128,61)]
+XD <- XD[-c(99,1),]; Y <- Y[-c(99,1)]
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -347,9 +347,79 @@ for(i in 1:(length(myInd)+length(myInd.continum))){
 
 ######################## PREDICTION ###################
 # let's create the test sample
-# 
+source(paste(path,"Regression/Design_Matrix.R",sep = "/"))
+myYear.new <- c(2001,2011)
+myYear.continum.new <- c(2001,2011)
+z <- Design_Matrix(myYear = myYear.new,myYear.continum = myYear.continum.new,
+                   myInd = myInd, myInd.continum = myInd.continum,
+                   myCountry = NULL)
+X0.new <- z$XD
+Y.new <- z$Y
+# per la predizione devo fittare un modello di regressione senza le dummy 
+# dell'intervallo temporale
+formula.pred <- "Y ~ fertility+FDI+GDP+education+consumi+inflation
++health+investment+openess+R1+R2+I1+I2"
+fit.pred <- lm(formula.pred, data = data.frame(Y,XD))
+
+colnames(X0.new) <- gsub("\\(.*$", "", colnames(X0.new))
+colnames(X0.new) <- gsub("\\,.*$", "", colnames(X0.new))
+name <- colnames(X0.new)
+
+# prendo il log(GDP)
+X0.new[,name[3]] <- log(X0.new[,name[3]])
+
+# prendo 1/life_expectancy = mortality rate
+X0.new[,name[7]] <- 1/X0.new[,name[7]]
+
+colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
+                       "health","investment","openess")
+pred <- predict(fit.pred, newdata = X0.new, interval = "confidence" ) 
+
+#### PREDICTION MODEL VALIDATION
+true.pred <- data.frame(True = Y.new,pred = pred[,1])
+# errore di predizione
+e <- Y.new - pred[,1]
+# root mean square errors (stima della deviazione standard)
+RMSE <- sqrt(sum((pred[,1] - Y.new)^2) / length(Y.new))
+# il modello tende a sovrastimare la crescita
+ME <- mean(e)
+# mean absolute deviation
+MAD <- mean(abs(e))
+# mean percentage error
+MPE <- sum(e / Y.new) / length(Y.new)
+# mean absolute percentage error
+MAPE <- sum(abs(e) / Y.new) / length(Y.new)
+RMSE.prec <- RMSE / mean(Y.new)
+true.pred.e <- cbind(true.pred,e)
 
 
+# voglio farmi una idea di come è stata la crescita decennale
+GDP <- "GDP per capita (constant LCU)"
+dq <- getIndicators(myInd = GDP)
+dq1 <- unifCnt(dq,showCnt = T, showInd = F)
+y <- unique(dq1$Year)
+X <- get3D(dq1,y)
+
+y.name <- "GDP per capita (constant LCU)"
+nn <- dim(X[[1]])[1]
+yy <- data.frame(matrix(nrow = nn,ncol = length(y)-10 ))
+for(i in 1:(length(y)-10)){# ciclo sugli intervalli decennali
+   for(j in 1:nn){# ciclo sulle nazioni dentro ogni decennio
+      yy[j,i] <- (X[[i+10]][j,1] - X[[i]][j,1]) / X[[i]][j,1]
+   }
+}  
+yy <- find_outlier(yy,remove = T)
+x11()
+matplot(as.matrix(yy),type = "l")
+# in media la crescita decennale è stata del 20 %
+mean(colMeans(yy))
+# df.continum <- getIndicators(#myYear = myYear.continum,
+#    myInd = myInd.continum,
+#    agg = F,
+#    myYear = my
+#    ind = Indicators)
+# df1 <- unifCnt(df1,showCnt = T, showInd = F)
+# X.discrete <- get3D(df1,myYear)
 
 
 

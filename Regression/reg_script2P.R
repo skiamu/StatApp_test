@@ -332,14 +332,9 @@ fit <- lin_reg(Y,
                pointwise = F,
                print.plot.DIAGN = F)
 
-summary(fit1)
+fit1 <- lm(formula,data = XD)
 z <- step(fit1)
-summary(fit1)
-plot(fit1)
-fit1 <- step(fit1)
-fit2 <- (lm(Y ~ Fertility + education + investment + openess + D1,
-                   data = XD))
-summary(fit2)
+
 library(ggplot2)
 graphics.off()
 for(i in 1:(length(myInd)+length(myInd.continum))){
@@ -355,22 +350,21 @@ for(i in 1:(length(myInd)+length(myInd.continum))){
    Sys.sleep(3)
 }
 
-Y1 <- Y; XD1 <- XD;
-save(Y1,XD1,file = "master")
 
-# 3 stage regression and IV variables
-stateEq <- Y ~ education + health + D1 + D2
-envirEq <- Y ~ GDP + investment + openess + investment:openess + Fertility +
-   D1 + D2
-eqSystem <- list( state = stateEq, env = envirEq )
-fit1 <- systemfit( eqSystem, method = "3SLS", inst = list(~ health, ~ GDP + Fertility),
-                   data = data.frame(Y,XD))
-summary(fit1)
 
-f <- Y ~ GDP + investment + openess + investment:openess + Fertility +
-   D1 + D2 + education + health
-summary(lm(f,data = data.frame(Y,XD)))
-summary(systemfit(list(f),method = "SUR",data = data.frame(Y,XD)))
+# # 3 stage regression and IV variables
+# stateEq <- Y ~ education + health + D1 + D2
+# envirEq <- Y ~ GDP + investment + openess + investment:openess + Fertility +
+#    D1 + D2
+# eqSystem <- list( state = stateEq, env = envirEq )
+# fit1 <- systemfit( eqSystem, method = "3SLS", inst = list(~ health, ~ GDP + Fertility),
+#                    data = data.frame(Y,XD))
+# summary(fit1)
+# 
+# f <- Y ~ GDP + investment + openess + investment:openess + Fertility +
+#    D1 + D2 + education + health
+# summary(lm(f,data = data.frame(Y,XD)))
+# summary(systemfit(list(f),method = "SUR",data = data.frame(Y,XD)))
 
 
 
