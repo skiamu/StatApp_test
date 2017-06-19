@@ -13,7 +13,7 @@ fdaPred <- function(a, cc, predDataStd){
   # -- OUTPUT:
   #    - cluster : cluster for the observation to discriminate
   
-  
+  g <- dim(a)[1]
   ccPred=predDataStd%*%a
   dist<-array(1,g)
   for(i in 1:g){dist[i]=sqrt(sum((ccPred-cc[i,])^2))}

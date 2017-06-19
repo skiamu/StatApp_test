@@ -9,7 +9,8 @@ source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
-                                        # kmeansCompare, radarTopic
+source('Cluster/function_fda.R')        # fda, fdaPred
+
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -28,10 +29,10 @@ library(GGally)                         # ggpairs # http://stackoverflow.com/que
 # REM: ggpairs does NOT accept column names with spaces
 library(fmsb)                           # radarchart
 
-# 01 --- Setting the working dataframe ----
+# 01 save material for the shiny app ####
 
 # set indicators
-myInd <- c(
+myIndAgr <- c(
   'Agricultural land (% of land area)',
   'Permanent cropland (% of land area)',
   'Arable land (% of land area)',
@@ -40,32 +41,32 @@ myInd <- c(
   'Agriculture, value added (% of GDP)',
   'Cereal yield (kg per hectare)'
 )
-# set years
-myYear = c(2000:2011)
+# set years 
+myYear = c(2000:2011) # to have a selection of countries constant at least on these years
 
 # extract the data
-agrDF <- getIndicators(myYear = myYear, myInd = myInd, agg = F) %>%
+agrDF <- getIndicators(myYear = myYear, myInd = myIndAgr, agg = F) %>%
   unifCnt(showInd = F)
+
 # fix 2010
 agrDC <- getCntInd(agrDF,2010)
+
 # shorten the IndicatorName
 colnames(agrDC) <- cleanName(colnames(agrDC))
 
 # stdize data
-agrDC_s <- data.frame(scale(agrDC))
+sc <- scale(agrDC)
+agrDC_s <- data.frame(sc)
+meanAgr <- attributes(sc)$'scaled:center'
+varAgr  <- attributes(sc)$'scaled:scale'
 
+# cluster analysis
 nCluAgr <- 5
-
-set.seed(2000)
+set.seed(2000) # so the interpretation doesn't change
 kmAgr <- kmeans(agrDC_s, nCluAgr, nstart = 100) # see agrCLU_02 to see why we choose 5 clusters
-#pCluAgr  <- plotClusterMap(kmAgr$cluster, nCluAgr)
-#pCluAgrM <- plotClusterMap(kmAgr$cluster, nCluAgr, mac=T)
-#x11(); pCluAgr
 
-pRadAgr <- radarTopic(agrDC_s,kmAgr)
-#x11(); pRadAgr 
-
-cluAgr <- data.frame(
+# comments on clusters
+cluAgr <- data.frame( 
   Cluster=1:nCluAgr,
   Description=c('agriculture is an important component in the GDP',
                 'high forest area',
@@ -75,4 +76,30 @@ cluAgr <- data.frame(
   NumCountries=kmAgr$size
 )
 
-save(nCluAgr,cluAgr,kmAgr,agrDC_s,file = "ReadData/agrData.RData")
+# fda
+fdaAgr <- fda(agrDC_s, kmAgr$cluster, 3)
+
+kmAgr$cluster['Italy']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s['Italy',])
+kmAgr$cluster['Albania']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Albania",])
+kmAgr$cluster['Algeria']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Algeria",])
+kmAgr$cluster['Antigua']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Antigua",])
+kmAgr$cluster['Argentina']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Argentina",])
+# HERE AERCV HIGH OR THERE IS SOMETHING THAT DOESN'T WORK
+
+err <- 0
+for(i in row.names(agrDC_s)){
+  print(paste('real cluster:',kmAgr$cluster[i],'pred cluster',fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]),'--',i))
+  err <- err + !(kmAgr$cluster[i]==fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]))
+}
+print(paste(err,'errors'))
+
+# save
+save(nCluAgr,cluAgr,kmAgr,
+     agrDC_s,meanAgr,varAgr,myIndAgr,
+     fdaAgr,
+     file = "ReadData/agrData.RData")
