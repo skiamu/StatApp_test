@@ -5,18 +5,19 @@
 #            2) same covariance matrix, 
 #            3) prior prob proportional to the number of elements
 
-fda <- function(X, clusters, nFishComp){
+fda <- function(X, clusters, labelsCl, nFishComp){
   
   # -- INPUT: 
   #    - X             : dataframe on which perform the discrimination
   #    - clusters      : column with the groups already given (result from kmeans)
   #    - nFishComp     : number of fisher components
+  #    - labelsCl      : name of the category
   # -- OUTPUT:
   #    - fComp: Matrix that has the Fisher Components as columns  
   #    - center: Coordinates of the centroides of the clusters
   
   p      <- length(colnames(X))   # dimension of the features vector
-  labels <- unique(clusters)      # labels of the clusters
+  labels <- labelsCl      # labels of the clusters
   g      <- length(labels)        # number of groups (cluster)
   nTot   <- length(clusters)      # total number of observations
   s      <- min(g-1,p)            # num max of compo
@@ -27,18 +28,18 @@ fda <- function(X, clusters, nFishComp){
     stop("Error: Num of components too large")
   }
   
-  m      <- colMeans(X)           # Mean of all the dataframe
+  m      <- as.numeric(colMeans(X))          # Mean of all the dataframe
   mcol   <- array(0, c(g, p))     # Declaration and initialization of the mean of the clusters
   B      <- 0                     # Declaration and initialization of the Between Variance
   Sp     <- 0                     # Declaration and initialization of the Within Variance
   for(i in 1:g){
     indeces  <- which(clusters==labels[i]) # indexes of the cluster i elements
     ni       <- length(indeces)            # every iteration ni is updated
-    mcol[i,] <- colMeans(X[indeces,])      # mean of the i-th cluster
+    mcol[i,] <- as.numeric(colMeans(X[indeces,]))      # mean of the i-th cluster
     B        <- B  + ni * cbind(mcol[i,] - m) %*% rbind(mcol[i,] - m)
     Sp       <- Sp + (ni-1) * cov(X[indeces,])
   }
-  B  <-  B/(nTot-g)
+  B  <-  B/nTot
   Sp <- Sp/(nTot-g)
   
   # Matrix Sp^(-1/2)
@@ -70,9 +71,32 @@ fdaPred <- function(a, cc, predData){
   #    - cluster : cluster for the observation to discriminate
   
   g <- dim(cc)[1]                  # number of groups(cluters)
-  ccPred=as.matrix(predData)%*%a   # rotate the data to predict
-  dist<-array(1,g)
+  ccPred=data.matrix(predData)%*%a   # rotate the data to predict
+  dist<-array(NaN,g)
   for(i in 1:g){dist[i]=sqrt(sum((ccPred-cc[i,])^2))}
   cluster=which.min(dist)          # assign to the nearest center
   return(cluster)
+}
+
+# Compute the estimate of the AER by cross-validation one-by-one
+crossValFDA <- function(X, cluster, labelsCl, nFishComp){
+  # -- INPUT: 
+  #    - X             : dataframe on which perform the discrimination
+  #    - clusters      : column with the groups already given (result from kmeans)
+  #    - nFishComp     : number of fisher components
+  #    - labelsCl      : name of the category
+  # -- OUTPUT:
+  #    - AERCV: Cross-validtion AER
+  loocv <- 0
+  num_obs <- dim(X)[1]
+  for (k in 1:num_obs) {
+    X_temp   <- X[-k, ]
+    trainSet <- cluster[-k]
+    testObs  <- X[k, ]
+    fdc      <- fda(X_temp,trainSet,labelsCl,nFishComp)
+    cv       <- fdaPred(fdc$fComp, fdc$center, testObs)
+    loocv <- loocv + as.numeric(cv != cluster[k])
+  }
+  AERCV   <- loocv/num_obs
+  return(AERCV)
 }
