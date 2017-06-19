@@ -8,7 +8,8 @@ load("ReadData/agrData.RData")
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
                                         # kmeansCompare, radarTopic
-source('Cluster/fdaPred.R')             # fdaPred
+source('Cluster/function_fda.R')        # fda, fdaPred
+source('function_std.R')                # std
 
 library(dplyr)                          # %>%
 library(ggplot2)                        # ggplot

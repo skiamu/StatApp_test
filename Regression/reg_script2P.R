@@ -16,8 +16,7 @@ select <- dplyr::select
 ###################### ESTRAZIONE DATASET #####################################
 
 # specifico gli indicatori che in teoria dovrebbero entrare nella regressione
-# con osservazione solo all'inizio del periodo. I cosiddetti regressori
-# discreti
+# con osservazione solo all'inizio del periodo
 myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
            "Life expectancy at birth, total (years)",
            "Fertility rate, total (births per woman)",
@@ -25,13 +24,12 @@ myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
            "GDP per capita (constant LCU)",
            "Household final consumption expenditure, etc. (% of GDP)",
            "Foreign direct investment, net inflows (% of GDP)")
-# regressori per cui ho bisogno delle osservazioni in tutto l'intervallo,
-# i cosiddetti regressori continui
+# regressori per cui ho bisogno delle osservazioni in tutto l'intervallo
 myInd.continum <- c("General government final consumption expenditure (% of GDP)",
                     "Trade (% of GDP)")
 # anni dell'analisi
-myYear <- seq(1971,2001,by = 10)
-myYear.continum <- 1971:2001
+myYear <- c(1980,1990,2000,2010)
+myYear.continum <- 1980:2010
 h <- 10
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
@@ -79,14 +77,14 @@ X.continum <- vector("list",length(myYear)-1)
 # lista che conterrà i dataframe con le statistiche di qualita delle medie
 #  dei regressori continui nel tempo per gli intervalli di tempo in considerazione
 X.continum.stat <- vector("list",length(myYear)-1)
-for(i in 1:(length(myYear)-1)){# cicla sui tre intervalli di tempo
+for(i in 1:(length(myYear)-1)){
    # inizializzo dataframe
    X <- stat_X <- data.frame(matrix(nrow = length(nazioni),ncol = length(myInd.continum)))
    rownames(X) <- nazioni
    colnames(X) <- myInd.continum;
    colnames(stat_X) <- myInd.continum
    # gli anni cu cui devo prendere la media devono essere tutti quelli presenti
-   # nell'intervallo ad esempio [1975,1984] ossia fino ad un anno prima della fine
+   # nell'intervallo ad esempio [1975,1985] ossia fino ad un anno prima della fine
    # dell'intervallo
    Years <- myYear[i]:(myYear[i+1]-1)
    for(j in 1:(length(nazioni))){
@@ -109,7 +107,7 @@ for(i in 1:(length(myYear)-1)){# cicla sui tre intervalli di tempo
 }
 # controllare l'affidabilità delle medie:
 # se faccio la media su nessun anno ottengo un NA che va trattato mentre
-# se ho solo anno nei 9 mi accontento
+# se ho slo anno nei 9 mi accontento
 param_h <- 4
 bad.avg <- vector("character")
 for(i in 1:length(X.continum.stat)){
@@ -153,7 +151,7 @@ if(length(bad.avg) > 0){
 z <- X.continum[[1]]
 z1 <- X.discrete[[1]]
 
-###################### CREAZIONE DELLE DUMMY REGION ###########
+######## CREAZIONE DELLE DUMMY REGIONE ###########
 # in output ottengo ancora un dataframe
 # nazione.Code <- Indicators %>% filter(CountryName %in% nazioni) %>% select(CountryCode) %>%
 #    unique() 
@@ -199,7 +197,6 @@ for(i in 1:length(X.continum)){
    X.continum[[i]] <- cbind(X.continum[[i]],R,I)
 }
 z <- X.continum[[1]]
-
 ############### COSTRUZIONE VETTORE RISPOSTE
 # calcolo i 3 vettori separatamente e poi li impilo
 Y <- vector("double")
@@ -270,21 +267,21 @@ XD[,name[3]] <- log(XD[,name[3]])
 # prendo 1/life_expectancy = mortality rate
 XD[,name[7]] <- 1/XD[,name[7]]
 
-colnames(XD)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
+colnames(XD)[1:9] <- c("Fertility","FDI","GDP","education","consumi","inflation",
                   "health","investment","openess")
 
 if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
 
 
-###################### REGRESSION ANALYSIS #######################################
+#################### REGRESSION ANALYSIS #######################################
 source(paste(path,"Regression/lin_reg.R",sep = "/"))
 # create the regression formula
 formula <- c("Y ~ ")
 for(i in 1:dim(XD)[2]){
    formula <- paste(formula,colnames(XD)[i],sep = "+")
 }
-formula <- "Y ~ fertility+FDI+GDP+education+consumi+inflation+health+investment+openess+R1+R2+I1+I2+D1+D2"
-rownames(XD) <- 1:(3*n)
+formula <- "Y ~ Fertility+FDI+GDP+education+consumi+inflation+health+investment+openess+R1+R2+I1+I2+D1+D2"
+
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -310,8 +307,8 @@ fit <- lin_reg(Y,
                pointwise = F,
                print.plot.DIAGN = F)
 plot(fit$model)
-# queste correzioni vanno bene solo per anni 1975:2005
-XD <- XD[-c(99,1),]; Y <- Y[-c(99,1)]
+# queste correzioni vanno bene solo per anni 1980:2010
+XD <- XD[-c(47,159,156),]; Y <- Y[-c(47,159,156)]
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -322,14 +319,22 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
-# rifaccio stessa regressione di sopra ma fuori dalla funzione senno casino con step
-fit2 <- lm(formula,data = XD)
-step(fit2)
-# uso formula suggerita dalla procedura step-wise
-fit3 <- lm(Y ~ fertility + education + consumi + health + openess + I1 + D1,data = XD)
-summary(fit3)
+plot(fit$model)
+XD <- XD[-26,]; Y <- Y[-26]
+fit <- lin_reg(Y,
+               XD,
+               formula = formula,
+               X0.new = NULL,
+               interval = NULL,
+               print.plot = F,
+               print.result = T,
+               print.band = F,
+               pointwise = F,
+               print.plot.DIAGN = F)
 
-# plotte risposta vs singolo regressore per vedere l'andamento
+fit1 <- lm(formula,data = XD)
+z <- step(fit1)
+
 library(ggplot2)
 graphics.off()
 for(i in 1:(length(myInd)+length(myInd.continum))){
@@ -345,91 +350,8 @@ for(i in 1:(length(myInd)+length(myInd.continum))){
    Sys.sleep(3)
 }
 
-######################## PREDICTION ###################
-# let's create the test sample
-source(paste(path,"Regression/Design_Matrix.R",sep = "/"))
-myYear.new <- c(2001,2011)
-myYear.continum.new <- c(2001,2011)
-z <- Design_Matrix(myYear = myYear.new,myYear.continum = myYear.continum.new,
-                   myInd = myInd, myInd.continum = myInd.continum,
-                   myCountry = NULL)
-X0.new <- z$XD
-Y.new <- z$Y
-# per la predizione devo fittare un modello di regressione senza le dummy 
-# dell'intervallo temporale
-formula.pred <- "Y ~ fertility+FDI+GDP+education+consumi+inflation
-+health+investment+openess+R1+R2+I1+I2"
-fit.pred <- lm(formula.pred, data = data.frame(Y,XD))
-
-colnames(X0.new) <- gsub("\\(.*$", "", colnames(X0.new))
-colnames(X0.new) <- gsub("\\,.*$", "", colnames(X0.new))
-name <- colnames(X0.new)
-
-# prendo il log(GDP)
-X0.new[,name[3]] <- log(X0.new[,name[3]])
-
-# prendo 1/life_expectancy = mortality rate
-X0.new[,name[7]] <- 1/X0.new[,name[7]]
-
-colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
-                       "health","investment","openess")
-pred <- predict(fit.pred, newdata = X0.new, interval = "confidence" ) 
-
-#### PREDICTION MODEL VALIDATION
-true.pred <- data.frame(True = Y.new,pred = pred[,1])
-# errore di predizione
-e <- Y.new - pred[,1]
-# root mean square errors (stima della deviazione standard)
-RMSE <- sqrt(sum((pred[,1] - Y.new)^2) / length(Y.new))
-# il modello tende a sovrastimare la crescita
-ME <- mean(e)
-# mean absolute deviation
-MAD <- mean(abs(e))
-# mean percentage error
-MPE <- sum(e / Y.new) / length(Y.new)
-# mean absolute percentage error
-MAPE <- sum(abs(e) / Y.new) / length(Y.new)
-RMSE.prec <- RMSE / mean(Y.new)
-true.pred.e <- cbind(true.pred,e)
 
 
-# voglio farmi una idea di come è stata la crescita decennale
-GDP <- "GDP per capita (constant LCU)"
-dq <- getIndicators(myInd = GDP)
-dq1 <- unifCnt(dq,showCnt = T, showInd = F)
-y <- unique(dq1$Year)
-X <- get3D(dq1,y)
-
-y.name <- "GDP per capita (constant LCU)"
-nn <- dim(X[[1]])[1]
-yy <- data.frame(matrix(nrow = nn,ncol = length(y)-10 ))
-for(i in 1:(length(y)-10)){# ciclo sugli intervalli decennali
-   for(j in 1:nn){# ciclo sulle nazioni dentro ogni decennio
-      yy[j,i] <- (X[[i+10]][j,1] - X[[i]][j,1]) / X[[i]][j,1]
-   }
-}  
-yy <- find_outlier(yy,remove = T)
-x11()
-matplot(as.matrix(yy),type = "l")
-# in media la crescita decennale è stata del 20 %
-mean(colMeans(yy))
-# df.continum <- getIndicators(#myYear = myYear.continum,
-#    myInd = myInd.continum,
-#    agg = F,
-#    myYear = my
-#    ind = Indicators)
-# df1 <- unifCnt(df1,showCnt = T, showInd = F)
-# X.discrete <- get3D(df1,myYear)
-
-
-
-
-
-
-
-# Y1 <- Y; XD1 <- XD;
-# save(Y1,XD1,file = "master")
-# 
 # # 3 stage regression and IV variables
 # stateEq <- Y ~ education + health + D1 + D2
 # envirEq <- Y ~ GDP + investment + openess + investment:openess + Fertility +
@@ -443,7 +365,7 @@ mean(colMeans(yy))
 #    D1 + D2 + education + health
 # summary(lm(f,data = data.frame(Y,XD)))
 # summary(systemfit(list(f),method = "SUR",data = data.frame(Y,XD)))
-# 
-# 
+
+
 
 

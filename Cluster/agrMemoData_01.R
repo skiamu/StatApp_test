@@ -9,7 +9,7 @@ source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
-source('Cluster/fda.R')                 # fda
+source('Cluster/function_fda.R')        # fda, fdaPred
 
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
@@ -29,10 +29,10 @@ library(GGally)                         # ggpairs # http://stackoverflow.com/que
 # REM: ggpairs does NOT accept column names with spaces
 library(fmsb)                           # radarchart
 
-# 01 --- Setting the working dataframe ----
+# 01 save material for the shiny app ####
 
 # set indicators
-myInd <- c(
+myIndAgr <- c(
   'Agricultural land (% of land area)',
   'Permanent cropland (% of land area)',
   'Arable land (% of land area)',
@@ -41,30 +41,32 @@ myInd <- c(
   'Agriculture, value added (% of GDP)',
   'Cereal yield (kg per hectare)'
 )
-# set years
-myYear = c(2000:2011)
+# set years 
+myYear = c(2000:2011) # to have a selection of countries constant at least on these years
 
 # extract the data
-agrDF <- getIndicators(myYear = myYear, myInd = myInd, agg = F) %>%
+agrDF <- getIndicators(myYear = myYear, myInd = myIndAgr, agg = F) %>%
   unifCnt(showInd = F)
+
 # fix 2010
 agrDC <- getCntInd(agrDF,2010)
+
 # shorten the IndicatorName
 colnames(agrDC) <- cleanName(colnames(agrDC))
 
 # stdize data
 sc <- scale(agrDC)
-
 agrDC_s <- data.frame(sc)
 meanAgr <- attributes(sc)$'scaled:center'
 varAgr  <- attributes(sc)$'scaled:scale'
 
+# cluster analysis
 nCluAgr <- 5
-
-set.seed(2000)
+set.seed(2000) # so the interpretation doesn't change
 kmAgr <- kmeans(agrDC_s, nCluAgr, nstart = 100) # see agrCLU_02 to see why we choose 5 clusters
 
-cluAgr <- data.frame(
+# comments on clusters
+cluAgr <- data.frame( 
   Cluster=1:nCluAgr,
   Description=c('agriculture is an important component in the GDP',
                 'high forest area',
@@ -74,44 +76,30 @@ cluAgr <- data.frame(
   NumCountries=kmAgr$size
 )
 
-# FDA
-#fdaAgr <- fda(agrDC_s, kmAgr$cluster, 1:nCluAgr, 3, length(myInd))
-# giusto x farlo andare in attesa del fix
-fdaAgr <- fda(TeleMatrixStd, cluster5.k$cluster, 1:5,3,5)
+# fda
+fdaAgr <- fda(agrDC_s, kmAgr$cluster, 3)
 
-# find the years in which a certain state has all the features
-findYears <- function(ind,cnt){
-  temp  <- getIndicators(myInd = ind, myCnt = cnt)
-  temp1 <- getIndYear(temp,'Italy')
-  dc    <- temp1[ , colSums(is.na(temp1)) == 0]
-  yearOk <- colnames(dc)
-  return(list(years=yearOk,dc=dc))
+kmAgr$cluster['Italy']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s['Italy',])
+kmAgr$cluster['Albania']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Albania",])
+kmAgr$cluster['Algeria']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Algeria",])
+kmAgr$cluster['Antigua']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Antigua",])
+kmAgr$cluster['Argentina']
+fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Argentina",])
+# HERE AERCV HIGH OR THERE IS SOMETHING THAT DOESN'T WORK
+
+err <- 0
+for(i in row.names(agrDC_s)){
+  print(paste('real cluster:',kmAgr$cluster[i],'pred cluster',fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]),'--',i))
+  err <- err + !(kmAgr$cluster[i]==fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]))
 }
+print(paste(err,'errors'))
 
-#test <- findYears(myInd,'Italy')
-
-findValues <- function(dc,year){
-  return(dc[,as.character(year)])
-}
-
-#val <- findValues(test$dc,2000)
-
-std <- function(val,mm,vv){
-  return((val-mm)/vv)
-}
-
-#valS <- std(val,meanAgr,varAgr)
-
-
-
-
-
-myIndAgr <- myInd
-
+# save
 save(nCluAgr,cluAgr,kmAgr,
      agrDC_s,meanAgr,varAgr,myIndAgr,
      fdaAgr,
      file = "ReadData/agrData.RData")
-
-
-

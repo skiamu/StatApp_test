@@ -16,11 +16,19 @@ fda <- function(X, clusters, labelsCl, nFishComp){
   #    - fComp: Matrix that has the Fisher Components as columns  
   #    - center: Coordinates of the centroides of the clusters
   
+<<<<<<< HEAD
   p      <- length(colnames(X))   # dimension of the features vector
   labels <- labelsCl      # labels of the clusters
   g      <- length(labels)        # number of groups (cluster)
   nTot   <- length(clusters)      # total number of observations
   s      <- min(g-1,p)            # num max of compo
+=======
+  p      <- length(colnames(X))    # dimension of the features vector
+  labels <- sort(unique(clusters)) # labels of the clusters
+  g      <- length(labels)         # number of groups (cluster)
+  nTot   <- length(clusters)       # total number of observations
+  s      <- min(g-1,p)             # num max of compo
+>>>>>>> 01ba6a3589c163195687b2a0d5e283c60ab209a5
   # checking if the num of compo is acceptable
   if(nFishComp>s){ 
     print('Num of components too large: the num of compo has to be less than')
@@ -39,7 +47,11 @@ fda <- function(X, clusters, labelsCl, nFishComp){
     B        <- B  + ni * cbind(mcol[i,] - m) %*% rbind(mcol[i,] - m)
     Sp       <- Sp + (ni-1) * cov(X[indeces,])
   }
+<<<<<<< HEAD
   B  <-  B/nTot
+=======
+  B  <-  B/(nTot)
+>>>>>>> 01ba6a3589c163195687b2a0d5e283c60ab209a5
   Sp <- Sp/(nTot-g)
   
   # Matrix Sp^(-1/2)
@@ -71,8 +83,13 @@ fdaPred <- function(a, cc, predData){
   #    - cluster : cluster for the observation to discriminate
   
   g <- dim(cc)[1]                  # number of groups(cluters)
+<<<<<<< HEAD
   ccPred=data.matrix(predData)%*%a   # rotate the data to predict
   dist<-array(NaN,g)
+=======
+  ccPred=as.numeric(predData)%*%a  # rotate the data to predict
+  dist<-array(1,g)
+>>>>>>> 01ba6a3589c163195687b2a0d5e283c60ab209a5
   for(i in 1:g){dist[i]=sqrt(sum((ccPred-cc[i,])^2))}
   cluster=which.min(dist)          # assign to the nearest center
   return(cluster)
