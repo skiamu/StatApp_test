@@ -15,11 +15,11 @@ fda <- function(X, clusters, nFishComp){
   #    - fComp: Matrix that has the Fisher Components as columns  
   #    - center: Coordinates of the centroides of the clusters
   
-  p      <- length(colnames(X))   # dimension of the features vector
-  labels <- unique(clusters)      # labels of the clusters
-  g      <- length(labels)        # number of groups (cluster)
-  nTot   <- length(clusters)      # total number of observations
-  s      <- min(g-1,p)            # num max of compo
+  p      <- length(colnames(X))    # dimension of the features vector
+  labels <- sort(unique(clusters)) # labels of the clusters
+  g      <- length(labels)         # number of groups (cluster)
+  nTot   <- length(clusters)       # total number of observations
+  s      <- min(g-1,p)             # num max of compo
   # checking if the num of compo is acceptable
   if(nFishComp>s){ 
     print('Num of components too large: the num of compo has to be less than')
@@ -38,7 +38,7 @@ fda <- function(X, clusters, nFishComp){
     B        <- B  + ni * cbind(mcol[i,] - m) %*% rbind(mcol[i,] - m)
     Sp       <- Sp + (ni-1) * cov(X[indeces,])
   }
-  B  <-  B/(nTot-g)
+  B  <-  B/(nTot)
   Sp <- Sp/(nTot-g)
   
   # Matrix Sp^(-1/2)

@@ -91,6 +91,13 @@ kmAgr$cluster['Argentina']
 fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Argentina",])
 # HERE AERCV HIGH OR THERE IS SOMETHING THAT DOESN'T WORK
 
+err <- 0
+for(i in row.names(agrDC_s)){
+  print(paste('real cluster:',kmAgr$cluster[i],'pred cluster',fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]),'--',i))
+  err <- err + !(kmAgr$cluster[i]==fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]))
+}
+print(paste(err,'errors'))
+
 # save
 save(nCluAgr,cluAgr,kmAgr,
      agrDC_s,meanAgr,varAgr,myIndAgr,
