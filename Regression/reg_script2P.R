@@ -16,8 +16,7 @@ select <- dplyr::select
 ###################### ESTRAZIONE DATASET #####################################
 
 # specifico gli indicatori che in teoria dovrebbero entrare nella regressione
-# con osservazione solo all'inizio del periodo. I cosiddetti regressori
-# discreti
+# con osservazione solo all'inizio del periodo
 myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
            "Life expectancy at birth, total (years)",
            "Fertility rate, total (births per woman)",
@@ -25,13 +24,12 @@ myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
            "GDP per capita (constant LCU)",
            "Household final consumption expenditure, etc. (% of GDP)",
            "Foreign direct investment, net inflows (% of GDP)")
-# regressori per cui ho bisogno delle osservazioni in tutto l'intervallo,
-# i cosiddetti regressori continui
+# regressori per cui ho bisogno delle osservazioni in tutto l'intervallo
 myInd.continum <- c("General government final consumption expenditure (% of GDP)",
                     "Trade (% of GDP)")
 # anni dell'analisi
-myYear <- seq(1974,2004,by = 10)
-myYear.continum <- 1974:2004
+myYear <- c(1980,1990,2000,2010)
+myYear.continum <- 1980:2010
 h <- 10
 df1 <- getIndicators(myYear = myYear,
                      myInd = myInd,
@@ -79,14 +77,14 @@ X.continum <- vector("list",length(myYear)-1)
 # lista che conterrà i dataframe con le statistiche di qualita delle medie
 #  dei regressori continui nel tempo per gli intervalli di tempo in considerazione
 X.continum.stat <- vector("list",length(myYear)-1)
-for(i in 1:(length(myYear)-1)){# cicla sui tre intervalli di tempo
+for(i in 1:(length(myYear)-1)){
    # inizializzo dataframe
    X <- stat_X <- data.frame(matrix(nrow = length(nazioni),ncol = length(myInd.continum)))
    rownames(X) <- nazioni
    colnames(X) <- myInd.continum;
    colnames(stat_X) <- myInd.continum
    # gli anni cu cui devo prendere la media devono essere tutti quelli presenti
-   # nell'intervallo ad esempio [1975,1984] ossia fino ad un anno prima della fine
+   # nell'intervallo ad esempio [1975,1985] ossia fino ad un anno prima della fine
    # dell'intervallo
    Years <- myYear[i]:(myYear[i+1]-1)
    for(j in 1:(length(nazioni))){
@@ -109,7 +107,7 @@ for(i in 1:(length(myYear)-1)){# cicla sui tre intervalli di tempo
 }
 # controllare l'affidabilità delle medie:
 # se faccio la media su nessun anno ottengo un NA che va trattato mentre
-# se ho solo anno nei 9 mi accontento
+# se ho slo anno nei 9 mi accontento
 param_h <- 4
 bad.avg <- vector("character")
 for(i in 1:length(X.continum.stat)){
@@ -153,7 +151,7 @@ if(length(bad.avg) > 0){
 z <- X.continum[[1]]
 z1 <- X.discrete[[1]]
 
-###################### CREAZIONE DELLE DUMMY REGION ###########
+######## CREAZIONE DELLE DUMMY REGIONE ###########
 # in output ottengo ancora un dataframe
 # nazione.Code <- Indicators %>% filter(CountryName %in% nazioni) %>% select(CountryCode) %>%
 #    unique() 
@@ -199,7 +197,6 @@ for(i in 1:length(X.continum)){
    X.continum[[i]] <- cbind(X.continum[[i]],R,I)
 }
 z <- X.continum[[1]]
-
 ############### COSTRUZIONE VETTORE RISPOSTE
 # calcolo i 3 vettori separatamente e poi li impilo
 Y <- vector("double")
@@ -270,21 +267,21 @@ XD[,name[3]] <- log(XD[,name[3]])
 # prendo 1/life_expectancy = mortality rate
 XD[,name[7]] <- 1/XD[,name[7]]
 
-colnames(XD)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
+colnames(XD)[1:9] <- c("Fertility","FDI","GDP","education","consumi","inflation",
                   "health","investment","openess")
 
 if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
 
 
-###################### REGRESSION ANALYSIS #######################################
+#################### REGRESSION ANALYSIS #######################################
 source(paste(path,"Regression/lin_reg.R",sep = "/"))
 # create the regression formula
 formula <- c("Y ~ ")
 for(i in 1:dim(XD)[2]){
    formula <- paste(formula,colnames(XD)[i],sep = "+")
 }
-formula <- "Y ~ fertility+FDI+GDP+education+consumi+inflation+health+investment+openess+R1+R2+I1+I2+D1+D2"
-rownames(XD) <- 1:(3*n)
+formula <- "Y ~ Fertility+FDI+GDP+education+consumi+inflation+health+investment+openess+R1+R2+I1+I2+D1+D2"
+
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -310,8 +307,8 @@ fit <- lin_reg(Y,
                pointwise = F,
                print.plot.DIAGN = F)
 plot(fit$model)
-# queste correzioni vanno bene solo per anni 1975:2005
-XD <- XD[-c(128,61),]; Y <- Y[-c(128,61)]
+# queste correzioni vanno bene solo per anni 1980:2010
+XD <- XD[-c(47,159,156),]; Y <- Y[-c(47,159,156)]
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -322,14 +319,27 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
-# rifaccio stessa regressione di sopra ma fuori dalla funzione senno casino con step
-fit2 <- lm(formula,data = XD)
-step(fit2)
-# uso formula suggerita dalla procedura step-wise
-fit3 <- lm(Y ~ fertility + education + consumi + health + openess + I1 + D1,data = XD)
-summary(fit3)
+plot(fit$model)
+XD <- XD[-26,]; Y <- Y[-26]
+fit <- lin_reg(Y,
+               XD,
+               formula = formula,
+               X0.new = NULL,
+               interval = NULL,
+               print.plot = F,
+               print.result = T,
+               print.band = F,
+               pointwise = F,
+               print.plot.DIAGN = F)
 
-# plotte risposta vs singolo regressore per vedere l'andamento
+summary(fit1)
+z <- step(fit1)
+summary(fit1)
+plot(fit1)
+fit1 <- step(fit1)
+fit2 <- (lm(Y ~ Fertility + education + investment + openess + D1,
+                   data = XD))
+summary(fit2)
 library(ggplot2)
 graphics.off()
 for(i in 1:(length(myInd)+length(myInd.continum))){
@@ -345,35 +355,23 @@ for(i in 1:(length(myInd)+length(myInd.continum))){
    Sys.sleep(3)
 }
 
-######################## PREDICTION ###################
-# let's create the test sample
-# 
+Y1 <- Y; XD1 <- XD;
+save(Y1,XD1,file = "master")
+
+# 3 stage regression and IV variables
+stateEq <- Y ~ education + health + D1 + D2
+envirEq <- Y ~ GDP + investment + openess + investment:openess + Fertility +
+   D1 + D2
+eqSystem <- list( state = stateEq, env = envirEq )
+fit1 <- systemfit( eqSystem, method = "3SLS", inst = list(~ health, ~ GDP + Fertility),
+                   data = data.frame(Y,XD))
+summary(fit1)
+
+f <- Y ~ GDP + investment + openess + investment:openess + Fertility +
+   D1 + D2 + education + health
+summary(lm(f,data = data.frame(Y,XD)))
+summary(systemfit(list(f),method = "SUR",data = data.frame(Y,XD)))
 
 
-
-
-
-
-
-
-
-# Y1 <- Y; XD1 <- XD;
-# save(Y1,XD1,file = "master")
-# 
-# # 3 stage regression and IV variables
-# stateEq <- Y ~ education + health + D1 + D2
-# envirEq <- Y ~ GDP + investment + openess + investment:openess + Fertility +
-#    D1 + D2
-# eqSystem <- list( state = stateEq, env = envirEq )
-# fit1 <- systemfit( eqSystem, method = "3SLS", inst = list(~ health, ~ GDP + Fertility),
-#                    data = data.frame(Y,XD))
-# summary(fit1)
-# 
-# f <- Y ~ GDP + investment + openess + investment:openess + Fertility +
-#    D1 + D2 + education + health
-# summary(lm(f,data = data.frame(Y,XD)))
-# summary(systemfit(list(f),method = "SUR",data = data.frame(Y,XD)))
-# 
-# 
 
 
