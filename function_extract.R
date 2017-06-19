@@ -80,11 +80,6 @@ getIndicators <- function(myYear = NULL, myCnt = NULL, myInd = NULL, myTopic = N
     my.idx.code <-Series %>% filter(Topic %in% myTopic) 
     Indicators <- Indicators %>% filter(IndicatorCode %in% my.idx.code$SeriesCode)
   }
-  else{
-    # if there's no Topic in input, warn the user that Indicators
-    # are selected from all the Topics
-    warning("WARNING:no Topic has been specified, I selected them all")
-  }
   
   # Region 
   if(!is.null(myRegion)){ # Region is an activated criteria
@@ -109,7 +104,7 @@ getCntInd <- function(df, year, dropNA = T, showCnt = T){
    #    - dropNA  : TRUE for dropping the countries with a NA value
    #    - showCnt : TRUE for showing the countries filtered out
    # -- OUTPUT:
-   #    - Indicators : "Indicators" dataframe filtered
+   #    - dc : df reshaped
    # -- USES:
    #    - %>%
    #    - dcast
@@ -143,7 +138,7 @@ getIndYear <- function(df, cnt, dropNA = T, showInd = T){
    #    - dropNA  : TRUE for dropping the countries with a NA value
    #    - showCnt : TRUE for showing the countries filtered out
    # -- OUTPUT:
-   #    - Indicators : "Indicators" dataframe filtered
+   #    - dc : df reshaped
    # -- USES:
    #    - %>%
    #    - dcast
@@ -153,7 +148,7 @@ getIndYear <- function(df, cnt, dropNA = T, showInd = T){
    dc <- select(dc,-IndicatorName)
    dcAll <- dc
    if(dropNA){                                                       # drop the NA
-      dcFil <- na.omit(dc)
+      dc <- na.omit(dc)
       if(showInd){                                                    # show the filtered out
          indIn  <- dc    %>% row.names()
          indOut <- dcAll %>% row.names() %>% setdiff(indIn)
@@ -164,7 +159,41 @@ getIndYear <- function(df, cnt, dropNA = T, showInd = T){
    return(dc)
 }
 
-# 02.3 getCntYear ----
+# 02.3 getYearInd ----
+# getYearInd extract for a given country ('cnt') from a dataframe like Indicators a dataframe with
+# rows : years
+# cols : indicators
+# if dropNA =T drop the years with at least one NA
+# if showCnt=T print the years filtered out
+getYearInd <- function(df, cnt, dropNA = T, showY = T){
+  # -- INPUT: 
+  #    - df      : dataframe Indicators-like
+  #    - cnt     : fixed country                                     [CountryName]
+  #    - dropNA  : TRUE for dropping the countries with a NA value
+  #    - showCnt : TRUE for showing the countries filtered out
+  # -- OUTPUT:
+  #    - dc : df reshaped
+  # -- USES:
+  #    - %>%
+  #    - dcast
+  df <- filter(df, CountryName==cnt)                                # fix the country
+  dc <- dcast(df, Year ~ IndicatorName, value.var = "Value")        # reshape
+  row.names(dc) <- dc$Year                                 # set ind as row names
+  dc <- select(dc,-Year)
+  dcAll <- dc
+  if(dropNA){                                                       # drop the NA
+    dc <- na.omit(dc)
+    if(showY){                                                    # show the filtered out
+      yIn  <- dc    %>% row.names()
+      yOut <- dcAll %>% row.names() %>% setdiff(yIn)
+      if(length(yOut)!=0){print(paste(length(yOut),'Indicators out:')); print(yOut)}
+      else{print('No indicators has been filtered out')}
+    }
+  }
+  return(dc)
+}
+
+# 02.4 getCntYear ----
 # getCntYear extract for a given indicator ('ind') from a dataframe like Indicators a dataframe with
 # rows : countries
 # cols : years
@@ -177,7 +206,7 @@ getCntYear <- function(df, ind, dropNA = T, showCnt = T){
    #    - dropNA  : TRUE for dropping the countries with a NA value
    #    - showCnt : TRUE for showing the countries filtered out
    # -- OUTPUT:
-   #    - dcFil   : "Indicators" dataframe filtered
+   #    - dc : df reshaped
    # -- USES:
    #    - %>%
    #    - dcast

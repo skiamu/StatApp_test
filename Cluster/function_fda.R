@@ -62,7 +62,7 @@ fdaPred <- function(a, cc, predData){
   #    - cluster : cluster for the observation to discriminate
   
   g <- dim(cc)[1]                  # number of groups(cluters)
-  ccPred=as.matrix(predData)%*%a   # rotate the data to predict
+  ccPred=as.numeric(predData)%*%a  # rotate the data to predict
   dist<-array(1,g)
   for(i in 1:g){dist[i]=sqrt(sum((ccPred-cc[i,])^2))}
   cluster=which.min(dist)          # assign to the nearest center
