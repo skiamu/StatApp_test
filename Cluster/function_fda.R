@@ -12,22 +12,29 @@ fda <- function(X, clusters, nFishComp){
   #    - clusters      : column with the groups already given (result from kmeans)
   #    - nFishComp     : number of fisher components
   # -- OUTPUT:
-  #    - a  : matrix in which the cloumns are the components
-  #    - cc : centres of the Fisher analysis
+  #    - fComp: Matrix that has the Fisher Components as columns  
+  #    - center: Coordinates of the centroides of the clusters
   
   p      <- length(colnames(X))   # dimension of the features vector
-  labels <- unique(clusters) # labels of the clusters
+  labels <- unique(clusters)      # labels of the clusters
   g      <- length(labels)        # number of groups (cluster)
-  s      <- min(g-1,p)
-  nTot   <- length(clusters)
-  m      <- colMeans(X)
-  mcol   <- array(0, c(g, p))
-  B      <- 0
-  Sp     <- 0
+  nTot   <- length(clusters)      # total number of observations
+  s      <- min(g-1,p)            # num max of compo
+  # checking if the num of compo is acceptable
+  if(nFishComp>s){ 
+    print('Num of components too large: the num of compo has to be less than')
+    print(s)
+    stop("Error: Num of components too large")
+  }
+  
+  m      <- colMeans(X)           # Mean of all the dataframe
+  mcol   <- array(0, c(g, p))     # Declaration and initialization of the mean of the clusters
+  B      <- 0                     # Declaration and initialization of the Between Variance
+  Sp     <- 0                     # Declaration and initialization of the Within Variance
   for(i in 1:g){
-    indeces  <- which(clusters==labels[i])
-    ni       <- length(indeces)         # every iteration ni is updated
-    mcol[i,] <- colMeans(X[indeces,])   # mean of the i-th cluster
+    indeces  <- which(clusters==labels[i]) # indexes of the cluster i elements
+    ni       <- length(indeces)            # every iteration ni is updated
+    mcol[i,] <- colMeans(X[indeces,])      # mean of the i-th cluster
     B        <- B  + ni * cbind(mcol[i,] - m) %*% rbind(mcol[i,] - m)
     Sp       <- Sp + (ni-1) * cov(X[indeces,])
   }
@@ -41,12 +48,13 @@ fda <- function(X, clusters, nFishComp){
   for(i in 1:nFishComp){ invSp = invSp + 1/sqrt(val.Sp[i])*vec.Sp[,i]%*%t(vec.Sp[,i])}
   spec.dec <- eigen(invSp %*% B %*% invSp)
   
-  # computation of the Fisher components
+  # Computation of the Fisher components
   a <- array(0, c(p,nFishComp))
   for(i in 1:nFishComp){a[,i] <- invSp %*% spec.dec$vec[,i]}
   
-  # discrimination
+  # Computation of the coordinates of the centroides of the clusters
   cc<- mcol %*% a
+  
   return(list(fComp=a, center=cc))
 }
 
@@ -56,7 +64,7 @@ fdaPred <- function(a, cc, predData){
   
   # -- INPUT: 
   #    - a             : component of Fischer analysis
-  #    - cc            : centres of the Fisher analysis
+  #    - cc            : centres of the Fischer analysis
   #    - predData      : obs to discriminate [check if you have to standardize]
   # -- OUTPUT:
   #    - cluster : cluster for the observation to discriminate
