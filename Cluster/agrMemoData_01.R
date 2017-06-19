@@ -32,7 +32,7 @@ library(fmsb)                           # radarchart
 # 01 save material for the shiny app ####
 
 # set indicators
-myIndAgr <- c(
+myInd.Agr <- c(
   'Agricultural land (% of land area)',
   'Permanent cropland (% of land area)',
   'Arable land (% of land area)',
@@ -45,61 +45,49 @@ myIndAgr <- c(
 myYear = c(2000:2011) # to have a selection of countries constant at least on these years
 
 # extract the data
-agrDF <- getIndicators(myYear = myYear, myInd = myIndAgr, agg = F) %>%
+DF.Agr <- getIndicators(myYear = myYear, myInd = myInd.Agr, agg = F) %>%
   unifCnt(showInd = F)
 
 # fix 2010
-agrDC <- getCntInd(agrDF,2010)
+DC.Agr <- getCntInd(DF.Agr,2010)
 
 # shorten the IndicatorName
-colnames(agrDC) <- cleanName(colnames(agrDC))
+colnames(DC.Agr) <- cleanName(colnames(DC.Agr))
 
 # stdize data
-sc <- scale(agrDC)
-agrDC_s <- data.frame(sc)
-meanAgr <- attributes(sc)$'scaled:center'
-varAgr  <- attributes(sc)$'scaled:scale'
+sc <- scale(DC.Agr)
+DCs.Agr  <- data.frame(sc)
+mean.Agr <- attributes(sc)$'scaled:center'
+var.Agr  <- attributes(sc)$'scaled:scale'
 
 # cluster analysis
-nCluAgr <- 5
+nClu.Agr <- 5
 set.seed(2000) # so the interpretation doesn't change
-kmAgr <- kmeans(agrDC_s, nCluAgr, nstart = 100) # see agrCLU_02 to see why we choose 5 clusters
+km.Agr <- kmeans(DCs.Agr, nClu.Agr, nstart = 100) # see agrCLU_02 to see why we choose 5 clusters
 
 # comments on clusters
-cluAgr <- data.frame( 
-  Cluster=1:nCluAgr,
+clu.Agr <- data.frame( 
+  Cluster=1:nClu.Agr,
   Description=c('agriculture is an important component in the GDP',
                 'high forest area',
                 'high extension of permanent cropland (coffee, gum, etc)',
                 'high agricultural land',
                 'efficient agriculture'),
-  NumCountries=kmAgr$size
+  NumCountries=km.Agr$size
 )
 
 # fda
-fdaAgr <- fda(agrDC_s, kmAgr$cluster, 3)
-
-kmAgr$cluster['Italy']
-fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s['Italy',])
-kmAgr$cluster['Albania']
-fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Albania",])
-kmAgr$cluster['Algeria']
-fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Algeria",])
-kmAgr$cluster['Antigua']
-fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Antigua",])
-kmAgr$cluster['Argentina']
-fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s["Argentina",])
-# HERE AERCV HIGH OR THERE IS SOMETHING THAT DOESN'T WORK
-
-err <- 0
-for(i in row.names(agrDC_s)){
-  print(paste('real cluster:',kmAgr$cluster[i],'pred cluster',fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]),'--',i))
-  err <- err + !(kmAgr$cluster[i]==fdaPred(fdaAgr$fComp,fdaAgr$center,agrDC_s[i,]))
-}
-print(paste(err,'errors'))
+nFiComp.Agr <- 3
+fda.Agr   <-         fda(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr)
+aercv.Agr <- crossValFDA(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr)
+# technical details
+recap.Agr <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
+                   nFiComp.Agr,'components) with an Apparent Error Rate',
+                   aercv.Agr,'(via Cross Validation)')
 
 # save
-save(nCluAgr,cluAgr,kmAgr,
-     agrDC_s,meanAgr,varAgr,myIndAgr,
-     fdaAgr,
+save(nClu.Agr,clu.Agr,km.Agr,
+     DCs.Agr,mean.Agr,var.Agr,myInd.Agr,
+     fda.Agr,
+     recap.Agr,
      file = "ReadData/agrData.RData")

@@ -33,97 +33,106 @@ server <- function(input, output, session) {
   
   # agriculture ----
   # cluster witha  brief description
-  output$tabAgr <- renderTable({ cluAgr })
+  output$tab.Agr <- renderTable({ clu.Agr })
   # cluster of the selected country
-  output$textAgr <- renderText({ paste(input$cnt,'is in cluster',kmAgr$cluster[input$cnt]) })
+  output$text.Agr <- renderText({ paste(input$cnt,'is in cluster',km.Agr$cluster[input$cnt]) })
   # map with cluters
-  output$plotCT <- renderPlot({ 
-    if(!input$macFlag) print(plotClusterMap(kmAgr$cluster, nCluAgr))
-    else               print(plotClusterMap(kmAgr$cluster, nCluAgr, mac=T))
+  output$plotMap.Agr <- renderPlot({ 
+    if(!input$macFlag) print(plotClusterMap(km.Agr$cluster, nClu.Agr))
+    else               print(plotClusterMap(km.Agr$cluster, nClu.Agr, mac=T))
     })
   # radarchart with the cluster means
-  output$plotCR <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(agrDC_s,kmAgr,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(agrDC_s,kmAgr,                 mac=input$macFlag)) 
+  output$plotRad.Agr <- renderPlot({ 
+    if (input$showCntRad) print(radarTopic(DCs.Agr,km.Agr,cntRad=input$cnt,mac=input$macFlag))
+    else                  print(radarTopic(DCs.Agr,km.Agr,                 mac=input$macFlag)) 
     })
   # how many similar countries do you want to show?
-  simAgr <- reactive({input$showSimAgr})
+  simAgr <- reactive({input$showSim.Agr})
   # similar countries
-  output$tabSimAgr <- renderTable({
-    as.data.frame(t(getClu(names(simCnt(agrDC_s,input$cnt,input$numSimCnt)),kmAgr)))
+  output$tabSim.Agr <- renderTable({
+    as.data.frame(t(getClu(names(simCnt(DCs.Agr,input$cnt,input$numSimCnt.Agr)),km.Agr)))
     })
   
   # fda introduction
-  output$textAgrIntro1 <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
-  output$textAgrIntro2 <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
-  output$textAgrIntro3 <- renderText({ 'Then you will have to set the values for your prediction.' })
-  output$textAgrIntro4 <- renderText({ 'After that the predicted cluster will be shown.' })
+  output$textIntro1.Agr <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
+  output$textIntro2.Agr <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
+  output$textIntro3.Agr <- renderText({ 'Then you will have to set the values for your prediction.' })
+  output$textIntro4.Agr <- renderText({ 'After that the predicted cluster will be shown.' })
   # show values from the previous year selected
-  output$valYAgr <- renderTable({ findValues(findYears(myIndAgr,input$cnt)$dc,input$yAgr) })
+  output$valY.Agr <- renderTable({ findValues(findYears(myInd.Agr,input$cnt)$dc,input$y.Agr) })
   # input for prediction
-  vv <- reactive({ (c(input$v1,input$v2,input$v3,input$v4,input$v5,input$v6)-meanAgr)/varAgr })
+  vv <- reactive({ (c(input$v1.Agr,
+                      input$v2.Agr,
+                      input$v3.Agr,
+                      input$v4.Agr,
+                      input$v5.Agr,
+                      input$v6.Agr)-mean.Agr)/var.Agr })
   # result of the prediction
-  output$predAgr <- renderText({ paste('The predicted cluster is',
-                                       fdaPred(fdaAgr$fComp,fdaAgr$center,vv()))})
+  output$pred.Agr <- renderText({ paste('The predicted cluster is',
+                                       fdaPred(fda.Agr$fComp,fda.Agr$center,vv()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
-  output$space3      <- renderText({ 'This analysis was made by Fisher FDA and the classifier has a AERCV = ... TUTTAVIA LA FDA NON IN QUESTO CASO NON MI SEMBRA SOLIDISSIMA :(' })
+  
+  # technical details
+  det.Agr <- reactive({input$showDet.Agr})
+  output$textDet.Agr <- renderText({
+    if(det.Agr()){ recap.Agr }
+  })
+  
 }
 
 ui <- pageWithSidebar(
-  headerPanel('Selection from the country'),
+  headerPanel('Overview on a country'),
   sidebarPanel(
-    checkboxInput('macFlag','Are you using a Mac?',value = FALSE),
-    selectInput('cnt', 'Country', unique(Indicators$CountryName), selected = 'Italy')#,
-    #selectInput('cnt2', 'Country to be compared', unique(Indicators$CountryName), selected = 'Argentina')
+    checkboxInput('macFlag','Problem with some plots? (it could happen on Mac)',value = FALSE),
+    selectInput('cnt', 'Choose the country', unique(Indicators$CountryName), selected = 'Italy')
   ),
   mainPanel(
     tabsetPanel(
       
-      tabPanel("GDP Growth", 
+      tabPanel("GDP Growth",          # ----
                plotOutput("plotG"),
                checkboxInput('showPred','Show the predictions',value = FALSE),
                textOutput("textG")
                ),
       
-      tabPanel("By topic",
+      tabPanel("By topic",            # ----
                selectInput('top', 'Topic', topics, selected = 'Agriculture'),
                textOutput("textByTopicTemp")
                ),
       
-      tabPanel("Agriculture",
-               tableOutput('tabAgr'),
-               textOutput("textAgr"), 
-               plotOutput("plotCT"),
+      tabPanel("Agriculture",         # ----
+               tableOutput('tab.Agr'),
+               textOutput("text.Agr"), 
+               plotOutput("plotMap.Agr"),
                checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
-               plotOutput("plotCR"),
-               numericInput('numSimCnt', 'Show similar countries with their cluster', 3,
+               plotOutput("plotRad.Agr"),
+               numericInput('numSimCnt.Agr', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
-               tableOutput("tabSimAgr"),
-               textOutput("textAgrIntro1"),
-               textOutput("textAgrIntro2"),
-               textOutput("textAgrIntro3"),
-               textOutput("textAgrIntro4"),
-               selectInput('yAgr', 'Year', 1960:2015, 2010),
-               tableOutput('valYAgr'),
-               numericInput('v1',sort(myIndAgr)[1],0,step = 0.1),
-               numericInput('v2',sort(myIndAgr)[2],0,step = 0.1),
-               numericInput('v3',sort(myIndAgr)[3],0,step = 0.1),
-               numericInput('v4',sort(myIndAgr)[4],0,step = 0.1),
-               numericInput('v5',sort(myIndAgr)[5],0,step = 0.1),
-               numericInput('v6',sort(myIndAgr)[6],0,step = 0.1),
-               textOutput('predAgr'),
-               textOutput('space1'),
-               textOutput('space2'),
-               textOutput("space3")
+               tableOutput("tabSim.Agr"),
+               textOutput("textIntro1.Agr"),
+               textOutput("textIntro2.Agr"),
+               textOutput("textIntro3.Agr"),
+               textOutput("textIntro4.Agr"),
+               selectInput('y.Agr', 'Year', 1960:2015, 2010),
+               tableOutput('valY.Agr'),
+               numericInput('v1.Agr',sort(myInd.Agr)[1],0,step = 0.1),
+               numericInput('v2.Agr',sort(myInd.Agr)[2],0,step = 0.1),
+               numericInput('v3.Agr',sort(myInd.Agr)[3],0,step = 0.1),
+               numericInput('v4.Agr',sort(myInd.Agr)[4],0,step = 0.1),
+               numericInput('v5.Agr',sort(myInd.Agr)[5],0,step = 0.1),
+               numericInput('v6.Agr',sort(myInd.Agr)[6],0,step = 0.1),
+               textOutput('pred.Agr'),
+               checkboxInput('showDet.Agr','Show technical details',value = FALSE),
+               textOutput("textDet.Agr")
                ),
       
-      tabPanel("Natural Resources"),
-      tabPanel("Telecommunications"),
-      tabPanel("Occupation"),
-      tabPanel("Trade"),
-      tabPanel("Production")
-      
+      tabPanel("Natural Resources"),  # ----
+      tabPanel("Telecommunications"), # ----
+      tabPanel("Occupation"),         # ----
+      tabPanel("Trade"),              # ----
+      tabPanel("Production")          # ----
+      # end ----
     )
   )
 )
