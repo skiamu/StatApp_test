@@ -79,6 +79,53 @@ server <- function(input, output, session) {
     if(det.Agr()){ recap.Agr }
   })
   
+  # telecom ----
+  # cluster witha  brief description
+  output$tab.Tel <- renderTable({ clu.Tel })
+  # cluster of the selected country
+  output$text.Tel <- renderText({ paste(input$cnt,'is in cluster',km.Tel$cluster[input$cnt]) })
+  # map with cluters
+  output$plotMap.Tel <- renderPlot({ 
+    if(!input$macFlag) print(plotClusterMap(km.Tel$cluster, nClu.Tel))
+    else               print(plotClusterMap(km.Tel$cluster, nClu.Tel, mac=T))
+  })
+  # radarchart with the cluster means
+  output$plotRad.Tel <- renderPlot({ 
+    if (input$showCntRad) print(radarTopic(DCs.Tel,km.Tel,cntRad=input$cnt,mac=input$macFlag))
+    else                  print(radarTopic(DCs.Tel,km.Tel,                 mac=input$macFlag)) 
+  })
+  # how many similar countries do you want to show?
+  simTel <- reactive({input$showSim.Tel})
+  # similar countries
+  output$tabSim.Tel <- renderTable({
+    as.data.frame(t(getClu(names(simCnt(DCs.Tel,input$cnt,input$numSimCnt.Tel)),km.Tel)))
+  })
+  
+  # fda introduction
+  output$textIntro1.Tel <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
+  output$textIntro2.Tel <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
+  output$textIntro3.Tel <- renderText({ 'Then you will have to set the values for your prediction.' })
+  output$textIntro4.Tel <- renderText({ 'After that the predicted cluster will be shown.' })
+  # show values from the previous year selected
+  output$valY.Tel <- renderTable({ findValues(findYears(myInd.Tel,input$cnt)$dc,input$y.Tel) })
+  # input for prediction
+  vv <- reactive({ (c(input$v1.Tel,
+                      input$v2.Tel,
+                      input$v3.Tel,
+                      input$v4.Tel,
+                      input$v5.Tel,
+                      input$v6.Tel)-mean.Tel)/var.Tel })
+  # result of the prediction
+  output$pred.Tel <- renderText({ paste('The predicted cluster is',
+                                        fdaPred(fda.Tel$fComp,fda.Tel$center,vv()))})
+  output$space1 <- renderText({ '. ' })
+  output$space2 <- renderText({ '. ' })
+  
+  # technical details
+  det.Tel <- reactive({input$showDet.Tel})
+  output$textDet.Tel <- renderText({
+    if(det.Tel()){ recap.Tel }
+  })  
 }
 
 ui <- pageWithSidebar(
@@ -128,7 +175,31 @@ ui <- pageWithSidebar(
                ),
       
       tabPanel("Natural Resources"),  # ----
-      tabPanel("Telecommunications"), # ----
+      tabPanel("Telecommunications", # ----
+               tableOutput('tab.Tel'),
+               textOutput("text.Tel"), 
+               plotOutput("plotMap.Tel"),
+               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               plotOutput("plotRad.Tel"),
+               numericInput('numSimCnt.Tel', 'Show similar countries with their cluster', 3,
+                            min = 1, max = 9),
+               tableOutput("tabSim.Tel"),
+               textOutput("textIntro1.Tel"),
+               textOutput("textIntro2.Tel"),
+               textOutput("textIntro3.Tel"),
+               textOutput("textIntro4.Tel"),
+               selectInput('y.Tel', 'Year', 1960:2015, 2010),
+               tableOutput('valY.Tel'),
+               numericInput('v1.Tel',sort(myInd.Tel)[1],0,step = 0.1),
+               numericInput('v2.Tel',sort(myInd.Tel)[2],0,step = 0.1),
+               numericInput('v3.Tel',sort(myInd.Tel)[3],0,step = 0.1),
+               numericInput('v4.Tel',sort(myInd.Tel)[4],0,step = 0.1),
+               numericInput('v5.Tel',sort(myInd.Tel)[5],0,step = 0.1),
+               numericInput('v6.Tel',sort(myInd.Tel)[6],0,step = 0.1),
+               textOutput('pred.Tel'),
+               checkboxInput('showDet.Tel','Show technical details',value = FALSE),
+               textOutput("textDet.Tel")
+      ),
       tabPanel("Occupation"),         # ----
       tabPanel("Trade"),              # ----
       tabPanel("Production")          # ----
