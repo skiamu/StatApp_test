@@ -39,7 +39,10 @@ fda <- function(X, clusters, labelsCl, nFishComp){
     ni       <- length(indeces)            # every iteration ni is updated
     mcol[i,] <- as.numeric(colMeans(X[indeces,]))      # mean of the i-th cluster
     B        <- B  + ni * cbind(mcol[i,] - m) %*% rbind(mcol[i,] - m)
-    Sp       <- Sp + (ni-1) * cov(X[indeces,])
+    if(ni==1)
+      {Sp       <- Sp}
+    else
+      {Sp <- Sp + (ni-1) * cov(X[indeces,])}
   }
 
   B  <-  B/nTot

@@ -1,4 +1,4 @@
-# cluster on Teliculture
+# cluster on Telecommunications
 
 # 00 preliminars ----
 setwd('/Users/mowythebest/Desktop/StatApp_test')
@@ -67,11 +67,11 @@ km.Tel <- kmeans(DCs.Tel, nClu.Tel, nstart = 100) # see telecomCLU to see why we
 # comments on clusters
 clu.Tel <- data.frame( 
   Cluster=1:nClu.Tel,
-  Description=c("Countries with the most advanced telecomunication system and a strong growth of the population(abs value and urban)",
+  Description=c("Countries with the most advanced telecommunication system and a strong growth of the population(abs value and urban)",
                 "Countries with an advanced telecommunication sector but low growth of the population",
                 "Countries with a normal telecommunication system but without a growth of the population",
-                "Countries with a worst telecomunications sector but with a strong growth of the population",
-                "Countries with a bad communication sector and a normal growth of the population"),
+                "Countries with a worst telecommunications sector but with a strong growth of the population",
+                "Countries with a bad telecommunication sector and a medium-high growth of the population"),
   NumCountries=km.Tel$size
 )
 

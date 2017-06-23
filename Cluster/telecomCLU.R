@@ -12,6 +12,8 @@ source("outlier.R")                     #
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot, kmeansCompare
 source("/Users/mowythebest/Desktop/StatApp_test/Cluster/function_fda.R")
+load("/Users/mowythebest/Desktop/StatApp_test/Gaussianity/mcshapiro.test.RData")
+
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -30,8 +32,6 @@ library(GGally)                         # ggpairs # http://stackoverflow.com/que
 # REM: ggpairs does NOT accept column names with spaces
 library(fmsb)                           # radarchart
 
-# Functions
-load("/Users/mowythebest/Desktop/StatApp_test/Gaussianity/mcshapiro.test.RData")
 
 # 01 --- Setting the working dataframe ----
 
