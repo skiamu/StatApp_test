@@ -1,8 +1,8 @@
 # cluster on Trade
 
 # 00 preliminars ----
-setwd('/Users/mowythebest/Desktop/StatApp_test')
-#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
+setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
 # User defined functions:
 source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, fullness
@@ -50,11 +50,11 @@ myYear <- c(2010)
 # TrdDF = Trade DataFrame
 TrdDF <- getIndicators(myYear = myYear, myInd = myInd.Trd, agg = F)
 
-# shorten the IndicatorName
-colnames(TrdDF) <- cleanName(colnames(TrdDF))
-
 # TrdMatrix = Matrix Country-Indicators created from TrdDF
 DC.Trd <- getCntInd(TrdDF, myYear, dropNA = T, showCnt = T)
+
+# shorten the IndicatorName
+colnames(DC.Trd) <- cleanName(colnames(DC.Trd))
 
 # stdize data
 sc <- scale(DC.Trd)

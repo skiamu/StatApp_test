@@ -1,8 +1,8 @@
 # cluster on Telecommunications
 
 # 00 preliminars ----
-setwd('/Users/mowythebest/Desktop/StatApp_test')
-#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
+setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
 # User defined functions:
 source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, fullness
@@ -47,11 +47,11 @@ myYear <- c(2010)
 # TeleDF = Telecomunication DataFrame
 TeleDF <- getIndicators(myYear = myYear, myInd = myInd.Tel, agg = F)
 
-# shorten the IndicatorName
-colnames(TeleDF) <- cleanName(colnames(TeleDF))
-
 # TeleMatrix = Matrix Country-Indicators created from TeleDF
 DC.Tel <- getCntInd(TeleDF, myYear, dropNA = T, showCnt = T)
+
+# shorten the IndicatorName
+colnames(DC.Tel) <- cleanName(colnames(DC.Tel))
 
 # stdize data
 sc <- scale(DC.Tel)

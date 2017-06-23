@@ -33,7 +33,7 @@ server <- function(input, output, session) {
   output$textByTopicTemp <- renderText({ 'Think about what to put here' })
   
   # agriculture ----
-  # cluster witha  brief description
+  # cluster with a brief description
   output$tab.Agr <- renderTable({ clu.Agr })
   # cluster of the selected country
   output$text.Agr <- renderText({ paste(input$cnt,'is in cluster',km.Agr$cluster[input$cnt]) })
@@ -44,8 +44,8 @@ server <- function(input, output, session) {
     })
   # radarchart with the cluster means
   output$plotRad.Agr <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Agr,km.Agr,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Agr,km.Agr,                 mac=input$macFlag)) 
+    if (input$showCntRad.Agr) print(radarTopic(DCs.Agr,km.Agr,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Agr,km.Agr,                 mac=input$macFlag)) 
     })
   # how many similar countries do you want to show?
   simAgr <- reactive({input$showSim.Agr})
@@ -62,15 +62,15 @@ server <- function(input, output, session) {
   # show values from the previous year selected
   output$valY.Agr <- renderTable({ findValues(findYears(myInd.Agr,input$cnt)$dc,input$y.Agr) })
   # input for prediction
-  vv <- reactive({ (c(input$v1.Agr,
-                      input$v2.Agr,
-                      input$v3.Agr,
-                      input$v4.Agr,
-                      input$v5.Agr,
-                      input$v6.Agr)-mean.Agr)/var.Agr })
+  vv.Agr <- reactive({ (c(input$v1.Agr,
+                          input$v2.Agr,
+                          input$v3.Agr,
+                          input$v4.Agr,
+                          input$v5.Agr,
+                          input$v6.Agr)-mean.Agr)/var.Agr })
   # result of the prediction
   output$pred.Agr <- renderText({ paste('The predicted cluster is',
-                                       fdaPred(fda.Agr$fComp,fda.Agr$center,vv()))})
+                                       fdaPred(fda.Agr$fComp,fda.Agr$center,vv.Agr()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -80,6 +80,99 @@ server <- function(input, output, session) {
     if(det.Agr()){ recap.Agr }
   })
   
+  # natuarl resources ----
+  # cluster with a brief description
+  output$tab.Nat <- renderTable({ clu.Nat })
+  # cluster of the selected country
+  output$text.Nat <- renderText({ paste(input$cnt,'is in cluster',km.Nat$cluster[input$cnt]) })
+  # map with cluters
+  output$plotMap.Nat <- renderPlot({ 
+    if(!input$macFlag) print(plotClusterMap(km.Nat$cluster, nClu.Nat))
+    else               print(plotClusterMap(km.Nat$cluster, nClu.Nat, mac=T))
+  })
+  # radarchart with the cluster means
+  output$plotRad.Nat <- renderPlot({ 
+    if (input$showCntRad.Nat) print(radarTopic(DCs.Nat,km.Nat,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Nat,km.Nat,                 mac=input$macFlag)) 
+  })
+  # how many similar countries do you want to show?
+  simNat <- reactive({input$showSim.Nat})
+  # similar countries
+  output$tabSim.Nat <- renderTable({
+    as.data.frame(t(getClu(names(simCnt(DCs.Nat,input$cnt,input$numSimCnt.Nat)),km.Nat)))
+  })
+  
+  # fda introduction
+  output$textIntro1.Nat <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
+  output$textIntro2.Nat <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
+  output$textIntro3.Nat <- renderText({ 'Then you will have to set the values for your prediction.' })
+  output$textIntro4.Nat <- renderText({ 'After that the predicted cluster will be shown.' })
+  # show values from the previous year selected
+  output$valY.Nat <- renderTable({ findValues(findYears(myInd.Nat,input$cnt)$dc,input$y.Nat) })
+  # input for prediction
+  vv.Nat <- reactive({ (c(input$v1.Nat,
+                          input$v2.Nat,
+                          input$v3.Nat,
+                          input$v4.Nat,
+                          input$v5.Nat)-mean.Nat)/var.Nat })
+  # result of the prediction
+  output$pred.Nat <- renderText({ paste('The predicted cluster is',
+                                        fdaPred(fda.Nat$fComp,fda.Nat$center,vv.Nat()))})
+  output$space1 <- renderText({ '. ' })
+  output$space2 <- renderText({ '. ' })
+  
+  # technical details
+  det.Nat <- reactive({input$showDet.Nat})
+  output$textDet.Nat <- renderText({
+    if(det.Nat()){ recap.Nat }
+  })
+  
+  # telecom ----
+  # cluster witha  brief description
+  output$tab.Tel <- renderTable({ clu.Tel })
+  # cluster of the selected country
+  output$text.Tel <- renderText({ paste(input$cnt,'is in cluster',km.Tel$cluster[input$cnt]) })
+  # map with cluters
+  output$plotMap.Tel <- renderPlot({ 
+    if(!input$macFlag) print(plotClusterMap(km.Tel$cluster, nClu.Tel))
+    else               print(plotClusterMap(km.Tel$cluster, nClu.Tel, mac=T))
+  })
+  # radarchart with the cluster means
+  output$plotRad.Tel <- renderPlot({ 
+    if (input$showCntRad.Tel) print(radarTopic(DCs.Tel,km.Tel,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Tel,km.Tel,                 mac=input$macFlag)) 
+  })
+  # how many similar countries do you want to show?
+  simTel <- reactive({input$showSim.Tel})
+  # similar countries
+  output$tabSim.Tel <- renderTable({
+    as.data.frame(t(getClu(names(simCnt(DCs.Tel,input$cnt,input$numSimCnt.Tel)),km.Tel)))
+  })
+  
+  # fda introduction
+  output$textIntro1.Tel <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
+  output$textIntro2.Tel <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
+  output$textIntro3.Tel <- renderText({ 'Then you will have to set the values for your prediction.' })
+  output$textIntro4.Tel <- renderText({ 'After that the predicted cluster will be shown.' })
+  # show values from the previous year selected
+  output$valY.Tel <- renderTable({ findValues(findYears(myInd.Tel,input$cnt)$dc,input$y.Tel) })
+  # input for prediction
+  vv.Tel <- reactive({ (c(input$v1.Tel,
+                          input$v2.Tel,
+                          input$v3.Tel,
+                          input$v4.Tel,
+                          input$v5.Tel)-mean.Tel)/var.Tel })
+  # result of the prediction
+  output$pred.Tel <- renderText({ paste('The predicted cluster is',
+                                        fdaPred(fda.Tel$fComp,fda.Tel$center,vv.Tel()))})
+  output$space1 <- renderText({ '. ' })
+  output$space2 <- renderText({ '. ' })
+  
+  # technical details
+  det.Tel <- reactive({input$showDet.Tel})
+  output$textDet.Tel <- renderText({
+    if(det.Tel()){ recap.Tel }
+  })  
   # trade ----
   # cluster witha  brief description
   output$tab.Trd <- renderTable({ clu.Trd })
@@ -92,8 +185,8 @@ server <- function(input, output, session) {
   })
   # radarchart with the cluster means
   output$plotRad.Trd <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Trd,km.Trd,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Trd,km.Trd,                 mac=input$macFlag)) 
+    if (input$showCntRad.Trd) print(radarTopic(DCs.Trd,km.Trd,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Trd,km.Trd,                 mac=input$macFlag)) 
   })
   # how many similar countries do you want to show?
   simTrd <- reactive({input$showSim.Trd})
@@ -110,15 +203,19 @@ server <- function(input, output, session) {
   # show values from the previous year selected
   output$valY.Trd <- renderTable({ findValues(findYears(myInd.Trd,input$cnt)$dc,input$y.Trd) })
   # input for prediction
-  vv <- reactive({ (c(input$v1.Trd,
-                      input$v2.Trd,
-                      input$v3.Trd,
-                      input$v4.Trd,
-                      input$v5.Trd,
-                      input$v6.Trd)-mean.Trd)/var.Trd })
+  vv.Trd <- reactive({ (c(input$v1.Trd,
+                          input$v2.Trd,
+                          input$v3.Trd,
+                          input$v4.Trd,
+                          input$v5.Trd,
+                          input$v6.Trd,
+                          input$v7.Trd,
+                          input$v8.Trd,
+                          input$v9.Trd,
+                          input$v10.Trd)-mean.Trd)/var.Trd })
   # result of the prediction
   output$pred.Trd <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Trd$fComp,fda.Trd$center,vv()))})
+                                        fdaPred(fda.Trd$fComp,fda.Trd$center,vv.Trd()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -128,52 +225,52 @@ server <- function(input, output, session) {
     if(det.Trd()){ recap.Trd }
   })
   
-  # trade ----
+  # economic indicators ----
   # cluster witha  brief description
-  output$tab.Trd <- renderTable({ clu.Trd })
+  output$tab.Ein <- renderTable({ clu.Ein })
   # cluster of the selected country
-  output$text.Trd <- renderText({ paste(input$cnt,'is in cluster',km.Trd$cluster[input$cnt]) })
+  output$text.Ein <- renderText({ paste(input$cnt,'is in cluster',km.Ein$cluster[input$cnt]) })
   # map with cluters
-  output$plotMap.Trd <- renderPlot({ 
-    if(!input$macFlag) print(plotClusterMap(km.Trd$cluster, nClu.Trd))
-    else               print(plotClusterMap(km.Trd$cluster, nClu.Trd, mac=T))
+  output$plotMap.Ein <- renderPlot({ 
+    if(!input$macFlag) print(plotClusterMap(km.Ein$cluster, nClu.Ein))
+    else               print(plotClusterMap(km.Ein$cluster, nClu.Ein, mac=T))
   })
   # radarchart with the cluster means
-  output$plotRad.Trd <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Trd,km.Trd,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Trd,km.Trd,                 mac=input$macFlag)) 
+  output$plotRad.Ein <- renderPlot({ 
+    if (input$showCntRad.Ein) print(radarTopic(DCs.Ein,km.Ein,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Ein,km.Ein,                 mac=input$macFlag)) 
   })
   # how many similar countries do you want to show?
-  simTrd <- reactive({input$showSim.Trd})
+  simEin <- reactive({input$showSim.Ein})
   # similar countries
-  output$tabSim.Trd <- renderTable({
-    as.data.frame(t(getClu(names(simCnt(DCs.Trd,input$cnt,input$numSimCnt.Trd)),km.Trd)))
+  output$tabSim.Ein <- renderTable({
+    as.data.frame(t(getClu(names(simCnt(DCs.Ein,input$cnt,input$numSimCnt.Ein)),km.Ein)))
   })
   
   # fda introduction
-  output$textIntro1.Trd <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
-  output$textIntro2.Trd <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
-  output$textIntro3.Trd <- renderText({ 'Then you will have to set the values for your prediction.' })
-  output$textIntro4.Trd <- renderText({ 'After that the predicted cluster will be shown.' })
+  output$textIntro1.Ein <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
+  output$textIntro2.Ein <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
+  output$textIntro3.Ein <- renderText({ 'Then you will have to set the values for your prediction.' })
+  output$textIntro4.Ein <- renderText({ 'After that the predicted cluster will be shown.' })
   # show values from the previous year selected
-  output$valY.Trd <- renderTable({ findValues(findYears(myInd.Trd,input$cnt)$dc,input$y.Trd) })
+  output$valY.Ein <- renderTable({ findValues(findYears(myInd.Ein,input$cnt)$dc,input$y.Ein) })
   # input for prediction
-  vv <- reactive({ (c(input$v1.Trd,
-                      input$v2.Trd,
-                      input$v3.Trd,
-                      input$v4.Trd,
-                      input$v5.Trd,
-                      input$v6.Trd)-mean.Trd)/var.Trd })
+  vv.Ein <- reactive({ (c(input$v1.Ein,
+                          input$v2.Ein,
+                          input$v3.Ein,
+                          input$v4.Ein,
+                          input$v5.Ein,
+                          input$v6.Ein)-mean.Ein)/var.Ein })
   # result of the prediction
-  output$pred.Trd <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Trd$fComp,fda.Trd$center,vv()))})
+  output$pred.Ein <- renderText({ paste('The predicted cluster is',
+                                        fdaPred(fda.Ein$fComp,fda.Ein$center,vv.Ein()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
   # technical details
-  det.Trd <- reactive({input$showDet.Trd})
-  output$textDet.Trd <- renderText({
-    if(det.Trd()){ recap.Trd }
+  det.Ein <- reactive({input$showDet.Ein})
+  output$textDet.Ein <- renderText({
+    if(det.Ein()){ recap.Ein }
   })
   
   # production ####
@@ -188,8 +285,8 @@ server <- function(input, output, session) {
   })
   # radarchart with the cluster means
   output$plotRad.Prd <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Prd,km.Prd,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Prd,km.Prd,                 mac=input$macFlag)) 
+    if (input$showCntRad.Prd) print(radarTopic(DCs.Prd,km.Prd,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Prd,km.Prd,                 mac=input$macFlag)) 
   })
   # how many similar countries do you want to show?
   simPrd <- reactive({input$showSim.Prd})
@@ -206,15 +303,14 @@ server <- function(input, output, session) {
   # show values from the previous year selected
   output$valY.Prd <- renderTable({ findValues(findYears(myInd.Prd,input$cnt)$dc,input$y.Prd) })
   # input for prediction
-  vv <- reactive({ (c(input$v1.Prd,
-                      input$v2.Prd,
-                      input$v3.Prd,
-                      input$v4.Prd,
-                      input$v5.Prd,
-                      input$v6.Prd)-mean.Prd)/var.Prd })
+  vv.Prd <- reactive({ (c(input$v1.Prd,
+                          input$v2.Prd,
+                          input$v3.Prd,
+                          input$v4.Prd,
+                          input$v5.Prd)-mean.Prd)/var.Prd })
   # result of the prediction
   output$pred.Prd <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Prd$fComp,fda.Prd$center,vv()))})
+                                        fdaPred(fda.Prd$fComp,fda.Prd$center,vv.Prd()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -236,8 +332,8 @@ server <- function(input, output, session) {
   })
   # radarchart with the cluster means
   output$plotRad.Ets <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Ets,km.Ets,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Ets,km.Ets,                 mac=input$macFlag)) 
+    if (input$showCntRad.Ets) print(radarTopic(DCs.Ets,km.Ets,cntRad=input$cnt,mac=input$macFlag))
+    else                      print(radarTopic(DCs.Ets,km.Ets,                 mac=input$macFlag)) 
   })
   # how many similar countries do you want to show?
   simEts <- reactive({input$showSim.Ets})
@@ -254,15 +350,14 @@ server <- function(input, output, session) {
   # show values from the previous year selected
   output$valY.Ets <- renderTable({ findValues(findYears(myInd.Ets,input$cnt)$dc,input$y.Ets) })
   # input for prediction
-  vv <- reactive({ (c(input$v1.Ets,
-                      input$v2.Ets,
-                      input$v3.Ets,
-                      input$v4.Ets,
-                      input$v5.Ets,
-                      input$v6.Ets)-mean.Ets)/var.Ets })
+  vv.Ets <- reactive({ (c(input$v1.Ets,
+                          input$v2.Ets,
+                          input$v3.Ets,
+                          input$v4.Ets,
+                          input$v5.Ets)-mean.Ets)/var.Ets })
   # result of the prediction
   output$pred.Ets <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Ets$fComp,fda.Ets$center,vv()))})
+                                        fdaPred(fda.Ets$fComp,fda.Ets$center,vv.Ets()))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -272,53 +367,7 @@ server <- function(input, output, session) {
     if(det.Ets()){ recap.Ets }
   })  
   
-  # telecom ----
-  # cluster witha  brief description
-  output$tab.Tel <- renderTable({ clu.Tel })
-  # cluster of the selected country
-  output$text.Tel <- renderText({ paste(input$cnt,'is in cluster',km.Tel$cluster[input$cnt]) })
-  # map with cluters
-  output$plotMap.Tel <- renderPlot({ 
-    if(!input$macFlag) print(plotClusterMap(km.Tel$cluster, nClu.Tel))
-    else               print(plotClusterMap(km.Tel$cluster, nClu.Tel, mac=T))
-  })
-  # radarchart with the cluster means
-  output$plotRad.Tel <- renderPlot({ 
-    if (input$showCntRad) print(radarTopic(DCs.Tel,km.Tel,cntRad=input$cnt,mac=input$macFlag))
-    else                  print(radarTopic(DCs.Tel,km.Tel,                 mac=input$macFlag)) 
-  })
-  # how many similar countries do you want to show?
-  simTel <- reactive({input$showSim.Tel})
-  # similar countries
-  output$tabSim.Tel <- renderTable({
-    as.data.frame(t(getClu(names(simCnt(DCs.Tel,input$cnt,input$numSimCnt.Tel)),km.Tel)))
-  })
-  
-  # fda introduction
-  output$textIntro1.Tel <- renderText({ paste('If the values change, would',input$cnt,'be in another cluster?') })
-  output$textIntro2.Tel <- renderText({ 'First will be able to select an year and the corresponding values will be displayed. So you can get an idea for reasonable values.' })
-  output$textIntro3.Tel <- renderText({ 'Then you will have to set the values for your prediction.' })
-  output$textIntro4.Tel <- renderText({ 'After that the predicted cluster will be shown.' })
-  # show values from the previous year selected
-  output$valY.Tel <- renderTable({ findValues(findYears(myInd.Tel,input$cnt)$dc,input$y.Tel) })
-  # input for prediction
-  vv <- reactive({ (c(input$v1.Tel,
-                      input$v2.Tel,
-                      input$v3.Tel,
-                      input$v4.Tel,
-                      input$v5.Tel,
-                      input$v6.Tel)-mean.Tel)/var.Tel })
-  # result of the prediction
-  output$pred.Tel <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Tel$fComp,fda.Tel$center,vv()))})
-  output$space1 <- renderText({ '. ' })
-  output$space2 <- renderText({ '. ' })
-  
-  # technical details
-  det.Tel <- reactive({input$showDet.Tel})
-  output$textDet.Tel <- renderText({
-    if(det.Tel()){ recap.Tel }
-  })  
+
 }
 
 ui <- pageWithSidebar(
@@ -330,22 +379,22 @@ ui <- pageWithSidebar(
   mainPanel(
     tabsetPanel(
       
-      tabPanel("GDP Growth",          # ----
+      tabPanel("GDP Growth",               # ----
                plotOutput("plotG"),
                checkboxInput('showPred','Show the predictions',value = FALSE),
                textOutput("textG")
                ),
       
-      tabPanel("By topic",            # ----
+      tabPanel("By topic",                 # ----
                selectInput('top', 'Topic', topics, selected = 'Agriculture'),
                textOutput("textByTopicTemp")
                ),
       
-      tabPanel("Agriculture",         # ----
+      tabPanel("Agriculture",              # ----
                tableOutput('tab.Agr'),
                textOutput("text.Agr"), 
                plotOutput("plotMap.Agr"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Agr','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Agr"),
                numericInput('numSimCnt.Agr', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -367,12 +416,35 @@ ui <- pageWithSidebar(
                textOutput("textDet.Agr")
                ),
       
-      tabPanel("Natural Resources"),  # ----
-      tabPanel("Telecommunications", # ----
+      tabPanel("Natural Resources",        # ----
+               tableOutput('tab.Nat'),
+               textOutput("text.Nat"), 
+               plotOutput("plotMap.Nat"),
+               checkboxInput('showCntRad.Nat','Show the selected country on the radarplot',value = FALSE),
+               plotOutput("plotRad.Nat"),
+               numericInput('numSimCnt.Nat', 'Show similar countries with their cluster', 3,
+                            min = 1, max = 9),
+               tableOutput("tabSim.Nat"),
+               textOutput("textIntro1.Nat"),
+               textOutput("textIntro2.Nat"),
+               textOutput("textIntro3.Nat"),
+               textOutput("textIntro4.Nat"),
+               selectInput('y.Nat', 'Year', 1960:2015, 2010),
+               tableOutput('valY.Nat'),
+               numericInput('v1.Nat',sort(myInd.Nat)[1],0,step = 0.1),
+               numericInput('v2.Nat',sort(myInd.Nat)[2],0,step = 0.1),
+               numericInput('v3.Nat',sort(myInd.Nat)[3],0,step = 0.1),
+               numericInput('v4.Nat',sort(myInd.Nat)[4],0,step = 0.1),
+               numericInput('v5.Nat',sort(myInd.Nat)[5],0,step = 0.1),
+               textOutput('pred.Nat'),
+               checkboxInput('showDet.Nat','Show technical details',value = FALSE),
+               textOutput("textDet.Nat")
+               ),
+      tabPanel("Telecommunications",       # ----
                tableOutput('tab.Tel'),
                textOutput("text.Tel"), 
                plotOutput("plotMap.Tel"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Tel','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Tel"),
                numericInput('numSimCnt.Tel', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -388,17 +460,15 @@ ui <- pageWithSidebar(
                numericInput('v3.Tel',sort(myInd.Tel)[3],0,step = 0.1),
                numericInput('v4.Tel',sort(myInd.Tel)[4],0,step = 0.1),
                numericInput('v5.Tel',sort(myInd.Tel)[5],0,step = 0.1),
-               numericInput('v6.Tel',sort(myInd.Tel)[6],0,step = 0.1),
                textOutput('pred.Tel'),
                checkboxInput('showDet.Tel','Show technical details',value = FALSE),
                textOutput("textDet.Tel")
       ),
-      tabPanel("Occupation"),         # ----
-      tabPanel("Trade",
+      tabPanel("Trade",                    # ----
                tableOutput('tab.Trd'),
                textOutput("text.Trd"), 
                plotOutput("plotMap.Trd"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Trd','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Trd"),
                numericInput('numSimCnt.Trd', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -415,15 +485,19 @@ ui <- pageWithSidebar(
                numericInput('v4.Trd',sort(myInd.Trd)[4],0,step = 0.1),
                numericInput('v5.Trd',sort(myInd.Trd)[5],0,step = 0.1),
                numericInput('v6.Trd',sort(myInd.Trd)[6],0,step = 0.1),
+               numericInput('v7.Trd',sort(myInd.Trd)[6],0,step = 0.1),
+               numericInput('v8.Trd',sort(myInd.Trd)[6],0,step = 0.1),
+               numericInput('v9.Trd',sort(myInd.Trd)[6],0,step = 0.1),
+               numericInput('v10.Trd',sort(myInd.Trd)[6],0,step = 0.1),
                textOutput('pred.Trd'),
                checkboxInput('showDet.Trd','Show technical details',value = FALSE),
                textOutput("textDet.Trd")
-               ),              # ----
-      tabPanel("Economic Indicators",
+               ),
+      tabPanel("Economic Indicators",      # ----
                tableOutput('tab.Ein'),
                textOutput("text.Ein"), 
                plotOutput("plotMap.Ein"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Ein','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Ein"),
                numericInput('numSimCnt.Ein', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -443,12 +517,12 @@ ui <- pageWithSidebar(
                textOutput('pred.Ein'),
                checkboxInput('showDet.Ein','Show technical details',value = FALSE),
                textOutput("textDet.Ein")
-      ),              # ----
-      tabPanel("Production",
+      ),      
+      tabPanel("Production",               # ----
                tableOutput('tab.Prd'),
                textOutput("text.Prd"), 
                plotOutput("plotMap.Prd"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Prd','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Prd"),
                numericInput('numSimCnt.Prd', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -464,17 +538,16 @@ ui <- pageWithSidebar(
                numericInput('v3.Prd',sort(myInd.Prd)[3],0,step = 0.1),
                numericInput('v4.Prd',sort(myInd.Prd)[4],0,step = 0.1),
                numericInput('v5.Prd',sort(myInd.Prd)[5],0,step = 0.1),
-               numericInput('v6.Prd',sort(myInd.Prd)[6],0,step = 0.1),
                textOutput('pred.Prd'),
                checkboxInput('showDet.Prd','Show technical details',value = FALSE),
                textOutput("textDet.Prd")
                ),
-      
-      tabPanel("Easy to start a business",
+  
+      tabPanel("Ease to start a business", # ----
                tableOutput('tab.Ets'),
                textOutput("text.Ets"), 
                plotOutput("plotMap.Ets"),
-               checkboxInput('showCntRad','Show the selected country on the radarplot',value = FALSE),
+               checkboxInput('showCntRad.Ets','Show the selected country on the radarplot',value = FALSE),
                plotOutput("plotRad.Ets"),
                numericInput('numSimCnt.Ets', 'Show similar countries with their cluster', 3,
                             min = 1, max = 9),
@@ -490,7 +563,6 @@ ui <- pageWithSidebar(
                numericInput('v3.Ets',sort(myInd.Ets)[3],0,step = 0.1),
                numericInput('v4.Ets',sort(myInd.Ets)[4],0,step = 0.1),
                numericInput('v5.Ets',sort(myInd.Ets)[5],0,step = 0.1),
-               numericInput('v6.Ets',sort(myInd.Ets)[6],0,step = 0.1),
                textOutput('pred.Ets'),
                checkboxInput('showDet.Ets','Show technical details',value = FALSE),
                textOutput("textDet.Ets")

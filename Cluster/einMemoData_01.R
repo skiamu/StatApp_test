@@ -1,8 +1,8 @@
 # cluster on Economic Indicators
 
 # 00 preliminars ----
-setwd('/Users/mowythebest/Desktop/StatApp_test')
-#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
+setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
 # User defined functions:
 source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, fullness
@@ -46,11 +46,12 @@ myYear <- c(2010)
 # EinDF = Trade DataFrame
 EinDF <- getIndicators(myYear = myYear, myInd = myInd.Ein, agg = F)
 EinDF <- filter(EinDF, EinDF$CountryName != "USA")
-# shorten the IndicatorName
-colnames(EinDF) <- cleanName(colnames(EinDF))
 
 # EinMatrix = Matrix Country-Indicators created from EinDF
 DC.Ein <- getCntInd(EinDF, myYear, dropNA = T, showCnt = T)
+
+# shorten the IndicatorName
+colnames(DC.Ein) <- cleanName(colnames(DC.Ein))
 
 # stdize data
 sc <- scale(DC.Ein)

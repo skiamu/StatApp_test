@@ -1,8 +1,8 @@
 # cluster on Ease to start an activity
 
 # 00 preliminars ----
-setwd('/Users/mowythebest/Desktop/StatApp_test')
-#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
+setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
 # User defined functions:
 source('Filters/functionsFullMatrix.R') # extract2DmatrixWithFullestIndicators, fullness
@@ -45,11 +45,11 @@ myYear <- c(2010)
 # EtsDF = Trade DataFrame
 EtsDF <- getIndicators(myYear = myYear, myInd = myInd.Ets, agg = F)
 
-# shorten the IndicatorName
-colnames(EtsDF) <- cleanName(colnames(EtsDF))
-
 # EtsMatrix = Matrix Country-Indicators created from EtsDF
 DC.Ets <- getCntInd(EtsDF, myYear, dropNA = T, showCnt = T)
+
+# shorten the IndicatorName
+colnames(DC.Ets) <- cleanName(colnames(DC.Ets))
 
 # stdize data
 sc <- scale(DC.Ets)
