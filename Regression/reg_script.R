@@ -347,9 +347,58 @@ for(i in 1:(length(myInd)+length(myInd.continum))){
 
 ######################## PREDICTION ###################
 # let's create the test sample
+
 source(paste(path,"Regression/Design_Matrix.R",sep = "/"))
-myYear.new <- c(2001,2011)
-myYear.continum.new <- c(2001,2011)
+pred.list <- vector("list",2)
+# stampa per l'app
+for(i in 1:2){
+   myYear.new <- c(1990,2000) + i
+   myYear.continum.new <- c(1990,2000) + i
+   z <- Design_Matrix(myYear = myYear.new,myYear.continum = myYear.continum.new,
+                      myInd = myInd, myInd.continum = myInd.continum,
+                      myCountry = NULL)
+   X0.new <- z$XD
+   Y.new <- z$Y
+   # per la predizione devo fittare un modello di regressione senza le dummy 
+   # dell'intervallo temporale
+   formula.pred <- "Y ~ fertility+FDI+GDP+education+consumi+inflation
+   +health+investment+openess+R1+R2+I1+I2"
+   fit.pred <- lm(formula.pred, data = data.frame(Y,XD))
+   
+   colnames(X0.new) <- gsub("\\(.*$", "", colnames(X0.new))
+   colnames(X0.new) <- gsub("\\,.*$", "", colnames(X0.new))
+   name <- colnames(X0.new)
+   
+   # prendo il log(GDP)
+   X0.new[,name[3]] <- log(X0.new[,name[3]])
+   
+   # prendo 1/life_expectancy = mortality rate
+   X0.new[,name[7]] <- 1/X0.new[,name[7]]
+   
+   colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
+                              "health","investment","openess")
+   pred.list[[i]] <- predict(fit.pred, newdata = X0.new, interval = "confidence" ) 
+   
+   # #### PREDICTION MODEL VALIDATION
+   # true.pred <- data.frame(True = Y.new,pred = pred[,1])
+   # # errore di predizione
+   # e <- Y.new - pred[,1]
+   # # root mean square errors (stima della deviazione standard)
+   # RMSE <- sqrt(sum((pred[,1] - Y.new)^2) / length(Y.new))
+   # # il modello tende a sovrastimare la crescita
+   # ME <- mean(e)
+   # # mean absolute deviation
+   # MAD <- mean(abs(e))
+   # # mean percentage error
+   # MPE <- sum(e / Y.new) / length(Y.new)
+   # # mean absolute percentage error
+   # MAPE <- sum(abs(e) / Y.new) / length(Y.new)
+   # RMSE.prec <- RMSE / mean(Y.new)
+   # true.pred.e <- cbind(true.pred,e)
+}
+# sono del 1999 e voglio prevedere la crscita decennale [2000,2010]
+myYear.new <- c(1990,2000)
+myYear.continum.new <- c(1990,2000)
 z <- Design_Matrix(myYear = myYear.new,myYear.continum = myYear.continum.new,
                    myInd = myInd, myInd.continum = myInd.continum,
                    myCountry = NULL)
@@ -408,11 +457,13 @@ for(i in 1:(length(y)-10)){# ciclo sugli intervalli decennali
       yy[j,i] <- (X[[i+10]][j,1] - X[[i]][j,1]) / X[[i]][j,1]
    }
 }  
+rownames(yy) <- rownames(X[[1]])
 yy <- find_outlier(yy,remove = T)
 x11()
-matplot(as.matrix(yy),type = "l")
+matplot(as.matrix(yy[1:10,]),type = "l")
 # in media la crescita decennale è stata del 20 %
 mean(colMeans(yy))
+
 # df.continum <- getIndicators(#myYear = myYear.continum,
 #    myInd = myInd.continum,
 #    agg = F,
