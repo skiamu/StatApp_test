@@ -4,6 +4,12 @@ setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_l
 
 load("ReadData/data.RData")
 load("ReadData/agrData.RData")
+load("ReadData/NatData.RData")
+load("ReadData/telData.RData")
+load("ReadData/TrdData.RData")
+load("ReadData/PrdData.RData")
+load("ReadData/EtsData.RData")
+load("ReadData/EinData.RData")
 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,

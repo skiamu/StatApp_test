@@ -9,21 +9,25 @@ getClu <- function(cnt,km) { # find the cluster of cnt
 }
 
 # maybe change colors to some nicer ones
-colorCl <- c( '1'=rgb(0.2,0.5,0.5,0.9) ,
-              '2'=rgb(0.8,0.2,0.5,0.9) ,
-              '3'=rgb(0.7,0.5,0.1,0.9) ,
-              '4'=rgb(0.9,1.0,0.1,0.9) ,
-              '5'=rgb(0.5,0.7,0.2,0.9) ,
-              '6'=rgb(0.9,0.1,0.0,0.9) ,
-              '7'=rgb(0.1,1.0,0.9,0.9) ,
+colorCl <- c( '1'=rgb(0.9,0.4,0.0,0.9) , # orange
+              '2'=rgb(0.8,0.2,0.5,0.9) , # purple
+              '3'=rgb(0.4,0.0,1.0,0.9) , # blue
+              '4'=rgb(0.9,1.0,0.1,0.9) , # yellow
+              '5'=rgb(0.5,0.7,0.2,0.9) , # green
+              '6'=rgb(0.9,0.1,0.0,0.9) , # red
+              '7'=rgb(0.2,0.5,0.5,0.9) , # green water
+              '8'=rgb(0.1,1.0,0.9,0.9) , # light blue
+              '9'=rgb(0.7,0.5,0.1,0.9) , # light brown
               'NA'='grey' ) # important that it is in the end
-colClIn <- c( '1'=rgb(0.2,0.5,0.5,0.4) ,
+colClIn <- c( '1'=rgb(0.9,0.4,0.0,0.4) ,
               '2'=rgb(0.8,0.2,0.5,0.4) ,
-              '3'=rgb(0.7,0.5,0.1,0.4) ,
+              '3'=rgb(0.4,0.0,1.0,0.4) ,
               '4'=rgb(0.9,1.0,0.1,0.4) ,
               '5'=rgb(0.5,0.7,0.2,0.4) ,
               '6'=rgb(0.9,0.1,0.0,0.4) ,
-              '7'=rgb(0.1,1.0,0.9,0.4) )
+              '7'=rgb(0.2,0.5,0.5,0.4) ,
+              '8'=rgb(0.1,1.0,0.9,0.4) ,
+              '9'=rgb(0.7,0.5,0.1,0.4) )
 colorClMac <- c( '1'='red' ,
               '2'='green' ,
               '3'='blue' ,
@@ -32,6 +36,21 @@ colorClMac <- c( '1'='red' ,
               '6'='brown' ,
               '7'='pink' ,
               'NA'='grey' ) # important that it is in the end
+colorCl <- c( '1'=rgb(0.2,0.3,0.6,0.9) , # blue
+              '2'=rgb(0.8,1.0,1.0,0.9) , # cream 0.8/1/1 
+              '3'=rgb(1.0,0.3,0.4,0.9) , # purple
+              '4'=rgb(1.0,1.0,0.2,0.9) , # yellow
+              '5'=rgb(1.0,0.6,0.1,0.9) , # orange
+              '6'=rgb(0.5,0.7,0.2,0.9) , # green
+              '7'=rgb(0.1,1.0,0.9,0.9) , # light blue
+              'NA'='grey' ) # important that it is in the end
+colClIn <- c( '1'=rgb(0.2,0.3,0.6,0.4) , # blue
+              '2'=rgb(0.8,0.7,0.5,0.4) ,   #'2'=rgb(1.0,1.0,0.7,0.4) , # cream -> darker
+              '3'=rgb(1.0,0.3,0.4,0.4) , # purple
+              '4'=rgb(1.0,1.0,0.2,0.4) , # yellow
+              '5'=rgb(1.0,0.6,0.1,0.4) , # orange
+              '6'=rgb(0.5,0.7,0.2,0.4) , # green
+              '7'=rgb(0.1,1.0,0.9,0.4) ) # light blue
 # fill a map of the world with clusters
 plotClusterMap <- function(cl, n, mac=F) {
   if(mac) colorCl=colorClMac
