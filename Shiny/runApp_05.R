@@ -2,6 +2,14 @@
 #setwd('/Users/mowythebest/Desktop/StatApp_test')
 setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
 
+# what to install:
+# 1) reshape2
+# 2) dplyr
+# 3) ggplot2
+# 4) fmsb
+# 5) shiny
+# 6) maps
+
 load("ReadData/data.RData")
 load("ReadData/agrData.RData")
 load("ReadData/NatData.RData")
