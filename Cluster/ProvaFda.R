@@ -11,8 +11,8 @@ source("function_name.R")               # name2codeCnt, ...
 source("outlier.R")                     # 
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot, kmeansCompare
-source("/Users/mowythebest/Desktop/StatApp_test/Cluster/fda.R")
-source("/Users/mowythebest/Desktop/StatApp_test/Cluster/fdaPred.R")
+source("/Users/mowythebest/Desktop/StatApp_test/Cluster/function_fda.R")
+
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -70,5 +70,6 @@ TeleMatrixStd <- data.frame(scale(TeleMatrix))
 cluster5.k <- kmeans(TeleMatrixStd, centers=5) # Centers: fixed number of clusters
 
 # 03 --- Fisher Discriminant analysis ####
-a <- fda(TeleMatrixStd, cluster5.k$cluster, c('1','2','3','4','5'),3,5)
-b <- fdaPred(a$FCompo, a$centres, data.matrix(TeleMatrixStd[1,]))
+a <- fda(TeleMatrixStd, cluster5.k$cluster,c('1','2','3','4','5'), 3)
+c <- crossValFDA(TeleMatrixStd, cluster5.k$cluster,c('1','2','3','4','5'), 3)
+c

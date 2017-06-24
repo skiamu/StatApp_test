@@ -11,7 +11,9 @@ source("function_name.R")               # name2codeCnt, ...
 source("outlier.R")                     # 
 source("Graphs&Plots/extra_ggplot.R")   # multiplot, PCbiplot
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot, kmeansCompare
-source("/Users/mowythebest/Desktop/StatApp_test/Cluster/fda.R")
+source("/Users/mowythebest/Desktop/StatApp_test/Cluster/function_fda.R")
+load("/Users/mowythebest/Desktop/StatApp_test/Gaussianity/mcshapiro.test.RData")
+
 cleanName <- function(x){
   x <- gsub("\\(.*$", "",  x)  # drop everything after the '('
   x <-  sub("\\s+$",  "",  x)  # drop the final space
@@ -30,8 +32,6 @@ library(GGally)                         # ggpairs # http://stackoverflow.com/que
 # REM: ggpairs does NOT accept column names with spaces
 library(fmsb)                           # radarchart
 
-# Functions
-load("/Users/mowythebest/Desktop/StatApp_test/Gaussianity/mcshapiro.test.RData")
 
 # 01 --- Setting the working dataframe ----
 
@@ -431,9 +431,9 @@ for (k in 1:199) {
   trainTeleMatrixStd <- TeleMatrixStd[-k, ]
   traincluster5.k <- cluster5.k$cluster[-k]
   testTeleMatrixStd <- data.matrix(TeleMatrixStd[k, ])
-  fdc <- fda(trainTeleMatrixStd,traincluster5.k,c('1','2','3','4','5'),3,5)
+  fdc <- fda(trainTeleMatrixStd,traincluster5.k,c('1','2','3','4','5'),3)
   
-  cc.new=c(testTeleMatrixStd%*%fdc[,1], testTeleMatrixStd%*%fdc[,2], testTeleMatrixStd%*%fdc[,3])
+  cc.new=c(testTeleMatrixStd%*%fdc$fComp[,1], testTeleMatrixStd%*%fdc$fComp[,2], testTeleMatrixStd%*%fdc$fComp[,3])
   # compute the distance from the means
   i1 <- which(traincluster5.k=='1')
   i2 <- which(traincluster5.k=='2')
@@ -445,11 +445,11 @@ for (k in 1:199) {
   m3 <- colMeans(trainTeleMatrixStd[i3,])
   m4 <- colMeans(trainTeleMatrixStd[i4,])
   m5 <- colMeans(trainTeleMatrixStd[i5,])
-  cc.m1 <- c(m1%*%fdc[,1], m1%*%fdc[,2], m1%*%fdc[,3])
-  cc.m2 <- c(m2%*%fdc[,1], m2%*%fdc[,2], m1%*%fdc[,3])
-  cc.m3 <- c(m3%*%fdc[,1], m3%*%fdc[,2], m1%*%fdc[,3])
-  cc.m4 <- c(m4%*%fdc[,1], m4%*%fdc[,2], m1%*%fdc[,3])
-  cc.m5 <- c(m5%*%fdc[,1], m5%*%fdc[,2], m1%*%fdc[,3])
+  cc.m1 <- c(m1%*%fdc$fComp[,1], m1%*%fdc$fComp[,2], m1%*%fdc$fComp[,3])
+  cc.m2 <- c(m2%*%fdc$fComp[,1], m2%*%fdc$fComp[,2], m1%*%fdc$fComp[,3])
+  cc.m3 <- c(m3%*%fdc$fComp[,1], m3%*%fdc$fComp[,2], m1%*%fdc$fComp[,3])
+  cc.m4 <- c(m4%*%fdc$fComp[,1], m4%*%fdc$fComp[,2], m1%*%fdc$fComp[,3])
+  cc.m5 <- c(m5%*%fdc$fComp[,1], m5%*%fdc$fComp[,2], m1%*%fdc$fComp[,3])
   dist.m=c(d1=sqrt(sum((cc.new-cc.m1)^2)),
            d2=sqrt(sum((cc.new-cc.m2)^2)),
            d3=sqrt(sum((cc.new-cc.m3)^2)),
