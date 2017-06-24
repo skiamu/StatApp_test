@@ -1,4 +1,5 @@
-################ import stuff ###############################
+########### PREDICTION MODEL #################
+rm(list = ls())
 path <- "/home/andrea/StatApp/StatApp_test"
 load(paste(path,"ReadData/data.RData",sep = "/"))
 load(paste(path,"inference/mcshapiro.test.RData",sep = "/"))
@@ -15,17 +16,12 @@ source(paste(path,"Regression/Design_Matrix_pred.R",sep = "/"))
 library(MASS)
 library(dplyr)
 select <- dplyr::select 
-# script regression 1)
-# explanatory model first time interval [1975,2005]
-###################### 1) ESTRAZIONE DATASET #####################################
-# discrete regressors : the observation of a discrete regressor in at the beginning
-# of each time period, for istance if the time period in [1975,1985] the GDP
-# is taken in 1975
+
 myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
            "Life expectancy at birth, total (years)",
            "Fertility rate, total (births per woman)",
-           "Inflation, GDP deflator (annual %)",
-           "GDP per capita (constant LCU)",
+           "GDP per capita growth (annual %)",
+           "GDP per capita, PPP (current international $)",
            "Household final consumption expenditure, etc. (% of GDP)",
            "Foreign direct investment, net inflows (% of GDP)")
 
@@ -35,25 +31,28 @@ myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
 myInd.continum <- c("General government final consumption expenditure (% of GDP)",
                     "Trade (% of GDP)")
 # discrete years
-myYear <- seq(1975,2005,by = 10)
-# continuum years
-myYear.continum <- 1975:2005
+myYear <- seq(2004,2005,by = 1)
+
 # compute the design matrix XD and the response vector Y
-w <- Design_Matrix(myYear = myYear,myYear.continum = myYear.continum,
-                   myInd = myInd, myInd.continum = myInd.continum)
+w <- Design_Matrix(myYear = myYear,
+                   myYear.continum = NULL,
+                   myInd = c(myInd,myInd.continum),
+                   myInd.continum = NULL,
+                   dummy.period = F,
+                   GDP = "GDP per capita, PPP (current international $)")
 # extract from the output
 Y <- w$Y
 XD <- w$XD
 # number of countries in the analysis
 n <- w$n
-# set T if you want to see the relation between the 10-years growth and each
-# regressor
-marginal.plot = F
-
-###################### 2) modifiche manuali ######################
+M <- w$statistics
+nazioni <- w$nazioni
+marginal.plot  = T
+###################### 2) MODIFICHE MANUALI ######################
 # in this section we have to manually sort out the dataframe XD, for esample
 # we need to transform regressors (e.g. take the log(GDP)) change columns name
 # and so on
+
 
 # da cambiare se cambiano i regressori
 colnames(XD) <- gsub("\\(.*$", "", colnames(XD))
@@ -61,16 +60,17 @@ colnames(XD) <- gsub("\\,.*$", "", colnames(XD))
 name <- colnames(XD)
 
 # prendo il log(GDP), always check that the column number is the desired one
-XD[,name[3]] <- log(XD[,name[3]])
+XD[,name[4]] <- log(XD[,name[4]])
 
 # prendo 1/life_expectancy = mortality rate, always check that the column number
 #  is the desired one
-XD[,name[7]] <- 1/XD[,name[7]]
+XD[,name[8]] <- 1/XD[,name[8]]
 # shorten the names for graphical reasons
-colnames(XD)[1:9] <- c("fertility","FDI","GDP","education","consumi","inflation",
-                       "health","investment","openess")
+colnames(XD)[1:9] <- c("fertility","FDI","GDP","growth","investment","education",
+                       "consumi","health","openess")
 # if there're NAs there's something wrongm go back and fix it
 if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
+
 
 
 ###################### 3) REGRESSION ANALYSIS #################################
@@ -78,17 +78,17 @@ if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
 # previous one. We check the assumption looking at the diagnosis plots, we performe
 # a stepwise model selection, plot the regressors against the response, detect
 # and remove outliers
-
-source(paste(path,"Regression/lin_reg.R",sep = "/"))
-# create the regression formula
+#
+# 3.1) regression fitting and outliers
 formula <- paste("Y ~ ",colnames(XD)[1],sep = "")
 for(i in 2:dim(XD)[2]){
    formula <- paste(formula,colnames(XD)[i],sep = "+")
 }
 # substituite the country names with numbers since it's easier to spot outlier
 # in the diagnosis plots if each observation is a number
-rownames(XD) <- 1:(3*n)
-# fit the linear regression
+row.country.name <- rownames(XD)
+rownames(XD) <- 1:length(Y)
+# fit the first linear regression
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -99,10 +99,14 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
-# check the diagnosis plots
+# check the diagnosis plots to detect outlier
+
 plot(fit$model)
-XD <- find_outlier(data.frame(Y,XD),remove = T)
+# remove outlier
+d <- data.frame(Y,XD); rownames(d) <- row.country.name
+XD <- find_outlier(d,remove = T)
 Y <- XD[,1];XD <- XD[,-1]
+# fit the second linear regression 
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -113,9 +117,11 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
+# look again for outlier
 plot(fit$model)
-# queste correzioni vanno bene solo per anni 1975:2005
-XD <- XD[-c(99,1),]; Y <- Y[-c(99,1)]
+# remove outliers
+XD <- XD[-c(39,66,114),]; Y <- Y[-c(39,66,114)]
+# fit the final regression
 fit <- lin_reg(Y,
                XD,
                formula = formula,
@@ -126,14 +132,17 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
+
+#######  3.2) model selection
+# given the last regression, let's see if we can reduce the model for the time interval
+# [1975, 2005]
+# 
 # rifaccio stessa regressione di sopra ma fuori dalla funzione senno casino con step
 fit2 <- lm(formula,data = XD)
 step(fit2)
 # uso formula suggerita dalla procedura step-wise
-fit3 <- lm(Y ~ fertility + education + consumi + health + openess + I1 + D1,data = XD)
+fit3 <- lm(Y ~ GDP + growth + I1 + I2,data = XD)
 summary(fit3)
-
-# plotte risposta vs singolo regressore per vedere l'andamento
 if(marginal.plot){
    library(ggplot2)
    graphics.off()
@@ -150,78 +159,3 @@ if(marginal.plot){
       Sys.sleep(3)
    }
 }
-######################## 4) PREDICTION ###################
-# in this section we make prediction of the 10-years growth.
-# For example, suppose we are in 2001, we wanna forecast the growth over the
-# time interval [2011,2001]. Finally we evaluate our predictor computing classical 
-# prediction measures (RMSE, MAD, ME).
-# Hopefully, we compere our estimate against those made by the OECD
-
-# sono del 1999 e voglio prevedere la crscita decennale [2000,2010]
-myYear.new <- c(2010)
-# z <- Design_Matrix_pred(myYear = myYear.new,
-#                         myInd = c(myInd,myInd.continum),
-#                         response.vector = F)
-z <- Design_Matrix(myYear = myYear,myYear.continum = NULL,
-                   myInd = c(myInd,myInd.continum), myInd.continum = NULL)
-
-X0.new <- z$XD
-Y.true <- z$Y
-nations <- z$nations
-colnames(X0.new) <- gsub("\\(.*$", "", colnames(X0.new))
-colnames(X0.new) <- gsub("\\,.*$", "", colnames(X0.new))
-name <- colnames(X0.new)
-# prendo il log(GDP)
-X0.new[,name[3]] <- log(X0.new[,name[3]])
-# prendo 1/life_expectancy = mortality rate
-X0.new[,name[8]] <- 1/X0.new[,name[8]]
-colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","investment","education","consumi",
-                           "inflation","health","openess")
-
-formula.pred <- "Y ~ fertility+FDI+GDP+education+consumi+inflation
-+health+investment+openess+R1+R2+I1+I2"
-fit.pred <- lm(formula.pred, data = data.frame(Y,XD))
-pred <- predict(fit.pred, newdata = X0.new, interval = "confidence" ) 
-
-#### PREDICTION MODEL VALIDATION
-true.pred <- data.frame(True = Y.true,pred = pred[,1])
-rownames(true.pred) <- nations
-# errore di predizione
-e <- Y.true - pred[,1]
-# root mean square errors (stima della deviazione standard)
-RMSE <- sqrt(sum((pred[,1] - Y.true)^2) / length(Y.true))
-# il modello tende a sovrastimare la crescita
-ME <- mean(e)
-# mean absolute deviation
-MAD <- mean(abs(e))
-# mean percentage error
-MPE <- sum(e / Y.true) / length(Y.true)
-# mean absolute percentage error
-MAPE <- sum(abs(e) / Y.true) / length(Y.true)
-RMSE.prec <- RMSE / mean(Y.true)
-true.pred.e <- cbind(true.pred,e)
-
-
-# voglio farmi una idea di come è stata la crescita decennale
-GDP <- "GDP per capita (constant LCU)"
-dq <- getIndicators(myInd = GDP,myCnt = nations)
-dq1 <- unifCnt(dq,showCnt = T, showInd = F)
-y <- unique(dq1$Year)
-X <- get3D(dq1,y)
-
-y.name <- "GDP per capita (constant LCU)"
-nn <- dim(X[[1]])[1]
-yy <- data.frame(matrix(nrow = nn,ncol = length(y)-10 ))
-for(i in 1:(length(y)-10)){# ciclo sugli intervalli decennali
-   for(j in 1:nn){# ciclo sulle nazioni dentro ogni decennio
-      yy[j,i] <- (X[[i+10]][j,1] - X[[i]][j,1]) / X[[i]][j,1]
-   }
-}  
-colnames(yy) <- seq(y[1],y[length(y)-10],by = 1)
-rownames(yy) <- rownames(X[[1]])
-yy <- find_outlier(yy,remove = T)
-x11()
-matplot(t(as.matrix(yy[1:10,])),type = "l")
-# in media la crescita decennale è stata del 20 %
-mean(colMeans(yy))
-
