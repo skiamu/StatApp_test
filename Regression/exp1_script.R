@@ -158,8 +158,13 @@ summary(fit3)
 # here we analyse this results taking into account the full model, the time interval
 # where we are fitting and the stuff on the book
 # 
-
-
+# ADDING INTERACTION
+formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
+   health+R1+R2+I1+I2+investment+openess+D1+D2 + D1:GDP + D2:GDP + R1:GDP + R2:GDP+
+   consumi:R1 + investment:R1 + openess:R1
+   
+fit4 <- lm(formula,data = XD)
+summary(fit4)
 #################### 4) PLOT RESPONSE VS REGRESSORS
 # plotte risposta vs singolo regressore per vedere l'andamento
 if(marginal.plot){

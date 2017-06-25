@@ -112,3 +112,21 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
+
+####### MODEL SELECTION FOR PREDICTION
+
+# let's try with some interaction
+formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
+   health+R1+R2+I1+I2+investment+openess+ R1:GDP + R2:GDP+
+   consumi:R1 + investment:R1 + inflation:R1 + fertility:R1
+
+fit2 <- lm(formula,data = XD)
+summary(fit2)
+
+# let's reduce the model
+step(fit2)
+formula <- Y ~ fertility + GDP + education + consumi + inflation + 
+   health + R1 + R2 + I1 + investment + GDP:R1 + GDP:R2 + consumi:R1 + 
+   inflation:R1 + fertility:R1
+fit3 <- lm(formula ,data = XD)
+summary(fit3)

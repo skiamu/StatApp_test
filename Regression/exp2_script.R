@@ -117,37 +117,6 @@ fit <- lin_reg(Y,
 plot(fit$model)
 # remove outlier: in [1982,2012] and [1983,2013] there's no need
 
-# d <- data.frame(Y,XD); rownames(d) <- row.country.name
-# XD <- find_outlier(d,remove = T)
-# Y <- XD[,1];XD <- XD[,-1]
-# # XD <- XD[-c(20,7,85),]; Y <- Y[-c(20,7,85)]
-# # fit the second linear regression 
-# fit <- lin_reg(Y,
-#                XD,
-#                formula = formula,
-#                X0.new = NULL,
-#                interval = NULL,
-#                print.plot = F,
-#                print.result = T,
-#                print.band = F,
-#                pointwise = F,
-#                print.plot.DIAGN = F)
-# # look again for outlier
-# plot(fit$model)
-# # remove outliers
-# XD <- XD[-c(93),]; Y <- Y[-c(93)]
-# # fit the final regression
-# fit <- lin_reg(Y,
-#                XD,
-#                formula = formula,
-#                X0.new = NULL,
-#                interval = NULL,
-#                print.plot = F,
-#                print.result = T,
-#                print.band = F,
-#                pointwise = F,
-#                print.plot.DIAGN = F)
-# plot(fit$model)
 
 #######  3.2) model selection
 # given the last regression, let's see if we can reduce the model for the time interval
@@ -161,6 +130,14 @@ fit3 <- lm(Y ~ fertility + GDP + consumi + R1 + I1 + I2,data = XD)
 summary(fit3)
 # here we analyse this results taking into account the full model, the time interval
 # where we are fitting and the stuff on the book
+# 
+# ADDING THE INTERACTION
+formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
+   health+R1+R2+I1+I2+investment+openess+D1+D2 + D1:GDP + D2:GDP + R1:GDP + R2:GDP+
+   consumi:R1 + investment:R1 + inflation:R1 + fertility:R1
+fit4 <- lm(formula,data = XD)   
+summary(fit4)
+# 
 # 
 # plotte risposta vs singolo regressore per vedere l'andamento
 if(marginal.plot){

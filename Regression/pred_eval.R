@@ -6,7 +6,7 @@
 # Hopefully, we compere our estimate against those made by the OECD
 
 # good performance in [1999,2009]
-myYear.new <- c(2001,2012)
+myYear.new <- c(1990,2000)
 z <- Design_Matrix_pred(myYear = myYear.new,
                         myInd = c(myInd,myInd.continum),
                         myCountry = NULL,
@@ -26,7 +26,8 @@ X0.new[,name[8]] <- 1/X0.new[,name[8]]
 colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","investment","education","consumi",
                            "inflation","health","openess")
 # here we set the formula for the prediction model. By default is the formula 
-# of the model built in file pred_model.R but if we want we cuold use a reduced one.
+# of the model built in file pred_model.R , so if u want to change the model
+# go there
 formula.pred <- formula
 
 # the model is fitted on the data from "pred_model.R" where we built the prediction

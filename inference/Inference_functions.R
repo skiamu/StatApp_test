@@ -12,6 +12,7 @@
 #             "sim_CI" = F simulataneous conf intervals
 #             "sim_Bonf" = Bonferroni simultaneous conf intervals
 #  
+source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
 ConfidenceRegion <- function(X = NULL,
                              large_n = F,
                              S = NULL,
@@ -60,7 +61,7 @@ ConfidenceRegion <- function(X = NULL,
       # let's start inference analysis
       switch(to.do,
              CR = {# case  "confidence region for the mean"
-                source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
+                
                 # plot the confidence region @ level 1-alpha for the mean
                 plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n)
                 # add the projection of the ellipse along the axis: in other
@@ -94,7 +95,7 @@ ConfidenceRegion <- function(X = NULL,
       ) # end switch
    }
    else{# n is large, build an asyntotic confidence region for the mean
-      source("/home/andrea/StatApp/StatApp_test/inference/plot_ellipse.R")
+      
       # plot the confidence region @ level 1-alpha for the mean
       plot_ellipse(X_bar, S, alpha = alpha, sample = T, n = n,large_n = T)
    }
@@ -128,14 +129,14 @@ simult_CI <- function(X_bar, S, alpha = 0.05, A, n, Bonf = FALSE,plot = FALSE){
                   sup = t(a)%*% X_bar + sqrt(t(a)%*%S%*%a / n) * csi)
    }
    # plot the intervals
-   if(plot)  plot_intervals(IC, X_bar, k)
+   if(plot)  plot_intervals(IC, k)
       
    return(IC)
    
 }# end simult_CI
 
 # definition function "plot_intervals"
-plot_intervals <- function(IC, X_bar, k){
+plot_intervals <- function(IC, k){
    #
    # INPUT :
    #        IC = confidence intervals matrix
@@ -151,7 +152,7 @@ plot_intervals <- function(IC, X_bar, k){
            main='Simultaneous T2 conf. int. for the components')
    for(i in 1:k) segments(i,IC[i,1],i,IC[i,3],lwd=3,col=i)
    # add sample means
-   points(1:k, X_bar, pch=16, col=1:k)
+   points(1:k, IC[,2], pch=16, col=1:k)
    
 } # end function plot_intervals
 
