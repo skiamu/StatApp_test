@@ -1,6 +1,7 @@
 # run App_05
 #setwd('/Users/mowythebest/Desktop/StatApp_test')
-setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+#setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
+setwd( "C:/Users/Leona/Documents/StatApp_test")
 
 # what to install:
 # 1) reshape2
@@ -18,10 +19,14 @@ load("ReadData/TrdData.RData")
 load("ReadData/PrdData.RData")
 load("ReadData/EtsData.RData")
 load("ReadData/EinData.RData")
+load("prediction.RData")         # TEMPORANEO!
+#load("ReadData/prediction.RData") 
 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
                                         # kmeansCompare, radarTopic
+
+source("Graphs&Plots/plotPred.R")       # plot10yPred, checkPred
 source('Cluster/function_fda.R')        # fda, fdaPred
 source('function_std.R')                # std
 
@@ -29,5 +34,7 @@ library(dplyr)                          # %>%
 library(ggplot2)                        # ggplot
 library(fmsb)                           # radarchart
 library(shiny)                          # runApp
+select <- dplyr::select 
+
 
 runApp('Shiny/App_05.R')

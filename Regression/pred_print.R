@@ -3,7 +3,7 @@
 # ho paura sia tropo grande. 
 source(paste(path,"Regression/manual_stuff.R",sep = "/"))
 # select the years
-year.pred <- 2008:2013
+year.pred <- 2005:2013
 X.pred <- vector("list",length(year.pred))
 for(i in 1:length(year.pred)){
    
@@ -21,6 +21,6 @@ for(i in 1:length(year.pred)){
    
 }
 # save the list for the app
-save(X.pred,file = "prediction.RData")
+save(X.pred,year.pred,file = "ReadData/prediction.RData")
 
 

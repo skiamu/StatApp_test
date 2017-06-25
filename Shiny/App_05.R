@@ -11,21 +11,31 @@ topics <- c("Agriculture",
 
 server <- function(input, output, session) {
   
-  # growth ---- 
-  growthCnt <- reactive({
-    getIndicators(myInd = 'GDP per capita growth (annual %)', myCnt = c(input$cnt,'World')) %>%
-      select(Year,Value,CountryName)
-  })
-  
+  # growth ----
+  predS <- reactive({input$showPred}) 
+  predC <- reactive({checkPred(input$cnt)}) 
   output$plotG <- renderPlot({
-    p <- ggplot(growthCnt(), aes(x = Year, y = Value, colour = CountryName)) + 
-      geom_point() + geom_line() + ggtitle('Growth')
+    if(predS() & predC()){
+      p <- plot10yPred(input$cnt,flagPred = T)
+    } else {
+      p <- plot10yPred(input$cnt,flagPred = F)
+    }
     print(p)
   })
   
-  pred <- reactive({input$showPred})
+  # growthCnt <- reactive({
+  #   getIndicators(myInd = 'GDP per capita growth (annual %)', myCnt = c(input$cnt,'World')) %>%
+  #     select(Year,Value,CountryName)
+  # })
+  # 
+  # output$plotG <- renderPlot({
+  #   p <- ggplot(growthCnt(), aes(x = Year, y = Value, colour = CountryName)) + 
+  #     geom_point() + geom_line() + ggtitle('Growth')
+  #   print(p)
+  # })
+  
   output$textG <- renderText({
-    if(pred()){ 'Prediction not (yet) available' }
+    if(!predC()){ 'Prediction are not available for this country' }
     })
 
   # by topic ---- 
