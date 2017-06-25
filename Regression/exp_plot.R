@@ -9,7 +9,7 @@ source(paste(path,"Regression/make_function.R",sep = "/"))
 ####### 
 # select indicators GDP per capita (used to compute growth)
 GDP <- "GDP per capita (constant 2005 US$)"
-z <- make.yy(GDP,nazioni)
+z <- make.yy(GDP,NULL)
 yy <- z$yy
 # let's see the different pattern for USA and China, China's been speeding us
 # while the USA have been slowing down
@@ -32,7 +32,7 @@ myAgg <- c("East Asia & Pacific (all income levels)",
            "Sub-Saharan Africa (all income levels)")
 # GDP <- "GDP per capita (current US$)"
 GDP <- "GDP per capita (constant 2005 US$)"
-z <- make.yy(GDP,myAgg)
+z <- make.yy(GDP,myAgg,flag.my.agg = T)
 yy <- z$yy
 d <- z$Ind.like
 # plot the GDP over the year

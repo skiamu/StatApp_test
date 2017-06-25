@@ -49,7 +49,7 @@ Design_Matrix_pred <- function(myYear,
    # nessuna distinzione tra OECD e non OECD
    region.income[,2] <- gsub("\\:.*$", "", region.income$IncomeGroup)
    # specificare le dummy che si vuole mettere
-   dummy.region <- c("East Asia & Pacific","Sub-Saharan Africa")
+   dummy.region <- c("East Asia & Pacific","Sub-Saharan Africa","Europe & Central Asia")
    dummy.income <- c("High income","Low income")
    R <- data.frame(matrix(0,nrow = n,ncol = length(dummy.region)))
    I <- data.frame(matrix(0,nrow = n,ncol = length(dummy.income)))

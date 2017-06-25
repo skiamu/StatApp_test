@@ -6,10 +6,10 @@
 # Hopefully, we compere our estimate against those made by the OECD
 
 # good performance in [1999,2009]
-myYear.new <- c(1990,2000)
+myYear.new <- c(2003,2013)
 z <- Design_Matrix_pred(myYear = myYear.new,
                         myInd = c(myInd,myInd.continum),
-                        myCountry = NULL,
+                        myCountry = nazioni,
                         response.vector = T)
 # dataframe with the new observations
 X0.new <- z$XD
@@ -37,6 +37,7 @@ summary(fit.pred)
 # predict new observations. I can use this model to predict also observation
 # in the same time interval where I fit it since the country may change
 pred <- predict(fit.pred, newdata = X0.new, interval = "confidence" ) 
+
 
 ######## PREDICTION MODEL VALIDATION
 true.pred <- data.frame(True = Y.true,pred = pred[,1])

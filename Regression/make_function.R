@@ -1,5 +1,5 @@
-make.yy <- function(Ind,Country){
-   dq <- getIndicators(myInd = Ind,myCnt = Country)
+make.yy <- function(Ind,Country,flag.my.agg = F){
+   dq <- getIndicators(myInd = Ind,myCnt = Country,agg = flag.my.agg)
    dq1 <- unifCnt(dq,showCnt = T, showInd = F)
    # years where data is available
    y <- unique(dq1$Year)
@@ -13,14 +13,14 @@ make.yy <- function(Ind,Country){
    #    col = years
    #    
    #    in position yy[i,j] we have the growth for country i over the time interval
-   #    [t_j,t_(j+10)]
+   #    [t_j,t_(j-10)]
    yy <- data.frame(matrix(nrow = nn,ncol = length(y)-10 ))
    for(i in 1:(length(y)-10)){# ciclo sugli intervalli decennali
       for(j in 1:nn){# ciclo sulle nazioni dentro ogni decennio
          yy[j,i] <- (X[[i+10]][j,1] - X[[i]][j,1]) / X[[i]][j,1]
       }
    }  
-   colnames(yy) <- seq(y[1],y[length(y)-10],by = 1)
+   colnames(yy) <- seq(y[1]+10,y[length(y)],by = 1)
    rownames(yy) <- rownames(X[[1]]) 
    return(list(yy = yy, Ind.like = dq1))
 }

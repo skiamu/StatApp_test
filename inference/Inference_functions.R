@@ -49,8 +49,6 @@ ConfidenceRegion <- function(X = NULL,
    # sample cardinality        # population dimension
    n <- dim(X)[1];             p <- dim(X)[2]
    # range dataframe value, it's a global variable
-   Range <<- range(X)
-   
    if(!large_n){# n is small, relay on Gaussian hp
       # check if the gaussian hp is supported by data (function defined below)
       check_gaussianity(X, alpha)
@@ -148,7 +146,7 @@ plot_intervals <- function(IC, k){
    # open graphic device
    x11()
    # plot just the framework so as to use "segments" and "points"
-   matplot(1:k, 1:k, pch='', ylim = Range, xlab='Variables',ylab='T2 for a component', 
+   matplot(1:k, 1:k, pch='', ylim = range(IC), xlab='Variables',ylab='T2 for a component', 
            main='Simultaneous T2 conf. int. for the components')
    for(i in 1:k) segments(i,IC[i,1],i,IC[i,3],lwd=3,col=i)
    # add sample means

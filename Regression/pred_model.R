@@ -113,12 +113,15 @@ fit <- lin_reg(Y,
                pointwise = F,
                print.plot.DIAGN = F)
 
+d <- data.frame(Y,XD); rownames(d) <- row.country.name
+XD <- find_outlier(d,remove = T)
+Y <- XD[,1];XD <- XD[,-1]
 ####### MODEL SELECTION FOR PREDICTION
 
 # let's try with some interaction
 formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
-   health+R1+R2+I1+I2+investment+openess+ R1:GDP + R2:GDP+
-   consumi:R1 + investment:R1 + inflation:R1 + fertility:R1
+   health+R1+R2+R3+I1+I2+investment+openess+fertility:R1+GDP:R1+fertility:I1+
+   fertility:R3  + fertility:R2 + health:R1 + FDI:R3
 
 fit2 <- lm(formula,data = XD)
 summary(fit2)
@@ -127,6 +130,6 @@ summary(fit2)
 step(fit2)
 formula <- Y ~ fertility + GDP + education + consumi + inflation + 
    health + R1 + R2 + I1 + investment + GDP:R1 + GDP:R2 + consumi:R1 + 
-   inflation:R1 + fertility:R1
+   inflation:R1 + fertility:R1 + I1:fertility + I1:GDP
 fit3 <- lm(formula ,data = XD)
 summary(fit3)
