@@ -118,27 +118,38 @@ plot(fit$model)
 # remove outlier: in [1982,2012] and [1983,2013] there's no need
 
 
-#######  3.2) model selection
+#######  3.2) model selection + INTERACTION
 # given the last regression, let's see if we can reduce the model for the time interval
-# [1975, 2005]
+# [1983, 2013]
 # 
-# rifaccio stessa regressione di sopra ma fuori dalla funzione senno casino con step
-fit2 <- lm(formula,data = XD)
-step(fit2)
-# uso formula suggerita dalla procedura step-wise
-fit3 <- lm(Y ~ fertility + GDP + consumi + R1 + I1 + I2,data = XD)
+
+# adding the interaction:
+
+formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
+   investment+openess+D1+D2 + 
+   # interazioni con gli anni
+   D1:GDP + D2:GDP + D1:fertility + D2:fertility + D1:health + D2:health + 
+   I1:GDP + I1:fertility + I2:GDP + I2:fertility+consumi:I1 + consumi:I2+
+   # interazioni con asia
+   R1:GDP +consumi:R1 + investment:R1 + inflation:R1 + fertility:R1 +R1:education+R1:openess+
+   # interazioni con africa sub-sahariana
+   R2:GDP + R2:consumi + R2:investment + R2:fertility+R2:education
+fit3 <- lm(formula,data = XD)
 summary(fit3)
+step(fit3)
+formula <- Y ~ fertility + GDP + education + consumi + inflation + 
+   health + R1 + R2 + I1 + I2 + D1 + D2 + GDP:D2 + health:D1 + 
+   GDP:I1 + fertility:I1 + GDP:I2 + fertility:I2 + GDP:R1 + 
+   consumi:R1 + inflation:R1 + fertility:R1 + GDP:R2 + consumi:R2 + 
+   fertility:R2
+fit4 <- lm(formula,data = XD)
+summary(fit4)
 # here we analyse this results taking into account the full model, the time interval
 # where we are fitting and the stuff on the book
 # 
-# ADDING THE INTERACTION
-formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
-   health+R1+R2+I1+I2+investment+openess+D1+D2 + D1:GDP + D2:GDP + R1:GDP + R2:GDP+
-   consumi:R1 + investment:R1 + inflation:R1 + fertility:R1
-fit4 <- lm(formula,data = XD)   
-summary(fit4)
-# 
-# 
+
+
+
 # plotte risposta vs singolo regressore per vedere l'andamento
 if(marginal.plot){
    library(ggplot2)

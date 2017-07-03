@@ -166,7 +166,7 @@ Design_Matrix <- function(myYear,
    region.income[,2] <- gsub("\\:.*$", "", region.income$IncomeGroup)
    # specificare le dummy che si vuole mettere
    # dummy.region <- c("Sub-Saharan Africa","East Asia & Pacific","Europe & Central Asia")
-   dummy.region <- c("East Asia & Pacific","Sub-Saharan Africa","Europe & Central Asia")
+   dummy.region <- c("East Asia & Pacific","Sub-Saharan Africa")
    dummy.income <- c("High income","Low income")
    R <- data.frame(matrix(0,nrow = n,ncol = length(dummy.region)))
    I <- data.frame(matrix(0,nrow = n,ncol = length(dummy.income)))

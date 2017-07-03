@@ -79,7 +79,7 @@ XD[,name[7]] <- 1/XD[,name[7]]
 # shorten the names for graphical reasons
 colnames(XD)[1:7] <- c("fertility","FDI","GDP","education","consumi","inflation",
                        "health")
-colnames(XD)[12:13] <- c("investment","openess")
+colnames(XD)[13:14] <- c("investment","openess")
 # if there're NAs there's something wrongm go back and fix it
 if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
 
@@ -161,7 +161,7 @@ summary(fit3)
 # ADDING INTERACTION
 formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+
    health+R1+R2+I1+I2+investment+openess+D1+D2 + D1:GDP + D2:GDP + R1:GDP + R2:GDP+
-   consumi:R1 + investment:R1 + openess:R1
+   consumi:R1 + investment:R1 + openess:R1 + R1:fertility + I1:fertility
    
 fit4 <- lm(formula,data = XD)
 summary(fit4)

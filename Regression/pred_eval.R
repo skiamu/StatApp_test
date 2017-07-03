@@ -9,7 +9,7 @@
 myYear.new <- c(2003,2013)
 z <- Design_Matrix_pred(myYear = myYear.new,
                         myInd = c(myInd,myInd.continum),
-                        myCountry = nazioni,
+                        myCountry = NULL,
                         response.vector = T)
 # dataframe with the new observations
 X0.new <- z$XD

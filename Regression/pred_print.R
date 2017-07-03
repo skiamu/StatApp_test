@@ -21,6 +21,6 @@ for(i in 1:length(year.pred)){
    
 }
 # save the list for the app
-save(X.pred,year.pred,file = "ReadData/prediction.RData")
+save(X.pred,year.pred,file = "prediction.RData")
 
 

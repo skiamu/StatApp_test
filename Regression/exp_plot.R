@@ -3,7 +3,7 @@
 # before running this script run exp1_script.R 
 
 source(paste(path,"Regression/make_function.R",sep = "/"))
-
+library(ggplot2)
 
 ####### plot example (China, USA)
 ####### 
@@ -47,7 +47,8 @@ p.growth <- ggplot(yy.plot,aes(x = Year,y = Value, group = Country,colour = Coun
    geom_line()  +
    geom_point()
 p.growth
-
+# da questo modello devo trarre delle indicazioni su che modello costruire. Ad esempio
+# tre rette per i tre gruppi e quelle dell'anno
 
 
 
