@@ -33,7 +33,7 @@ library(dplyr)                          # %>%
 library(ggplot2)                        # ggplot
 library(fmsb)                           # radarchart
 library(shiny)                          # runApp
-# library(ggthemes)                      # theme_economist() maybe
+library(ggthemes)                      # theme_economist() maybe
 select <- dplyr::select 
 
 

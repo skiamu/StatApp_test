@@ -408,7 +408,7 @@ ui <- pageWithSidebar(
   headerPanel('Overview on a country'),
   sidebarPanel(
     checkboxInput('macFlag','Problem with some plots? (it could happen on Mac)',value = FALSE),
-    selectInput('cnt', 'Choose the country', unique(Indicators$CountryName), selected = 'Italy')
+    selectInput('cnt', 'Choose the country', unique(Indicators$CountryName), selected = 'Iran')
   ),
   mainPanel(
     tabsetPanel(
