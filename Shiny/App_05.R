@@ -12,16 +12,35 @@ topics <- c("Agriculture",
 server <- function(input, output, session) {
   
   # growth ----
+  output$textIntroG1 <- renderText({
+    'The following plot shows the 10 year growth ( Growth10y(t) ) for one or two countries;'
+  })
+  output$textIntroG2 <- renderText({
+    'where Growth10y(t) = ( GDP(t) - GDP(t-10) ) / GDP(t-10)'
+  })
+  
   predS <- reactive({input$showPred}) 
   predC <- reactive({checkPred(input$cnt)}) 
+  Hide2 <- reactive({input$Hide2}) 
   output$plotG <- renderPlot({
     if(predS() & predC()){
-      p <- plot10yPred(input$cnt,flagPred = T)
+      if(Hide2()) p <- plot10yPred(input$cnt,           flagPred = T)
+      else        p <- plot10yPred(input$cnt,input$cnt2,flagPred = T)
     } else {
-      p <- plot10yPred(input$cnt,flagPred = F)
+      if(Hide2()) p <- plot10yPred(input$cnt,           flagPred = F)
+      else        p <- plot10yPred(input$cnt,input$cnt2,flagPred = F)
     }
     print(p)
   })
+  
+  output$textG <- renderText({
+    if(!predC()){ 'Prediction are not available for this country' }
+    })
+  
+  output$textG2 <- renderText({
+    if(!is.null(input$cnt2)) { 'Prediction are not shown for the condary country' }
+  })
+  
   
   # growthCnt <- reactive({
   #   getIndicators(myInd = 'GDP per capita growth (annual %)', myCnt = c(input$cnt,'World')) %>%
@@ -33,14 +52,19 @@ server <- function(input, output, session) {
   #     geom_point() + geom_line() + ggtitle('Growth')
   #   print(p)
   # })
-  
-  output$textG <- renderText({
-    if(!predC()){ 'Prediction are not available for this country' }
-    })
 
   # by topic ---- 
-  top <- reactive({ input$top })
-  output$textByTopicTemp <- renderText({ 'Think about what to put here' })
+  output$summaryCnt <- renderTable({
+    data.frame(Agliculture                = clu.Agr[km.Agr$cluster[input$cnt],'Description'],
+               'Natural Resources'        = clu.Nat[km.Nat$cluster[input$cnt],'Description'],
+               Telecommunications         = clu.Tel[km.Tel$cluster[input$cnt],'Description'],
+               Trade                      = clu.Trd[km.Trd$cluster[input$cnt],'Description'],
+               'Economic Indicators'      = clu.Ein[km.Ein$cluster[input$cnt],'Description'],
+               Production                 = clu.Prd[km.Prd$cluster[input$cnt],'Description'],
+               'Ease to start a business' = clu.Ets[km.Ets$cluster[input$cnt],'Description']
+               )
+  })
+  
   
   # agriculture ----
   # cluster with a brief description
@@ -390,14 +414,21 @@ ui <- pageWithSidebar(
     tabsetPanel(
       
       tabPanel("GDP Growth",               # ----
+               textOutput("textIntroG1"),
+               textOutput("textIntroG2"),
                plotOutput("plotG"),
                checkboxInput('showPred','Show the predictions',value = FALSE),
-               textOutput("textG")
+               textOutput("textG"),
+               selectInput('cnt2', 'Secondary country',
+                           unique(Indicators$CountryName), selected = 'World'),
+               textOutput("textG2"),
+               checkboxInput('Hide2','Hide secondary country',value = FALSE)
                ),
       
       tabPanel("By topic",                 # ----
                selectInput('top', 'Topic', topics, selected = 'Agriculture'),
-               textOutput("textByTopicTemp")
+               textOutput("textByTopicTemp"),
+               tableOutput("summaryCnt")
                ),
       
       tabPanel("Agriculture",              # ----

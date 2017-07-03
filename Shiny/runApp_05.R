@@ -19,8 +19,7 @@ load("ReadData/TrdData.RData")
 load("ReadData/PrdData.RData")
 load("ReadData/EtsData.RData")
 load("ReadData/EinData.RData")
-load("prediction.RData")         # TEMPORANEO!
-#load("ReadData/prediction.RData") 
+load("ReadData/prediction.RData") 
 
 source('function_extract.R')            # getIndicators, getCntInd, getIndYear, uniCnt, get3D
 source("Graphs&Plots/cluster_plot.R")   # plotClusterMap, plotClusterHierarchical, kmeansPlot,
@@ -34,6 +33,7 @@ library(dplyr)                          # %>%
 library(ggplot2)                        # ggplot
 library(fmsb)                           # radarchart
 library(shiny)                          # runApp
+# library(ggthemes)                      # theme_economist() maybe
 select <- dplyr::select 
 
 
