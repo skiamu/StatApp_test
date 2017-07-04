@@ -86,8 +86,8 @@ fda.Trd   <-         fda(DCs.Trd, km.Trd$cluster, as.character(1:7), nFiComp.Trd
 aercv.Trd <- crossValFDA(DCs.Trd, km.Trd$cluster, as.character(1:7), nFiComp.Trd)
 # technical details
 recap.Trd <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Trd,'components) with an Apparent Error Rate',
-                   aercv.Trd,'(via Cross Validation)')
+                   nFiComp.Trd,'components ) with an Apparent Error Rate',
+                   round(aercv.Trd,3),'(via Cross Validation)')
 
 # save
 save(nClu.Trd,clu.Trd,km.Trd,

@@ -82,8 +82,8 @@ fda.Agr   <-         fda(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr
 aercv.Agr <- crossValFDA(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr)
 # technical details
 recap.Agr <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Agr,'components) with an Apparent Error Rate',
-                   aercv.Agr,'(via Cross Validation)')
+                   nFiComp.Agr,'components ) with an Apparent Error Rate',
+                   round(aercv.Agr,3),'(via Cross Validation)')
 
 # save
 save(nClu.Agr,clu.Agr,km.Agr,
@@ -91,3 +91,4 @@ save(nClu.Agr,clu.Agr,km.Agr,
      fda.Agr,
      recap.Agr,
      file = "ReadData/agrData.RData")
+

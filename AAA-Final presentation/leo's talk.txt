@@ -1,0 +1,90 @@
+LEO's speech (draft)
+
+#### start
+{Slide 1 DATASET}
+Let's start from our dataset:
+we found the dataset on Kaggle and it contains observation of several economic indicators, 
+such as c02 emission, mortality rate, GDP and others, 
+for all the countries in the world and from 1960 to 2015.
+
+The dataset contains a lot of information but it is very irregular and this constrained our analysis.
+
+{Slide 2 Flow DATASET-GOAL.1}
+Now our goal is to 'find the country that will develop more' but this is too general,
+Moreover the information we have is related to topics that are extremely different between each other
+
+{Slide 3 Flow DATASET-GOAL.2}
+To reach our goal we extracted and processed from the dataset the most interesting information,
+so that we could give to a possible investor an user-friendly tool 
+that could help him in choosing where to invest
+
+{Slide 4 Shiny}
+To build this tool we used 'Shiny'
+that is a 'web application framework for R'
+within this framework we can build an interactive interface 
+that show the output of our R code in a dynamic way
+
+{Shiny 1: open App}
+In this application the user select the country he want to know something about:
+for instance we select: [CNT]
+{Shiny 2: select from [CNT_DEAULT] to [CNT]}
+
+In the first tab we have a summary on all the topics, 
+with a quick description of the interesting features of each topic
+for instance, for what concerne [TOPIC], [CNT] is [DESCRIPTION]
+
+Now let's expand the analysis for [TOPIC]:
+{Shiny 3: go to the [TOPIC] tab} 
+we can see that the countries in the world are divided in [NCLU] groups
+each one with its own quick description that matches the one observed before,
+infact [CNT] is in [NCLU_CNT]
+from this map we can have a quick overall view on how the things are going for this topic,
+and maybe consider to move our analysis on another country
+
+{Shiny 4: scroll down to radarchart}
+we can then have a look at the radarchart that explain how the description of each cluster is made,
+{Shiny 4: tick check box radarchart}
+in addition we can add to this chart the features of the country we are analyzing 
+so that we can understand if its features are similar to the mean ones of its cluster
+or it has some peculiarities
+{Shiny 5: scroll down to similar countries}
+then we can also have a look at the countries that are similar w.r.t. to this topic
+along with their respective groups
+{Shiny 6: increase the number of similare countries}
+for instance [CNT] that is in cluster [NCLU_CNT] is similar to countries in cluster [?] and [?1]
+meaning that its description should be slightly modified
+
+{Shiny 7: scroll down the change features area}
+then we asked ourselves:
+if the values change, would [CNT] be in another cluster?
+first you will be able to select an year and the corresponding values will be displayed,
+{Shiny 8: change year [YEAR DEFAULT] to [YEAR]}
+so you can get an idea for reasonable values.
+then you will have to set the values changed according to your view.
+after that it will be shown the corresponding cluster.
+{Shiny 9: do nothing, too time depending}
+however this will be showned later 
+
+this analysis was performed for 7 topics
+{Shiny 10: go to tab [TOPIC2]}
+
+In addition to this 7 there is an indicator that is more relevant than the other: the GDP growth
+{Shiny 11: go to tab [GDP growth]}
+we have a plot of the 10years growth
+we decided to use it because it is more stable w.r.t. jumps and our data end close to the 2008
+it can be shown also the predicted values for some upcoming years
+{Shiny 12: tick checkbox prediction}
+
+one can compare the 10years growth of the country with another one
+or have a look at it by itslef
+{Shiny 13: tick checkbox hide}
+
+but now let's see what's behind this tool 
+{GO TO PRESENTATION}
+#### end
+
+
+
+
+
+

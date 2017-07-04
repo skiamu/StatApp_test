@@ -74,7 +74,8 @@ plot10yPred <- function(cnt,cnt2=NULL,flagPred=T,GDP="GDP per capita (constant 2
     theme_economist() + 
     geom_hline(yintercept = 0, colour = 'black') + 
     geom_line(    data=dataDf, aes(x = Year, y = Growth10y, colour = CountryName), size = 2) + 
-    geom_point(   data=dataDf, aes(x = Year, y = Growth10y, colour = CountryName), size = 3) 
+    geom_point(   data=dataDf, aes(x = Year, y = Growth10y, colour = CountryName), size = 3) +
+    labs(color = "Country")
   if (flagPred){
     plotCnt <- plotCnt +
       geom_line(    data=predDf, aes(x = Year, y = fit, colour = CountryName), size = 2) +

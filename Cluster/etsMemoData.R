@@ -77,8 +77,8 @@ fda.Ets   <-         fda(DCs.Ets, km.Ets$cluster, as.character(1:3), nFiComp.Ets
 aercv.Ets <- crossValFDA(DCs.Ets, km.Ets$cluster, as.character(1:3), nFiComp.Ets)
 # technical details
 recap.Ets <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Ets,'components) with an Apparent Error Rate',
-                   aercv.Ets,'(via Cross Validation)')
+                   nFiComp.Ets,'components ) with an Apparent Error Rate',
+                   round(aercv.Ets,3),'(via Cross Validation)')
 
 # save
 save(nClu.Ets,clu.Ets,km.Ets,

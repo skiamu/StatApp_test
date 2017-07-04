@@ -8,26 +8,26 @@ getClu <- function(cnt,km) { # find the cluster of cnt
   return(km$cluster[cnt])
 }
 
-# maybe change colors to some nicer ones
-colorCl <- c( '1'=rgb(0.9,0.4,0.0,0.9) , # orange
-              '2'=rgb(0.8,0.2,0.5,0.9) , # purple
-              '3'=rgb(0.4,0.0,1.0,0.9) , # blue
-              '4'=rgb(0.9,1.0,0.1,0.9) , # yellow
-              '5'=rgb(0.5,0.7,0.2,0.9) , # green
-              '6'=rgb(0.9,0.1,0.0,0.9) , # red
-              '7'=rgb(0.2,0.5,0.5,0.9) , # green water
-              '8'=rgb(0.1,1.0,0.9,0.9) , # light blue
-              '9'=rgb(0.7,0.5,0.1,0.9) , # light brown
-              'NA'='grey' ) # important that it is in the end
-colClIn <- c( '1'=rgb(0.9,0.4,0.0,0.4) ,
-              '2'=rgb(0.8,0.2,0.5,0.4) ,
-              '3'=rgb(0.4,0.0,1.0,0.4) ,
-              '4'=rgb(0.9,1.0,0.1,0.4) ,
-              '5'=rgb(0.5,0.7,0.2,0.4) ,
-              '6'=rgb(0.9,0.1,0.0,0.4) ,
-              '7'=rgb(0.2,0.5,0.5,0.4) ,
-              '8'=rgb(0.1,1.0,0.9,0.4) ,
-              '9'=rgb(0.7,0.5,0.1,0.4) )
+# # maybe change colors to some nicer ones
+# colorCl <- c( '1'=rgb(0.9,0.4,0.0,0.9) , # orange
+#               '2'=rgb(0.8,0.2,0.5,0.9) , # purple
+#               '3'=rgb(0.4,0.0,1.0,0.9) , # blue
+#               '4'=rgb(0.9,1.0,0.1,0.9) , # yellow
+#               '5'=rgb(0.5,0.7,0.2,0.9) , # green
+#               '6'=rgb(0.9,0.1,0.0,0.9) , # red
+#               '7'=rgb(0.2,0.5,0.5,0.9) , # green water
+#               '8'=rgb(0.1,1.0,0.9,0.9) , # light blue
+#               '9'=rgb(0.7,0.5,0.1,0.9) , # light brown
+#               'NA'='grey' ) # important that it is in the end
+# colClIn <- c( '1'=rgb(0.9,0.4,0.0,0.4) ,
+#               '2'=rgb(0.8,0.2,0.5,0.4) ,
+#               '3'=rgb(0.4,0.0,1.0,0.4) ,
+#               '4'=rgb(0.9,1.0,0.1,0.4) ,
+#               '5'=rgb(0.5,0.7,0.2,0.4) ,
+#               '6'=rgb(0.9,0.1,0.0,0.4) ,
+#               '7'=rgb(0.2,0.5,0.5,0.4) ,
+#               '8'=rgb(0.1,1.0,0.9,0.4) ,
+#               '9'=rgb(0.7,0.5,0.1,0.4) )
 colorClMac <- c( '1'='red' ,
               '2'='green' ,
               '3'='blue' ,
