@@ -19,3 +19,34 @@ print("######################################")
 print("myprediction vs OECD predictions for [2010,2020]:")
 cat("mean deviation = ", my.vs.web,"\n")
 cat("mean absolute deviation = ",my.vs.web.ABS,"\n")
+
+
+
+#### plot
+my <- data.frame(pred = s$my, cnt = rownames(s),type = rep("OURS",dim(s)[1]))
+web <- data.frame(pred = s$web, cnt = rownames(s),type = rep("OECD",dim(s)[1]))
+d <- rbind(my,web)
+
+d <- ddply(d, "cnt", transform, label_y=cumsum(pred))
+d$label_y <- trunc(d$label_y*10^2)/10^2
+p <-ggplot(d, aes(x=cnt, y=pred, fill=type)) +
+    geom_bar(stat="identity") +
+   theme(axis.text=element_text(size=12),
+         axis.title=element_text(size=14,face="bold"),
+         legend.key.size = unit(1.5,"cm"))+
+   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+   # geom_text(aes(y=label_y, label=pred), vjust=1.5, colour="black")
+p
+
+
+
+
+
+
+
+
+
+
+
+

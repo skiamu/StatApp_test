@@ -16,7 +16,6 @@ source(paste(path,"Regression/Design_Matrix_pred.R",sep = "/"))
 library(MASS)
 library(dplyr)
 select <- dplyr::select 
-
 # script regression 3)
 # this script performs linear regression using just discrete regressors.
 # We use this script to buil the model for prediction.
@@ -112,31 +111,37 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
-
+# plot(fit$model)
 # d <- data.frame(Y,XD); rownames(d) <- row.country.name
 # XD <- find_outlier(d,remove = T)
+# XD <- XD[-c(49),]; Y <- Y[-c(49)]
+# 
 # Y <- XD[,1];XD <- XD[,-1]
 ####### MODEL SELECTION FOR PREDICTION
 
 # let's try with some interaction
 formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
-   investment+openess+ 
+   investment+openess+
    # interazioni con gli anni
-   I1:GDP + I1:fertility + I2:GDP + I2:fertility+consumi:I1 + consumi:I2+I1:health + I2:health+
+   I1:GDP + I1:fertility + I1:investment + 
+   I2:GDP + I2:fertility + I2:investment +
    # interazioni con asia
-   R1:GDP +consumi:R1 + investment:R1 + inflation:R1 + fertility:R1 +R1:education+R1:openess+
+   R1:GDP + R1:fertility + R1:investment+
    # interazioni con africa sub-sahariana
-   R2:GDP + R2:consumi + R2:investment + R2:fertility+R2:education
+   R2:GDP + R2:fertility + R2:investment
 
 fit2 <- lm(formula,data = XD)
 summary(fit2)
 
 # let's reduce the model
 step(fit2)
-formula <- Y ~ fertility + GDP + consumi + inflation + health + 
-   R1 + R2 + I1 + I2 + investment + GDP:I2 + fertility:I2 + 
-   consumi:I2 + health:I1 + health:I2 + GDP:R1 + consumi:R1 + 
-   inflation:R1 + fertility:R1 + GDP:R2 + consumi:R2 + R2:investment + 
-   fertility:R2
+formula <- Y ~ fertility + GDP + consumi + R1 + R2 + I1 + I2 + 
+   investment + GDP:I1 + fertility:I1 + I1:investment + fertility:I2 + 
+   I2:investment + GDP:R1 + fertility:R1 + fertility:R2 + R2:investment
 fit3 <- lm(formula ,data = XD)
 summary(fit3)
+# plot(fit3)
+XD <- XD[-c(109,20,21,14),]; Y <- Y[-c(109,20,21,14)]
+
+
+

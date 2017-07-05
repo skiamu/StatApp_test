@@ -4,7 +4,19 @@
 # time interval [2001,2011]. Finally we evaluate our predictor computing classical 
 # prediction measures (RMSE, MAD, ME).
 # Hopefully, we compere our estimate against those made by the OECD
+myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
+           "Life expectancy at birth, total (years)",
+           "Fertility rate, total (births per woman)",
+           "Inflation, GDP deflator (annual %)",
+           "GDP per capita (constant 2005 US$)",
+           "Household final consumption expenditure, etc. (% of GDP)",
+           "Foreign direct investment, net inflows (% of GDP)")
 
+# continuum regressors: the observations of a contunuum regressor is an average on
+# 9 years. For example, the trade for the time interval [1975,1985] is the average
+# on the interval [1975,1984]. Since this model is for explanation, i'm allowd to do that.
+myInd.continum <- c("General government final consumption expenditure (% of GDP)",
+                    "Trade (% of GDP)")
 # good performance in [1999,2009]
 myYear.new <- c(2003,2013)
 z <- Design_Matrix_pred(myYear = myYear.new,

@@ -1,5 +1,5 @@
-make.yy <- function(Ind,Country,flag.my.agg = F){
-   dq <- getIndicators(myInd = Ind,myCnt = Country,agg = flag.my.agg)
+make.yy <- function(Ind,Country,flag.my.agg = F,myYear = NULL){
+   dq <- getIndicators(myInd = Ind,myCnt = Country,agg = flag.my.agg,myYear)
    dq1 <- unifCnt(dq,showCnt = T, showInd = F)
    # years where data is available
    y <- unique(dq1$Year)

@@ -116,7 +116,9 @@ fit <- lin_reg(Y,
 # check the diagnosis plots to detect outlier
 plot(fit$model)
 # remove outlier: in [1982,2012] and [1983,2013] there's no need
-
+d <- data.frame(Y,XD); rownames(d) <- row.country.name
+XD <- find_outlier(d,remove = T)
+Y <- XD[,1];XD <- XD[,-1]
 
 #######  3.2) model selection + INTERACTION
 # given the last regression, let's see if we can reduce the model for the time interval
@@ -128,25 +130,53 @@ plot(fit$model)
 formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
    investment+openess+D1+D2 + 
    # interazioni con gli anni
-   D1:GDP + D2:GDP + D1:fertility + D2:fertility + D1:health + D2:health + 
-   I1:GDP + I1:fertility + I2:GDP + I2:fertility+consumi:I1 + consumi:I2+
+   D1:GDP + D1:fertility + D1:investment + 
+   D2:GDP + D2:fertility + D2:investment + 
+   I1:GDP + I1:fertility + I1:investment + 
+   I2:GDP + I2:fertility + I2:investment +
    # interazioni con asia
-   R1:GDP +consumi:R1 + investment:R1 + inflation:R1 + fertility:R1 +R1:education+R1:openess+
+   R1:GDP + R1:fertility + R1:investment+
    # interazioni con africa sub-sahariana
-   R2:GDP + R2:consumi + R2:investment + R2:fertility+R2:education
+   R2:GDP + R2:fertility + R2:investment
 fit3 <- lm(formula,data = XD)
 summary(fit3)
-step(fit3)
-formula <- Y ~ fertility + GDP + education + consumi + inflation + 
-   health + R1 + R2 + I1 + I2 + D1 + D2 + GDP:D2 + health:D1 + 
-   GDP:I1 + fertility:I1 + GDP:I2 + fertility:I2 + GDP:R1 + 
-   consumi:R1 + inflation:R1 + fertility:R1 + GDP:R2 + consumi:R2 + 
-   fertility:R2
+stepAIC(fit3)
+formula <- Y ~ fertility + GDP + education + health + R1 + 
+   R2 + investment + openess + D2 + investment:D2 + GDP:R1 + 
+   R1:investment + GDP:R2 + R2:investment
 fit4 <- lm(formula,data = XD)
 summary(fit4)
 # here we analyse this results taking into account the full model, the time interval
 # where we are fitting and the stuff on the book
 # 
+
+
+
+# test significatività Income
+beta <- coefficients(fit4)
+A <- matrix(0,nrow = 5,ncol = 25)
+A[1,13]<-1;A[2,14]<-1;A[3,15]<-1;A[4,16]<-1;A[5,17]<- 1
+b<- rep(0,5)
+linearHypothesis(fit4,A,b)
+
+# test significatività Region
+A <- matrix(0,nrow = 6,ncol = 25)
+A[1,10]<-1;A[2,11]<-1;A[3,18]<-1;A[4,19]<-1;A[5,20]<- 1;A[6,21]<-1
+b<- rep(0,6)
+linearHypothesis(fit4,A,b)
+
+
+# test significatività Period
+A <- matrix(0,nrow = 6,ncol = 25)
+A[1,8]<-1;A[2,9]<-1;A[3,22]<-1;A[4,23]<-1;A[5,24]<- 1;A[6,25]<-1
+b<- rep(0,6)
+linearHypothesis(fit4,A,b)
+
+
+
+
+texreg(fit4, booktabs = T, dcolumn = T,single.row = T,digits = 4,
+       table = F)
 
 
 
