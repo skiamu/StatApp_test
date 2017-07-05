@@ -306,9 +306,9 @@
 			\item $F_t =$ prediction for the growth in $t$ with our model
 			\item $Y_t =$ realization of growth in $t$
 			\item $e_t =$ prediction error
-			\item $ME = \sum_{t=0}^{T}e_t =$ mean error over $[t,T]$
-			\item $MAD = \sum_{t=0}^{T}\|e_t\| = $ mean absolute deviation over $[t,T]$
-			\item $ RMSE = \sqrt{\sum_{t=0}^{T}e_t^{2} =}$ root mean square error
+			\item $ME = \sum_{t=0}^{n}\frac{1}{n}e_t =$ mean error 
+			\item $MAD = \sum_{t=0}^{n}\frac{1}{n}\|e_t\| = $ mean absolute deviation 
+			\item $ RMSE = \sqrt{\sum_{t=0}^{n}\frac{1}{n}e_t^{2} =}$ root mean square error
 		\end{itemize}
 		
 	\end{definition}
