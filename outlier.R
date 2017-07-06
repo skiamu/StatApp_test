@@ -1,4 +1,4 @@
-# this function tries to detect outlier from a mulativariate dataframe
+# This function tries to detect outlier from a mulativariate dataframe
 # 
 # ALGORITMO:
 #           1) make a scatter plot of each variable

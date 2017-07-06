@@ -80,9 +80,13 @@ clu.Agr <- data.frame(
 nFiComp.Agr <- 3
 fda.Agr   <-         fda(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr)
 aercv.Agr <- crossValFDA(DCs.Agr, km.Agr$cluster, as.character(1:5), nFiComp.Agr)
+
+# knn
+aercv.Agr <- crossValKNN(DCs.Agr, km.Agr$cluster, as.character(1:5))
+
 # technical details
-recap.Agr <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Agr,'components ) with an Apparent Error Rate',
+recap.Agr <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
+                   with an Apparent Error Rate',
                    round(aercv.Agr,3),'(via Cross Validation)')
 
 # save

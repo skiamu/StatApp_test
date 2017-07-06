@@ -98,7 +98,7 @@ server <- function(input, output, session) {
                           input$v6.Agr)-mean.Agr)/var.Agr })
   # result of the prediction
   output$pred.Agr <- renderText({ paste('The predicted cluster is',
-                                       fdaPred(fda.Agr$fComp,fda.Agr$center,vv.Agr()))})
+                                        knn(train = DCs.Agr, test = vv.Agr(), cl = km.Agr$cluster, k = 5, prob=F))}) # k number of cluster
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -291,7 +291,7 @@ server <- function(input, output, session) {
                           input$v6.Ein)-mean.Ein)/var.Ein })
   # result of the prediction
   output$pred.Ein <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Ein$fComp,fda.Ein$center,vv.Ein()))})
+                                        knn(train = DCs.Ein, test = vv.Ein(), cl = km.Ein$cluster, k = 5, prob=F))}) # k number of cluster
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -338,7 +338,7 @@ server <- function(input, output, session) {
                           input$v5.Prd)-mean.Prd)/var.Prd })
   # result of the prediction
   output$pred.Prd <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Prd$fComp,fda.Prd$center,vv.Prd()))})
+                                        knn(train = DCs.Prd, test = vv.Prd(), cl = km.Prd$cluster, k = 3, prob=F))}) # k number of cluster
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   
@@ -385,7 +385,7 @@ server <- function(input, output, session) {
                           input$v5.Ets)-mean.Ets)/var.Ets })
   # result of the prediction
   output$pred.Ets <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Ets$fComp,fda.Ets$center,vv.Ets()))})
+                                        knn(train = DCs.Ets, test = vv.Ets(), cl = km.Ets$cluster, k = 3, prob=F))}) # k number of cluster
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   

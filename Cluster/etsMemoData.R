@@ -65,9 +65,10 @@ km.Ets <- kmeans(DCs.Ets, nClu.Ets, nstart = 100) # see EtscomCLU to see why we 
 # comments on clusters
 clu.Ets <- data.frame( 
   Cluster=1:nClu.Ets,
-  Description=c("Cost to start a business and tax rate and time to prepare them High",
-                "Procedure and time to start a business and red tape to pay taxes high",
-                "Easy to start a busness"),
+  Description=c("High costs to start a business and heavy taxes",
+                "Easy to start a busness",
+                "Heavy red tape for startups and taxes"
+                ),
   NumCountries=km.Ets$size
 )
 
@@ -75,9 +76,13 @@ clu.Ets <- data.frame(
 nFiComp.Ets <- 2
 fda.Ets   <-         fda(DCs.Ets, km.Ets$cluster, as.character(1:3), nFiComp.Ets)
 aercv.Ets <- crossValFDA(DCs.Ets, km.Ets$cluster, as.character(1:3), nFiComp.Ets)
+
+# knn
+aercv.Ets <- crossValKNN(DCs.Ets, km.Ets$cluster, as.character(1:3))
+
 # technical details
-recap.Ets <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Ets,'components ) with an Apparent Error Rate',
+recap.Ets <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
+                   with an Apparent Error Rate',
                    round(aercv.Ets,3),'(via Cross Validation)')
 
 # save
