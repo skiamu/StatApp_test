@@ -1,7 +1,7 @@
 # run App_05
-setwd('/Users/mowythebest/Desktop/StatApp_test')
+#setwd('/Users/mowythebest/Desktop/StatApp_test')
 #setwd('C:/Users/Leonardo/Desktop/POLIMI/ATTUALI/Stat App/Progetto/StatApp_test_loc')
-#setwd( "C:/Users/Leona/Documents/StatApp_test")
+setwd( "C:/Users/Leona/Documents/StatApp_test")
 
 # what to install:
 # 1) reshape2
@@ -34,6 +34,7 @@ library(ggplot2)                        # ggplot
 library(fmsb)                           # radarchart
 library(shiny)                          # runApp
 library(ggthemes)                       # theme_economist() maybe
+library(class)                          # knn
 select <- dplyr::select 
 
 
