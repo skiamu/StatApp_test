@@ -113,12 +113,14 @@ fit <- lin_reg(Y,
                print.band = F,
                pointwise = F,
                print.plot.DIAGN = F)
-# check the diagnosis plots to detect outlier
-plot(fit$model)
-# remove outlier: in [1982,2012] and [1983,2013] there's no need
-d <- data.frame(Y,XD); rownames(d) <- row.country.name
-XD <- find_outlier(d,remove = T)
-Y <- XD[,1];XD <- XD[,-1]
+# # check the diagnosis plots to detect outlier
+# plot(fit$model)
+# # remove outlier: in [1982,2012] and [1983,2013] there's no need
+# d <- data.frame(Y,XD); rownames(d) <- row.country.name
+# XD <- find_outlier(d,remove = T)
+# XD <- XD[-c(32,95),]; Y <- Y[-c(32,95)]
+# 
+# Y <- XD[,1];XD <- XD[,-1]
 
 #######  3.2) model selection + INTERACTION
 # given the last regression, let's see if we can reduce the model for the time interval
@@ -141,15 +143,27 @@ formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
 fit3 <- lm(formula,data = XD)
 summary(fit3)
 stepAIC(fit3)
-formula <- Y ~ fertility + GDP + education + health + R1 + 
-   R2 + investment + openess + D2 + investment:D2 + GDP:R1 + 
-   R1:investment + GDP:R2 + R2:investment
+formula <- Y ~ fertility + FDI + GDP + education + consumi + 
+   health + R1 + R2 + I1 + I2 + investment + D1 + D2 + GDP:D1 + 
+   investment:D1 + GDP:D2 + GDP:I1 + fertility:I1 + I1:investment + 
+   I2:investment + GDP:R1 + fertility:R1 + fertility:R2 + R2:investment
 fit4 <- lm(formula,data = XD)
 summary(fit4)
+plot(fit4)
+XD <- XD[-c(109),]; Y <- Y[-c(109)]
 # here we analyse this results taking into account the full model, the time interval
 # where we are fitting and the stuff on the book
 # 
-
+i = 3
+d <- data.frame(Y,XD[,i]); colnames(d) <- c("Y",colnames(XD)[i])
+pp1 <- ggplot(d,aes_string(x =colnames(d)[2] ,y = colnames(d)[1])) +
+   geom_point()  + 
+   geom_smooth(method = "lm") +
+   ggtitle("GDP per capita growth (annual %)") +
+   theme(axis.text=element_text(size=12),
+         axis.title=element_text(size=14,face="bold"),
+         legend.key.size = unit(1.5,"cm")) 
+print(pp1)
 
 
 # test significatività Income

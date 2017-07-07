@@ -59,6 +59,13 @@
 
 \section{Empirical evidences}
 
+\begin{frame}{Bibliography}
+   We took inpsiration from:
+   
+   mettere libro
+   
+\end{frame}
+
 \begin{frame}{10-year-Growth definition and average}
 	\begin{block}{}
 		\includegraphics[height=4.5cm,width=10cm]{growth_hist.png}
@@ -284,7 +291,7 @@
 
 \begin{frame}{Prediction model: no dummies for decades}
 	Let $ \epsilon \sim N(0,\sigma^2)$
-	\begin{block}{prediction model: timeless}
+	\begin{block}<1-2>{prediction model}
 		\begin{align*}
 		Growth &= \beta_0+\beta_1\text{fertility}+\beta_2\text{GDP}+\beta_3\text{consumption}+\beta_4\text{investment}+\\
 		& \qquad 
@@ -297,10 +304,14 @@
 		&\qquad
 		R_2(\beta_{16}\text{fertility}+\beta_{17}\text{investment}) + \epsilon \end{align*}
 	\end{block}
+	\begin{alertblock}<2>{Remark 4}
+		The model has no time component: prediction based only on regressors value at prediction instant
+	\end{alertblock}
+	
 \end{frame}
 
 \begin{frame}{predictor evaluation}
-	fitting sample = [1983,2003] \qquad test sample = [2003,2013]
+	fitting sample = [1983,2013] \qquad test sample = [2003,2013]
 	\begin{definition}<1-2>
 		\begin{itemize}
 			\item $F_t =$ prediction for the growth in $t$ with our model
@@ -315,18 +326,25 @@
 	\begin{block}<2>{predictor performances}
 	\begin{columns}
 		\begin{column}{5cm}
-		\begin{tabular}{ r|c|c| }
-			\multicolumn{1}{r}{}
-			&  \multicolumn{1}{c}{same countries}
-			& \multicolumn{1}{c}{new countries} \\
-			\cline{2-3}
-			ME & -0.014 & 0.022 \\
-			\cline{2-3}
-			MAD & 0.099 & 0.182 \\
-			\cline{2-3}
-			RMSE & 0.1361 & 0.2823 \\
-			\cline{2-3}
-		\end{tabular}
+		
+		validation on $n = 12$ new countries
+		
+		
+		\begin{table}[h!]
+			\centering
+			\begin{tabular}{|c c c |} 
+				\hline
+				ME & MAD & RMSE  \\ [0.5ex] 
+				\hline\hline
+				0.032 & 0.163 & 0.211  \\ 
+				
+				\hline
+			\end{tabular}
+		\end{table}
+		
+		
+		
+		
 	\end{column}
 	\begin{column}{3cm}
 		\begin{itemize}
@@ -340,7 +358,7 @@
 	
 \end{frame}
 
-\begin{frame}{2020 growth prediction comparison}
+\begin{frame}{2023 growth prediction comparison}
 	\includegraphics[height=6.5cm,width=11.5cm]{OECD.png}
 	
 	

@@ -17,17 +17,45 @@ myInd <- c("Gross enrolment ratio, primary, both sexes (%)",
 # on the interval [1975,1984]. Since this model is for explanation, i'm allowd to do that.
 myInd.continum <- c("General government final consumption expenditure (% of GDP)",
                     "Trade (% of GDP)")
+
+
 # good performance in [1999,2009]
 myYear.new <- c(2003,2013)
 z <- Design_Matrix_pred(myYear = myYear.new,
                         myInd = c(myInd,myInd.continum),
                         myCountry = NULL,
                         response.vector = T)
+
+Y.true <- z$Y
+X0.new <- z$XD
+nations <- z$nations
+# d <- data.frame(Y.true,X0.new);
+# rownames(d) <- nations
+# X <- find_outlier(d,remove = T)
+# Y.true <- X[,1];X0.new <- X[,-1]
+# print(dim(X0.new)[1])
+# true growth, it's used to validate the model
+
+# guardo quelle che non ho usato nel fitting
+naz <- setdiff(nations,nazioni)
+# prendo quelle che non sono troppo strane
+naz <- c("Czech Republic","Poland","South Africa","Cambodia","Russia","UK",
+         "Germany","Belgium","Turkey","Slovenia","Mongolia","China" )
+# calcolo vettore risposte per queste
+z <- Design_Matrix_pred(myYear = myYear.new,
+                        myInd = c(myInd,myInd.continum),
+                        myCountry = naz,
+                        response.vector = T)
+
 # dataframe with the new observations
 X0.new <- z$XD
 # true growth, it's used to validate the model
 Y.true <- z$Y
 nations <- z$nations
+
+
+
+
 colnames(X0.new) <- gsub("\\(.*$", "", colnames(X0.new))
 colnames(X0.new) <- gsub("\\,.*$", "", colnames(X0.new))
 name <- colnames(X0.new)
@@ -43,7 +71,7 @@ colnames(X0.new)[1:9] <- c("fertility","FDI","GDP","investment","education","con
 formula.pred <- formula
 
 # the model is fitted on the data from "pred_model.R" where we built the prediction
-# model
+# model. il modello li è costruito su un solo intervallo di tempo
 fit.pred <- lm(formula.pred, data = data.frame(Y,XD))
 summary(fit.pred)
 # predict new observations. I can use this model to predict also observation
@@ -53,7 +81,7 @@ pred <- predict(fit.pred, newdata = X0.new, interval = "confidence" )
 
 ######## PREDICTION MODEL VALIDATION
 true.pred <- data.frame(True = Y.true,pred = pred[,1])
-rownames(true.pred) <- nations
+rownames(true.pred) <- rownames(X0.new)
 # errore di predizione
 e <- Y.true - pred[,1]
 # root mean square errors (stima della deviazione standard)
@@ -67,7 +95,7 @@ true.pred.e <- cbind(true.pred,e)
 ############ prediction comparison
 source(paste(path,"Regression/manual_stuff.R",sep = "/"))
 
-myYear.new <- c(2010)
+myYear.new <- c(2013)
 z <- Design_Matrix_pred(myYear = myYear.new,
                         myInd = c(myInd,myInd.continum),
                         myCountry = NULL,
