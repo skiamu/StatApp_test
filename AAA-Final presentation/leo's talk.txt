@@ -86,7 +86,7 @@ but now let's see what's behind this tool
 Mowy’s speech (draft)
 #### start
 {Slide 1: From the second presentation}
-In the first presentation we explain u how we filtering our 1100 variables, in the second how chosen the most meaningful and fullest ones we create topics on which running PCA we understood better.
+In the first presentation we explain u how we filtering our 1344 variables, in the second how chosen the most meaningful and fullest ones we create topics on which running PCA we understood better.
 
 {Slide 2: Clustering}
 After trying all the methods we saw during the course we understood that the best one to find out clusters in each topic was K-means. First of all for its stability, second because the clusters classify countries exactly like reliable newspaper as “The Economist” did. 
