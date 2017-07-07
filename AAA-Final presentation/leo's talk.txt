@@ -83,7 +83,32 @@ but now let's see what's behind this tool
 {GO TO PRESENTATION}
 #### end
 
+Mowy’s speech (draft)
+#### start
+{Slide 1: From the second presentation}
+In the first presentation we explain u how we filtering our 1100 variables, in the second how chosen the most meaningful and fullest ones we create topics on which running PCA we understood better.
 
+{Slide 2: Clustering}
+After trying all the methods we saw during the course we understood that the best one to find out clusters in each topic was K-means. First of all for its stability, second because the clusters classify countries exactly like reliable newspaper as “The Economist” did. 
+
+So we did with the choice of k in each topic: after a reasonable range found by a quantitative analysis on the variability between the groups wrt the variability within the groups, we verify the actuality of the clusters.
+
+{Slide 3: Classifying}
+After a evident lack of normality in our data, we performed the two methods that don’t require this HP: FDA and KNN.
+
+So we made a function that given the training set and the wanted number of Fisher components it computes the centroids and the components, using these outputs we also wrote a function that predicts the group of a new observation.
+
+{Slide 4: Cross-Validation}
+Now the obvious question is when did u use KNN and when FDA? and why?
+To answer to this question we built two functions one that perform the cross Validation test one-by-one on the KNN classifier and one on the FDA classifier.
+Furthermore we double-check some results by predict the past: for example we saw were our function classify Saudi Arabia before the wealth coming from the oil market
+
+{Opening again the app}
+We can see a brief summary of this procedure and the APERCV result if u decide to see techincal details at the bottom of the Topics’ window
+
+#### end
+
+NB I can also show an example of a prediction in the past by the app and using in front of them the prediction part of the app
 
 
 
