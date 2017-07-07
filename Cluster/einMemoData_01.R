@@ -68,10 +68,10 @@ km.Ein <- kmeans(DCs.Ein, nClu.Ein, nstart = 100) # see EincomCLU to see why we 
 clu.Ein <- data.frame( 
   Cluster=1:nClu.Ein,
   Description=c("Poor Economies",
-                "Poor Economies with good GDP growth but significative presence of inflation",
+                "Poor Economies and strong inflation, but good GDP growth",
                 "High GDP and high foreign investments",
-                "Countries with strong inflation but not so poor",
-                "High GDP growth and per capita and significative presence of foreign investments"
+                "Strong inflation and good GDP indicators",
+                "High GDP growth, GDP per capita and foreign investments"
                 ),
   NumCountries=km.Ein$size
 )
@@ -80,9 +80,13 @@ clu.Ein <- data.frame(
 nFiComp.Ein <- 3
 fda.Ein   <-         fda(DCs.Ein, km.Ein$cluster, as.character(1:5), nFiComp.Ein)
 aercv.Ein <- crossValFDA(DCs.Ein, km.Ein$cluster, as.character(1:5), nFiComp.Ein)
+
+# knn
+aercv.Ein <- crossValKNN(DCs.Ein, km.Ein$cluster, as.character(1:5))
+
 # technical details
-recap.Ein <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Ein,'components ) with an Apparent Error Rate',
+recap.Ein <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
+                   with an Apparent Error Rate',
                    round(aercv.Ein,3),'(via Cross Validation)')
 
 # save

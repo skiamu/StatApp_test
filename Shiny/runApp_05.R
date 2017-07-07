@@ -34,6 +34,7 @@ library(ggplot2)                        # ggplot
 library(fmsb)                           # radarchart
 library(shiny)                          # runApp
 library(ggthemes)                       # theme_economist() maybe
+library(class)                          # knn
 select <- dplyr::select 
 
 

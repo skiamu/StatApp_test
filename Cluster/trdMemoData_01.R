@@ -70,13 +70,13 @@ km.Trd <- kmeans(DCs.Trd, nClu.Trd, nstart = 100) # see TrdcomCLU to see why we 
 # comments on clusters
 clu.Trd <- data.frame( 
   Cluster=1:nClu.Trd,
-  Description=c("Low red tape and no significative growth of the trade",
+  Description=c("Low red tape and low growth of trading",
                 "High import and exports of good and services",
-                "Normal red tape  and trading is growing",
-                "Worst red tape and growth of the import",
-                "Heavy red tape and growth of the import",
-                "Medium red tape and a lot of growth of the imports",
-                "Heavy red tape but strong growth of the trades"),
+                "Normal red tape  and growing trading",
+                "High red tape and growth of imports",
+                "Heaviest red tape and growth of imports",
+                "Normal red tape and impressive growth of imports",
+                "Heavy red tape but strong growth of trading"),
   NumCountries=km.Trd$size
 )
 

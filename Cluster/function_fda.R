@@ -106,3 +106,23 @@ crossValFDA <- function(X, cluster, labelsCl, nFishComp){
   AERCV   <- loocv/num_obs
   return(AERCV)
 }
+crossValKNN <- function(X, cluster, labelsCl){
+  # -- INPUT: 
+  #    - X             : dataframe on which perform the discrimination
+  #    - clusters      : column with the groups already given (result from kmeans)
+  #    - nFishComp     : number of fisher components
+  # -- OUTPUT:
+  #    - AERCV: Cross-validtion AER
+  library('class')
+  loocv <- 0
+  num_obs <- dim(X)[1]
+  for (k in 1:num_obs) {
+    X_temp   <- X[-k, ]
+    trainSet <- cluster[-k]
+    testObs  <- X[k, ]
+    cv      <- knn(train = X_temp, test = testObs, cl = trainSet, k = length(labelsCl), prob=F)
+    loocv <- loocv + as.numeric(cv != cluster[k])
+  }
+  AERCV   <- loocv/num_obs
+  return(AERCV)
+}

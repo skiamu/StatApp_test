@@ -65,8 +65,8 @@ km.Prd <- kmeans(DCs.Prd, nClu.Prd, nstart = 100) # see PrdcomCLU to see why we 
 # comments on clusters
 clu.Prd <- data.frame( 
   Cluster=1:nClu.Prd,
-  Description=c("Economy based on Agriculture",
-                "Economy based on Industry, Manufacturing and Trade",
+  Description=c("Economy based on Industry, Manufacturing and Trade",
+                "Economy based on Agriculture",
                 "Economy based on Services and Trade"),
   NumCountries=km.Prd$size
 )
@@ -75,9 +75,12 @@ clu.Prd <- data.frame(
 nFiComp.Prd <- 2
 fda.Prd   <-         fda(DCs.Prd, km.Prd$cluster, as.character(1:3), nFiComp.Prd)
 aercv.Prd <- crossValFDA(DCs.Prd, km.Prd$cluster, as.character(1:3), nFiComp.Prd)
+
+# knn
+aercv.Prd <- crossValKNN(DCs.Prd, km.Prd$cluster, as.character(1:3))
 # technical details
-recap.Prd <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Prd,'components ) with an Apparent Error Rate',
+recap.Prd <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
+                   with an Apparent Error Rate',
                    round(aercv.Prd,3),'(via Cross Validation)')
 
 # save

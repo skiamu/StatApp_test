@@ -1,4 +1,4 @@
-LEO's speech (draft)
+﻿LEO's speech (draft)
 
 #### start
 {Slide 1 DATASET}
@@ -82,9 +82,3 @@ or have a look at it by itslef
 but now let's see what's behind this tool 
 {GO TO PRESENTATION}
 #### end
-
-
-
-
-
-
