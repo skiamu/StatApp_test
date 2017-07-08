@@ -75,9 +75,10 @@ clu.Prd <- data.frame(
 nFiComp.Prd <- 2
 fda.Prd   <-         fda(DCs.Prd, km.Prd$cluster, as.character(1:3), nFiComp.Prd)
 aercv.Prd <- crossValFDA(DCs.Prd, km.Prd$cluster, as.character(1:3), nFiComp.Prd)
-
+aercv.Prd
 # knn
 aercv.Prd <- crossValKNN(DCs.Prd, km.Prd$cluster, as.character(1:3))
+aercv.Prd
 # technical details
 recap.Prd <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
                    with an Apparent Error Rate',

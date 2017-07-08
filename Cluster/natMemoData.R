@@ -81,9 +81,13 @@ clu.Nat <- data.frame(
 nFiComp.Nat <- 4
 fda.Nat   <-         fda(DCs.Nat, km.Nat$cluster, as.character(1:nClu.Nat), nFiComp.Nat)
 aercv.Nat <- crossValFDA(DCs.Nat, km.Nat$cluster, as.character(1:nClu.Nat), nFiComp.Nat)
+# knn
+aercv.Nat <- crossValKNN(DCs.Nat, km.Nat$cluster, as.character(1:nClu.Nat))
+aercv.Nat
+
 # technical details
-recap.Nat <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
-                   nFiComp.Nat,'components ) with an Apparent Error Rate',
+recap.Nat <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using k-nearest neighbour,
+                   with an Apparent Error Rate',
                    round(aercv.Nat,3),'(via Cross Validation)')
 
 # save

@@ -145,7 +145,7 @@ server <- function(input, output, session) {
                           input$v5.Nat)-mean.Nat)/var.Nat })
   # result of the prediction
   output$pred.Nat <- renderText({ paste('The predicted cluster is',
-                                        fdaPred(fda.Nat$fComp,fda.Nat$center,vv.Nat()))})
+                                        knn(train = DCs.Nat, test = vv.Nat(), cl = km.Nat$cluster, k = 5, prob=F))})
   output$space1 <- renderText({ '. ' })
   output$space2 <- renderText({ '. ' })
   

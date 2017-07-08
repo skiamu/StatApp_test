@@ -79,11 +79,14 @@ clu.Trd <- data.frame(
                 "Heavy red tape but strong growth of trading"),
   NumCountries=km.Trd$size
 )
-
+# knn
+aercv.Trd <- crossValKNN(DCs.Trd, km.Trd$cluster, as.character(1:7))
+aercv.Trd
 # fda
 nFiComp.Trd <- 4
 fda.Trd   <-         fda(DCs.Trd, km.Trd$cluster, as.character(1:7), nFiComp.Trd)
 aercv.Trd <- crossValFDA(DCs.Trd, km.Trd$cluster, as.character(1:7), nFiComp.Trd)
+aercv.Trd
 # technical details
 recap.Trd <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
                    nFiComp.Trd,'components ) with an Apparent Error Rate',

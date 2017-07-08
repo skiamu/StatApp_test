@@ -75,10 +75,14 @@ clu.Tel <- data.frame(
   NumCountries=km.Tel$size
 )
 
+# knn
+aercv.Tel <- crossValKNN(DCs.Tel, km.Tel$cluster, as.character(1:5))
+aercv.Tel
 # fda
 nFiComp.Tel <- 3
 fda.Tel   <-         fda(DCs.Tel, km.Tel$cluster, as.character(1:5), nFiComp.Tel)
 aercv.Tel <- crossValFDA(DCs.Tel, km.Tel$cluster, as.character(1:5), nFiComp.Tel)
+aercv.Tel
 # technical details
 recap.Tel <- paste('Data have been standardized, cluster analysis via kmneans performed in 2010, prediction using Fisher discriminant analysis (',
                    nFiComp.Tel,'components ) with an Apparent Error Rate',
