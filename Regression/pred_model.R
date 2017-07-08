@@ -92,34 +92,12 @@ if(sum(is.na(XD)) != 0){stop("XD contiene na, correggere immediatamente")}
 # 3.1) regression fitting and outliers
 # 
 # create the regression formula
-formula <- paste("Y ~ ",colnames(XD)[1],sep = "")
-for(i in 2:dim(XD)[2]){
-   formula <- paste(formula,colnames(XD)[i],sep = "+")
-}
+
 # substituite the country names with numbers since it's easier to spot outlier
 # in the diagnosis plots if each observation is a number
 row.country.name <- rownames(XD)
 rownames(XD) <- 1:length(Y)
 # fit the first linear regression
-fit <- lin_reg(Y,
-               XD,
-               formula = formula,
-               X0.new = NULL,
-               interval = NULL,
-               print.plot = F,
-               print.result = T,
-               print.band = F,
-               pointwise = F,
-               print.plot.DIAGN = F)
-# plot(fit$model)
-# d <- data.frame(Y,XD); rownames(d) <- row.country.name
-# XD <- find_outlier(d,remove = T)
-# XD <- XD[-c(49),]; Y <- Y[-c(49)]
-# 
-# Y <- XD[,1];XD <- XD[,-1]
-####### MODEL SELECTION FOR PREDICTION
-
-# let's try with some interaction
 formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
    investment+openess+
    # interazioni con gli anni
@@ -129,6 +107,19 @@ formula <- Y ~ fertility+FDI+GDP+education+consumi+inflation+health+R1+R2+I1+I2+
    R1:GDP + R1:fertility + R1:investment+
    # interazioni con africa sub-sahariana
    R2:GDP + R2:fertility + R2:investment
+
+fit <- lm(formula ,data = XD)
+summary(fit)
+plot(fit)
+# d <- data.frame(Y,XD); rownames(d) <- row.country.name
+# XD <- find_outlier(d,remove = T)
+# per 80/00
+# XD <- XD[-c(32,15,69,102),]; Y <- Y[-c(32,15,69,102)]
+
+# Y <- XD[,1];XD <- XD[,-1]
+####### MODEL SELECTION FOR PREDICTION
+
+# let's try with some interaction
 
 fit2 <- lm(formula,data = XD)
 summary(fit2)
@@ -140,8 +131,10 @@ formula <- Y ~ fertility + GDP + consumi + R1 + R2 + I1 + I2 +
    I2:investment + GDP:R1 + fertility:R1 + fertility:R2 + R2:investment
 fit3 <- lm(formula ,data = XD)
 summary(fit3)
-# plot(fit3)
-XD <- XD[-c(109,20,21,14),]; Y <- Y[-c(109,20,21,14)]
-
-
+ plot(fit3)
+ # per 83/13
+ XD <- XD[-c(109,20,14,21),]; Y <- Y[-c(109,20,14,21)]
+ 
+ 
+ 
 
