@@ -1,0 +1,67 @@
+\documentclass[11pt,a4paper]{article}
+\title{Regression report}
+\author{A.S.}
+\date{July 2017}
+
+\begin{document}
+\maketitle
+
+
+
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+To develop this section on Economic Growth we followed as a guideline
+the interesting book "Economic Growth" by Robert J. Barro and Xavier I. Sala-i-Martin.
+As leo's just said, our aim is to make prediction about the 10-year economic growth. In order to do that we need first to understand which the growth's drivers are and than build a suitable model. Let's begin with some empirical evidences:
+\section{empirical evidences}
+
+We define the 10-year Growth as the percentage 10 years variation of GDP per capita in constant 2005 US\$, and this will be the object of our study. As we can see from the histogram, this indicator may assume quite different values depending in the year and on the countries so it is notoriously difficult to find a good model.
+
+Here (fig 2) we see the Growth over the last 50 years by region. We immediately notice differences between decades and geographical regions so we will take this into consideration by introducing in the liner model dummies variables for decades and for regions (in particular distinguishing between Asia, Africa and the rest of the world).
+
+The same holds true if we look at Growth by Income groups(fig 3), therefore the model will have dummies for the three different income groups.
+
+
+
+\section{explanatory model for 10-year Growth}
+Let's begin building the model for explaining the 10-year Growth.
+\subsection{the linear model}
+We divide our explanatory variables (regressors) in two categories: \textbf{state variables} and \textbf{environmental variables}
+\paragraph{state variables}
+These variables represent the stock of human and physical capital of a country at a specific time instant. For example the health of a country is represented by one over the life expectancy at birth, or the fertility is measured by the average number of births per woman.
+\paragraph{environmental variables}
+environmental variables are mainly economic-based indicators and they capture the overall outlook of a country's economy. For example here we have \textit{Openess}, that measures the willingness to import and export goods and services or \textit{Consumption} that looks at the population's confidence in the economy by measuring how much they are spending on average for every-day purchases.
+\\[12pt]
+
+Therefore, we can formulate the abstract model for the 10-year Growth as a function F of these two sets of variables.
+
+
+To take into consideration the differences by time period, geographical region and income group highlighted before we formulate the linear model in the following way (see equation), where the interaction between groups of regressors is achieved by using 6 dummies variables. The groups can be seen below.
+Performing model selection via step-wise regression, we drop some interaction term and the regressor \textit{openess} and finally we end up with a reduced linear model in 26 parameters to be estimated.
+
+
+
+\subsection{results analysis}
+\begin{itemize}
+	\item This is the result of the least squares estimation (R output).
+	The first thing to notice is that the $R^2$ adj  has a high value meaning that the set of regressors has good explanatory power and capture a big part of variability (or that we are overfitting the data, hypothesis partially rejected by the next step of cross-validation).
+	\item Then we notice that almost every interaction coefficient is statistically significant (indeed, three joint tests on the coefficients of the three groups reject H0 with a 0 pvalue) meaning that there actually is a different growth pattern across these groups.
+	\item the most interesting result is the sign of the GDP coefficient. It is negative, meaning that the lower the initial GDP the higher the growth over the next decade. As a matter of fact, this is a well-know and well-studied principle in economics and it's called \textbf{conditional convergence} or catch-up effect. Take for instance Japan (fig), it lost the war and therefore in the fifties  its GDP was very low if compared  with the USA GDP or UK GDP. As the conditional convergence says, over the next decades the Growth for Japan was much higher than for UK or USA making the japan economy reach the richest countries at the end of the last century.
+	
+	\item Another interesting result is the different values of the fertility coefficient for the line Asia/Middle Income and Europe/High Income. All the rest being the same, the influence of fertility on growth was much stronger (and negative) for nations like china than European ones. Indeed in the eighties the Communist Party introduced the one-child policy aiming at reducing the fertility rate.
+	
+	
+\end{itemize}
+
+
+\section{Prediction model for 10-year Growth}
+We now proceed  developing the actual model  that we are going to use to make prediction. Using what we learned in the explanatory section, we formulate a linear model with the same dummy variables but the time period ones. In this way, we build a timeless model  which tries to predict the growth relying only on the value of the state and environmental variables. In this sense we can say that the model is totally myopic. Finally, the model was fitted taking the observations at the beginning of the periods '83 '93 '03.
+\subsection{predictor validation}
+We validate our model, by forecasting the growth for 12 new countries. As measures of performance we used the mean error (which gives a measure of unbiasedness), the mean absolute deviation (that says if the predictor is inaccurate), and the root mean square error to check the variance of our prediction. the result is reported in the table. We notice we  are a little inaccurate out-of-sample but and the predictor is slightly overestimating.
+
+Finally, we compare our prediction for the 2023 growth with the ones made by the OECD and we see that they are pretty close (happy about that)
+
+\end{document}
+
