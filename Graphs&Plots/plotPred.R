@@ -78,7 +78,7 @@ plot10yPred <- function(cnt,cnt2=NULL,flagPred=T,GDP="GDP per capita (constant 2
     labs(color = "Country")
   if (flagPred){
     plotCnt <- plotCnt +
-      geom_line(    data=predDf, aes(x = Year, y = fit, colour = CountryName), size = 2) +
+      #geom_line(    data=predDf, aes(x = Year, y = fit, colour = CountryName), size = 2) +
       geom_errorbar(data=predDf, mapping=aes(x = Year, ymin=lwr, ymax=upr), 
                     width=1, size=1, color="grey30") + 
       geom_point(   data=predDf, aes(x = Year, y = fit),                       size = 3, shape=21, fill="white")

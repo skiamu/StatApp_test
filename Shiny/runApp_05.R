@@ -10,6 +10,8 @@ setwd( "C:/Users/Leona/Documents/StatApp_test")
 # 4) fmsb
 # 5) shiny
 # 6) maps
+# 7) ggthemes
+# 8) class
 
 load("ReadData/data.RData")
 load("ReadData/agrData.RData")

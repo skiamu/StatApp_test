@@ -68,11 +68,11 @@ km.Agr <- kmeans(DCs.Agr, nClu.Agr, nstart = 100) # see agrCLU_02 to see why we 
 # comments on clusters
 clu.Agr <- data.frame( 
   Cluster=1:nClu.Agr,
-  Description=c('agriculture is an important component in the GDP',
-                'high forest area',
-                'high extension of permanent cropland (coffee, gum, etc)',
-                'high agricultural land',
-                'efficient agriculture'),
+  Description=c('Agriculture is an important component in the GDP',
+                'High forest area',
+                'High extension of permanent cropland (coffee, gum, etc)',
+                'High agricultural land',
+                'Efficient agriculture'),
   NumCountries=km.Agr$size
 )
 
